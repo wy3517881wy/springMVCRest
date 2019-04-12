@@ -1,0 +1,161 @@
+@CHARSET "UTF-8";
+.filePrew {
+   border: 1px solid;
+   display: block;
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 140px;
+   height: 23px;
+   cursor: pointer;
+   opacity: 0;
+   filter: alpha(opacity : 0);
+}
+.tips{
+	color:gray;
+	font-family:"微软雅黑";
+	font-size:12px;
+	line-height:25px;
+}
+.datagrid-mask{
+	display: none;
+	height: 100%;
+	z-index:100;
+}
+.datagrid-mask-msg{
+	display:none;
+	z-index:101;
+	font-family:"微软雅黑";
+	font-size:12px;
+	color:gray;
+	padding-right:20px;
+}
+.tableForm{
+	width:100%;
+	font-family:"微软雅黑";
+	font-size:12px;
+	margin:10px 0;
+	line-height:25px;
+}
+.formLeft{
+	height:25px;
+	width:35%;
+	text-align:right;
+	padding-right:30px;
+}
+tool, .tabs, .tabs-panels, .tabs li a.tabs-inner, .tabs li.tabs-selected a.tabs-inner, .tabs-header-bottom .tabs li.tabs-selected a.tabs-inner, .tabs-header-left .tabs li.tabs-selected a.tabs-inner, .tabs-header-right .tabs li.tabs-selected a.tabs-inner {
+    border-color: #ddd;
+}
+.tabs{
+	height:29px !important;
+	padding-top:5px;
+}
+.tabs-inner{
+	height:30px !important;
+	line-height:30px !important;
+}
+.tabs-title {
+    font-size: 16px;
+    font-family:"微软雅黑";
+    font-weight:normal;
+}
+.datagrid-toolbar {
+    height: 30px;
+    line-height:30px;
+    background-color:#f4f4f4;
+}
+.datagrid-toolbar a{
+    margin-left:15px;
+}
+.datagrid-toolbar .l-btn-text {
+	font-size: 14px;
+    font-family:"微软雅黑";
+    font-weight:normal;
+}
+.datagrid-header, .datagrid-td-rownumber {
+	background-color:#e6e6e6;
+}
+.datagrid-header .datagrid-cell span {
+    font-size: 14px;
+    font-family:"微软雅黑";
+    font-weight:normal;
+}
+.datagrid-header{
+	height: 30px !important;
+}
+.datagrid-header-row, .datagrid-row {
+    height: 31px !important;
+}
+.datagrid-cell, .datagrid-cell-group, .datagrid-header-rownumber, .datagrid-cell-rownumber {
+    font-size: 14px;
+    font-family:"微软雅黑";
+    color:#333;
+}
+.layout-split-east {
+    border-left: 1px solid #ddd;
+}
+.panel-header, .panel-body {
+    border-color: #ddd;
+}
+.layout-expand {
+    background-color: #e6e6e6;
+}
+.panel-header {
+    background: linear-gradient(to bottom,#E6e6e6 0,#E6e6e6 100%);
+}
+a.tabs-inner {
+    background: linear-gradient(to bottom,#e6e6e6 0,#ffffff 100%);
+}
+.panel-header-noborder {
+    height: 22px;
+}
+.panel-title {
+    font-size: 14px;
+    font-weight: normal;
+    color: #333;
+    height: 18px;
+    line-height: 18px;
+    font-family:"微软雅黑";
+}
+
+
+.layout-button-left {
+    background: url('/static/images/left.png') no-repeat 0 0;
+}
+.layout-button-right {
+    background: url('/static/images/right.png') no-repeat 0 0;
+}
+.tabs li.tabs-selected a.tabs-inner {
+    background: linear-gradient(to bottom,#f5f5f5 0,white 100%);
+}
+.pagination-first {
+    background: url('/static/images/pagination.png') no-repeat 0 center;
+}
+.pagination-prev {
+    background: url('/static/images/pagination.png') no-repeat -16px center;
+}
+.pagination-next {
+    background: url('/static/images/pagination.png') no-repeat -32px center;
+}
+.pagination-last {
+    background: url('/static/images/pagination.png') no-repeat -48px center;
+}
+.pagination-load {
+    background: url('/static/images/pagination.png') no-repeat -64px center;
+}
+.pagination-page-list, .pagination .pagination-num {
+    border-color: #ccc;
+}
+.datagrid-row-selected {
+    background: #dobe94;
+}
+.window {
+    background: linear-gradient(#f4f4f4 0px, #f4f4f4 20%) repeat-x;
+    background-repeat: repeat-x;
+}
+.window, .window .window-body {
+    border-color: #bbb;
+}
+.tabs li a.tabs-inner {
+	background: linear-gradient(to bottom,#e6e6e6 0,white 100%);
+}
