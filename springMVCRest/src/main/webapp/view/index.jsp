@@ -5,12 +5,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<script type="text/javascript" src="../static/js/index.js"></script>
+<script type="text/javascript" src="/static/js/index.js"></script>
 <style type="text/css">
 .header{
 	height:55px;
 	padding:10px;
-	background-image:url("../static/images/index_bg.png");
+	background-image:url("/static/images/index_bg.png");
 	background-repeat:repeat-x;
 }
 .header img{
@@ -38,10 +38,10 @@
     border-color: #dddddd;
 }
 .accordion-collapse {
-    background: url('../static/images/accordion_arrows2.png') no-repeat 0 0;
+    background: url('/static/images/accordion_arrows2.png') no-repeat 0 0;
 }
 .accordion-expand {
-    background: url('../static/images/accordion_arrows1.png') no-repeat 0 0;
+    background: url('/static/images/accordion_arrows1.png') no-repeat 0 0;
 }
 .accordion .accordion-header{
 	height:30px;!important
@@ -64,22 +64,22 @@
 #content{
     background-position: center;
     background-repeat:no-repeat;
-	background-image:url("../static/images/welcome.png");
+	background-image:url("/static/images/welcome.png");
 }
 .smallCircle {
-				width: 50px;
-				height: 90%;
-				line-height: 55px;
-				display: inline-block;
-				text-align: center;
-				background-color: #dcbe94;
-				color: white;
-				border: 0px solid #ddd;
-				border-radius: 30px;
-				background-clip: padding-box;
-				margin-left:2%;
-				float: left;
-			}
+	width: 50px;
+	height: 90%;
+	line-height: 55px;
+	display: inline-block;
+	text-align: center;
+	background-color: #dcbe94;
+	color: white;
+	border: 0px solid #ddd;
+	border-radius: 30px;
+	background-clip: padding-box;
+	margin-left:2%;
+	float: left;
+}
 .userinfo{
 	margin-left:50%; 
 	float: left;
@@ -95,7 +95,7 @@
  <body class="easyui-layout">
  <input id="strName" value="123">
 	<div class="header" data-options="region:'north',border:false">
-		<img src="../static/images/index_logo.png">
+		<img src="/static/images/index_logo.png">
 		<div class="userinfo">
 			欢迎您登录
 		</div>

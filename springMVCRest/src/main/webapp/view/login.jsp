@@ -97,9 +97,21 @@ body {
 <script type="text/javascript">
 var host = "http://124.239.148.161:18080";
 	$('#loginbtn').click(function() {
+		data2 = '{"code":"200","data":{"user":{"id":1,"username":"root","nickname":"管理员","avatar":"","telephone":null,"state":0,"sex":0,"roleList":[{"id":1,"name":"系统管理员","structureType":"role"}],"structureType":"user"}}}';
+		data2 = JSON.parse(data2);
+		console.log(typeof(data2.data)=="object")
+		console.log(typeof(data2.data.user)=="object" )
+		console.log(data2.code==200&&typeof(data2.data) == "object"&&typeof(data2.data.user) == "object"&&data2.data.user.id>0)
+		if (data.code==200) {
+			$.messager.alert("提示",data.message);
+			$('#username').focus();
+			$('#password').focus();
+		} else{
+			window.location.href = "<%=basePath%>view/index.jsp";
+		}
 			var username = $('#username').val();
 			var password = $('#password').val();
-			if (username != null && username != "" && password != null && password != "") {						
+			if (username != null && username != "" && password != null && password != "") {
 					$.ajax({
 						url : host+"/user/login",
 						type : "post",
@@ -111,20 +123,21 @@ var host = "http://124.239.148.161:18080";
 						dataType : "json",
 						contentType: 'application/json',
 						success : function(data) {
-							if (data.code==200) {
-								/* $.messager.alert("提示",data.message); */
-								$.messager.alert("提示","用户名密码错误");
+							conlole.log(data)
+							conlole.log(data.code)
+							if (data.code==200&&typeof(data.data) == "object"&&typeof(data.data.user) == "object"&&data.data.user.id>0) {
+								window.location.href = "<%=basePath%>view/index.jsp";
+							} else{
+								$.messager.alert("提示",data.message);
 								$('#username').focus();
 								$('#password').focus();
-							} else{
-								window.location.href = "<%=basePath%>view/index.jsp";
 							}
 						}
 						});
-		} else {  							
-			$.messager.alert("提示","请输入账号密码！");
-			$('#username').focus();
-			$('#password').focus();
+			} else {  							
+				$.messager.alert("提示","请输入账号密码！");
+				$('#username').focus();
+				$('#password').focus();
 			}
 });
 	$(document).keydown(function(event){ 
