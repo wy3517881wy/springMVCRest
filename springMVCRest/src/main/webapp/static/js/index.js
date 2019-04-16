@@ -35,7 +35,7 @@ function logOut() {
 		dataType : 'text',
 		success : function(data) {
 			if (data == "null") {
-				window.location.href = "/view/login.jsp"
+				window.location.href = "/view/login.html"
 			}
 		}
 	});
