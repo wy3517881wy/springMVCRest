@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/static/js/head.js"></script>
+<script type="text/javascript" src="/static/js/index.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/index.css" />
+ </head> 
+ <body class="easyui-layout">
+ <iframe MARGINWIDTH=0 MARGINHEIGHT=0 HSPACE=0 VSPACE=0 FRAMEBORDER=0 SCROLLING=no src="common.html" height="auto" width="100%"></iframe>
+ <input id="strName" value="123">
+	<div class="header" data-options="region:'north',border:false">
+		<img src="/static/images/index_logo.png">
+		<div class="userinfo">
+			欢迎您登录
+		</div>
+		<div id="smallCircle" class="smallCircle">
+			 <div id="divCount" style="font-size: 16px;">
+				<span id="usr"></span>
+			</div> 
+		</div>
+		<div class="userinfo" style="margin-left:1%;width:auto;">
+			昵称
+			<a onclick="logOut()" style="margin-bottom:6px;margin-left:15px" class="easyui-linkbutton" data-options="iconCls:'icon-ccOut',plain:true">
+				退出登录
+			</a>
+		</div>
+	</div>
+	<div id="west" data-options="region:'west',split:true" style="width:250px;padding-top:3px">
+		<div id="acco" class="easyui-accordion" >
+		    <div title="人员组织配置管理" data-options="iconCls:'icon-accolist',selected:true" >   
+	    		<a onClick="addTab('账号管理','/view/userManage.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">账号管理 </a>
+	    	</div>
+	    	<div title="合同管理" data-options="iconCls:'icon-accolist',selected:true" >   
+	        	<a onClick="addTab('合同列表','/view/contractList.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">合同列表 </a><br><br>
+	        	<a onClick="addTab('创建合同','/view/contractCreate.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">创建合同 </a> <br><br>
+	        	<a onClick="addTab('合同盈亏汇总','/view/contractCollect.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">合同盈亏汇总 </a> <br><br>
+	    	</div>
+	    	<div title="资源管理" data-options="iconCls:'icon-accolist',selected:true">
+	        	<a onClick="addTab('材料列表','/view/.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">材料列表   </a>    
+	    		<a onClick="addTab('工具列表','/view/.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">工具列表   </a>    
+	    	</div>
+		</div>
+	</div>
+	
+	<div id="content" class="easyui-tabs" data-options="region:'center',border:false,plain:true" >
+	</div>
+	
+</body>
+</html>
