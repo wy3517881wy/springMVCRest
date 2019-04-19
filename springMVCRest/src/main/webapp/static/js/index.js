@@ -28,13 +28,15 @@ function addTab(title, url){
 }
 //退出登录
 function logOut() {
+	host = getHost();
 	$.ajax({
 		async : false,
-		url : '/user/logout',
+		url : host+'/user/logout',
 		type : 'post',
-		dataType : 'text',
+		dataType : 'json',
+		contentType: 'application/json;charset=UTF-8',
 		success : function(data) {
-			if (data == "null") {
+			if (data.code == "200") {
 				window.location.href = "/view/login.html"
 			}
 		}

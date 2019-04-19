@@ -16,13 +16,13 @@
 		<tr>
 			<td class="searchLeft">用户名：</td>
 			<td class="searchRight">
-				<input class="easyui-validatebox" name="username" id="username1">
+				<input class="easyui-validatebox" name="searchUsername" id="searchUsername">
 			</td>
 		</tr>
 		<tr>
 			<td  class="searchLeft">登录名：</td>
 			<td class="searchRight">
-				<input class="easyui-validatebox" name="loginname" id="loginname1">
+				<input class="easyui-validatebox" name="searchLoginname" id="searchLoginname">
 			</td>
 		</tr>
 	</table>
@@ -46,13 +46,19 @@
 				<tr>
 					<td class="formLeft">用户名:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="name" id="name">
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="username" id="username">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">昵称:</td>
+					<td>
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="nickname" id="nickname">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">职位:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="position" id="position">
+						<input class="easyui-combobox" name="roleId" id="roleId">
 					</td>
 				</tr>
 				<tr>
@@ -88,11 +94,11 @@
 		$('#layout').layout('collapse','east');
 		//信息添加dialog
 		$('#addDialog').dialog({
-			title: '添加登录信息',    
-		    width: 300,   
+			title: '添加登录信息',
+		    width: 300,
 		    height:400,
 		    closed: true,    
-		    modal: true,   
+		    modal: true,
 		    buttons:[{
 				text:'确定',
 				iconCls:'icon-ok',
@@ -118,9 +124,8 @@
 		$('#infoDrid').datagrid({
 			url:'url',
 			queryParams:{
-				username:$("#username1").val(),
-				loginname:$("#loginname1").val(),
-// 				password:$("#password1").val()
+				username:$("#searchUsername").val(),
+				loginname:$("#searchLoginname").val(),
 			},
 			singleSelect:true,
 			toolbar:"#toolbar",
@@ -148,8 +153,15 @@
 		});
 		$('#insert').click(function(){
 			$('#addForm')[0].reset();
-			
 			$('#addDialog').dialog('open');
+			$('#uoCoMidQuery').combobox({
+						url : '/role/list_all',
+						valueField : 'data.roleList.id',
+						textField : 'data.roleList.name',
+						onSelect : function(rec) {
+							console.log("selected")
+						}
+					});
 		});
 		$("#update").click(function(){
 			$('#addDialog').dialog('setTitle',"编辑登录信息");
@@ -198,8 +210,8 @@
 			$.messager.alert("提示","用户名不能为空!");
 			return;
 		}
-		if($("#loginname").val()==null ||$("#loginname").val()==""){
-			$.messager.alert("提示","登录名不能为空!");
+		if($("#nickname").val()==null ||$("#nickname").val()==""){
+			$.messager.alert("提示","昵称不能为空!");
 			return;
 		}
 		if($("#password").val()==null ||$("#password").val()==""){
@@ -214,21 +226,22 @@
 			error:function(){
 				$.messager.alert("提示","数据操作存在异常!");
 				$('#addDialog').dialog('close');
-				
 			},
-			success:function(data){	
-				$.messager.alert("提示",data.message);
-				$("#id").val("");
-				$("#username").val("");
-				$("#loginname").val("");
-				$("#password").val("");
-				$('#addDialog').dialog('close');
-				$('#infoDrid').datagrid('load');
-				
+			success:function(data){
+				if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.user) == "object"&&data.data.user.id>0){
+					$.messager.alert("提示","创建成功");
+					$("#id").val("");
+					$("#username").val("");
+					$("#loginname").val("");
+					$("#password").val("");
+					$('#addDialog').dialog('close');
+					$('#infoDrid').datagrid('load');
+				}else{
+					$.messager.alert("提示","创建失败");
+				}
 			}
 		});
 	}
-	
 	
 	function reset(){
 		$("#searchForm")[0].reset();

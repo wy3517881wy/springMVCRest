@@ -14,34 +14,33 @@
 		<div class="btn" id="loginbtn"></div>
 	</div>
 <script type="text/javascript">
-var host = "http://124.239.148.161:18080";
 	$('#loginbtn').click(function() {
 			var username = $('#username').val();
 			var password = $('#password').val();
 			if (username != null && username != "" && password != null && password != "") {
-					$.ajax({
-						url : host+"/user/login",
-						type : "post",
-						data : {
-							username : username,
-							password : password
-							}, 										
-						async : false,
-						dataType : "json",
-						contentType: 'application/json;charset=UTF-8',
-						success : function(data) {
-							console.log(data)
-							console.log(data.code)
-							if (data.code==200&&typeof(data.data) == "object"&&typeof(data.data.user) == "object"&&data.data.user.id>0) {
-								window.location.href = "/view/index.html";
-							} else{
-								$.messager.alert("提示",data.message);
-								$('#username').focus();
-								$('#password').focus();
-							}
+				$.ajax({
+					url : getHost()+"/user/login",
+					type : "POST",
+					data : JSON.stringify({
+					    username : username,
+					    password : password
+					}),
+					async : false,
+					dataType : "json",
+					contentType: 'application/json;charset=UTF-8',
+					success : function(data) {
+						if (data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0) {
+							sessionStorage.setItem('userid',data.data.item.id);
+							sessionStorage.setItem('nickname',data.data.item.nickname);
+							sessionStorage.setItem('username',data.data.item.username);
+							//window.location.href = "/view/index.html";
+						} else{
+							$('#username').focus();
+							$('#password').focus();
 						}
-						});
-			} else {  							
+					}
+				});
+			} else {
 				$.messager.alert("提示","请输入账号密码！");
 				$('#username').focus();
 				$('#password').focus();
@@ -50,7 +49,7 @@ var host = "http://124.239.148.161:18080";
 	$(document).keydown(function(event){ 
 		var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
 		if(keyCode==13){
-			$("#loginbtn").click(); 
+			$("#loginbtn").click();
 		}
 	});
 

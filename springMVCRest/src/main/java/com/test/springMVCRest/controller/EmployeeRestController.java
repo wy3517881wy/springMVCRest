@@ -16,6 +16,7 @@ import com.test.springMVCRest.dao.Employee;
 
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping("employees")
@@ -23,15 +24,18 @@ public class EmployeeRestController {
 
 	@RequestMapping(method = RequestMethod.POST ,value = "/depts/{deptId}/empId/{empId}")
 	@ResponseBody
-	public JSONArray listEmps(@PathVariable Long deptId,@PathVariable("empId") Long empId) {
+	public JSONObject listEmps(@PathVariable Long deptId,@PathVariable("empId") Long empId) {
 	    List<Employee> emps = new ArrayList<>();
 	    emps.add(new Employee(1L, deptId+""));
 	    emps.add(new Employee(2L, empId+""));
 	    JSONArray ja = new JSONArray();
-	    ja.add(new Employee(1L, deptId+""));
-	    ja.add(new Employee(2L, empId+""));
+	    ja.add(new Employee(1L, deptId+"2"));
+	    ja.add(new Employee(2L, empId+"2"));
 	    System.out.println(ja.toString());
-	    return ja;
+	    JSONObject jo = new JSONObject();
+	    jo.put("total", "28");
+	    jo.put("rows", ja);
+	    return jo;
 //	    return "/depts/deptsViews";
 //	    ModelAndView mv = new ModelAndView();
 //        //封装要显示到视图的数据

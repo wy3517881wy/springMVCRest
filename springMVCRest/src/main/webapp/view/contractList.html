@@ -58,85 +58,109 @@
 		//页面初始化
 		layoutLoad();
 		//数据表格加载
-		gridLoad();	
+		gridLoad(1,20);	
+		//loadAndSetGridData();	
 		//点击事件
 		clickFunction();
+		
 	});
 	//页面初始化
 	function layoutLoad(){
 		$('#layout').layout('collapse','east');
 	}
+	var t = 0;
 	//数据表格加载
-	function gridLoad(){
-		console.log($('#signdate').val()==""?null:new Date($('#signdate').val()));
-		var width = $('#infoDrid').parent().width();
-		var height = $('#infoDrid').parent().height();
-		var data = {
-				username:$('#usernameSearch').val(),
-				loginname:$('#loginnameSearch').val(),
-				signdate1:$('#signdate').val(),
-				starttime:$('#stattimeSearch').datetimebox('getValue'),
-				endtime:$('#endtimeSearch').datetimebox('getValue'),
-		}
-		$('#infoDrid').datagrid({
-			url:'url',
-			toolbar:"#toolbar",
-			width:width,
-			height:height,
-			queryParams:data,
-			fit:true,
-			border:false,
-			singleSelect:true,
-			//nowrap:false,
-			fitColumns:true,
-			striped:true,
-			pagination:true,
-/* 			frozenColumns:[[  
-				{field:'username',title:'合同编号',width:100,align:'center',},    
-				{field:'loginname',title:'合同名称',width:100,align:'center',}, 
-				{field:'deptname',title:'合同金额',width:200,align:'center',},
-				{field:'signdate',title:'打卡日期',width:100,align:'center',formatter:function(value,row,index){
-					return CurentDateBySS(value);
-				}},
-				{field:'signtime',title:'打卡时间',width:100,align:'center',formatter:function(value,row,index){
-					return CurentTimeBySS(value);
-				}},
-		    ]], */
-		    columns:[[  
-		        {field:'signadress',title:'区域',align:'center',width:200},
-				{field:'mobiletype',title:'甲方名称',align:'center',width:200},
-		        {field:'remark',title:'中标单位',align:'center',width:200},  
-		        {field:'imei',title:'合同编号',align:'center',width:200},
-		        {field:'mobilename',title:'合同名称',align:'center',width:200},
-		        {field:'ssid',title:'合同金额',align:'center',width:200},
-		        {field:'longitude',title:'创建日期',align:'center',width:200},
-		    ]],
+	function gridLoad(pageNumber,pageSize) {
+		$.ajax({
+			url : getHost() + '/contract/list/pageable/adapter/order_by_create_time_desc',
+			type : "GET",
+			data : {
+				"pageNumber": pageNumber,
+			    "pageSize": pageSize,
+			},
+			async : false,
+			dataType : "json",
+			contentType: 'application/json;charset=UTF-8',
+			success : function(data) {
+				if (data.code==200&&typeof(data.data) == "object") {
+					var width = $('#infoDrid').parent().width();
+					var height = $('#infoDrid').parent().height();
+					$('#infoDrid').datagrid({
+						toolbar : "#toolbar",
+						data: data.data.page.rows,
+						width : width,
+						height : height,
+						async : false,
+						fit : true,
+						border : false,
+						singleSelect : true,
+						fitColumns : true,
+						striped : true,
+						pagination : true,
+						columns : [ [
+							{field:'regionList',title:'区域',align:'center',width:150},
+							{field:'firstPartyName',title:'甲方名称',align:'center',width:150},
+							{field:'secondPartyName',title:'乙方名称',align:'center',width:150},
+							{field:'contractName',title:'合同名称',align:'center',width:150},
+							{field:'contractNo',title:'合同编号',align:'center',width:100},
+							{field:'contractAmount',title:'合同金额(元)',align:'center',width:150},
+							{field:'signTime',title:'签订时间',align:'center',width:150},
+							{field:'startTime',title:'开始时间',align:'center',width:150},
+							{field:'createUser',title:'创建人',align:'center',width:100,
+								formatter: function(value,row,index){
+									return value.nickname;
+								}
+							},
+							{field:'createTime',title:'创建时间',align:'center',width:200},
+						] ],
+					});
+						var p = $('#infoDrid').datagrid('getPager');
+				        $(p).pagination({
+				        	total : data.data.page.total,
+				            pageSize: pageSize,//每页显示的记录条数，默认为10
+				            pageList: [20, 40, 100],//可以设置每页记录条数的列表
+				            pageNumber:pageNumber,
+				            beforePageText: '第',//页数文本框前显示的汉字
+				            afterPageText: '页    共 {pages} 页',
+				            displayMsg: '当前显示 {from}-{to} 条记录,共 {total} 条记录',
+				            showRefresh : false,
+				            onSelectPage:function(pageNumber, pageSize){
+				        		console.log('pageNumber:'+pageNumber+',pageSize:'+pageSize);
+				        		gridLoad(pageNumber,pageSize);
+				        	}
+				        });
+				} else {
+					
+				}
+			}
 		});
+		t+=1;
 	}
 	//点击事件
-	function clickFunction(){
-		$('#search').click(function(){
-			$('#layout').layout('expand','east');
+	function clickFunction() {
+		$('#search').click(function() {
+			$('#layout').layout('expand', 'east');
 		});
-		$('#export').click(function(){
-			window.location.href="";
+		$('#export').click(function() {
+			window.location.href = "";
 		});
 		//点击查询
-		$('#searchbtn').click(function(){
+		$('#searchbtn').click(function() {
 			gridLoad();
 		});
-		$('#resetbtn').click(function(){
+		$('#resetbtn').click(function() {
 			$('#searchForm')[0].reset();
 			$("#loginnameSearch").val('');
 			$("#signdate").val('');
-			$('#stattimeSearch').datetimebox('setValue','');
-			$('#endtimeSearch').datetimebox('setValue','');
+			$('#stattimeSearch').datetimebox('setValue', '');
+			$('#endtimeSearch').datetimebox('setValue', '');
 			gridLoad();
 		});
 		//查看足迹
-		$('#track').click(function(){
-			var date =$('#signdate').val()==""?new Date():new Date($('#signdate').val());
-			parent.addTab('订单详情',"url")
+		$('#track').click(function() {
+			var date = $('#signdate').val() == "" ? new Date()
+					: new Date($('#signdate').val());
+			parent.addTab('订单详情', "url")
 		});
 	}
 </script>

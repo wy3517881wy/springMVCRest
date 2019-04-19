@@ -86,3 +86,6 @@ function initTitleCombobox(title){
 	    url:'/positionType/web/getAllpositionType.json'
 	});
 }
+function getHost(){
+	return "http://124.239.148.161:18080";
+}

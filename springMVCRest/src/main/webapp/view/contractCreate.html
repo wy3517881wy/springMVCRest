@@ -15,37 +15,49 @@
 				<tr>
 					<td class="formLeft">区域:</td>
 					<td class="formRight">
-						<input class="easyui-validatebox" name="pushtype" id="pushtypeAdd">
+						<input class="easyui-validatebox" name="region" id="region" placeholder="请输入区域，如有多个请用中文逗号隔开" required="required"/>
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">甲方名称:</td>
 					<td class="formRight">
-						<input class="easyui-validatebox" name="pushpositioncode" id="pushpositioncodeAdd"></input>
+						<input class="easyui-validatebox" name="firstPartyName" id="firstPartyName" placeholder="请输入甲方名称" required="required"/>
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">中标单位:</td>
+					<td class="formLeft">乙方名称:</td>
 					<td class="formRight">
-						<input class="easyui-validatebox" name="acceptpositioncode" id="acceptpositioncodeAdd">
+						<input class="easyui-validatebox" name="secondPartyName" id="secondPartyName" placeholder="请输入乙方名称" required="required"/>
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">合同编号:</td>
 					<td class="formRight">
-						<input class="easyui-validatebox" name="acceptpositioncode" id="acceptpositioncodeAdd">
+						<input class="easyui-validatebox" name="contractNo" id="contractNo" placeholder="请输入合同编号" required="required"/>
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">合同名称:</td>
 					<td class="formRight">
-						<input class="easyui-validatebox" name="acceptpositioncode" id="acceptpositioncodeAdd">
+						<input class="easyui-validatebox" name="contractName" id="contractName" placeholder="请输入合同名称" required="required"/>
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">合同金额:</td>
 					<td class="formRight">
-						<input class="easyui-validatebox" name="acceptpositioncode" id="acceptpositioncodeAdd">
+						<input class="easyui-validatebox" name="contractAmount" id="contractAmount" placeholder="请输入合同金额"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">签订时间:</td>
+					<td class="formRight">
+						<input class="easyui-datebox" name="signTime" id="signTime" placeholder="请输入签订时间"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">开始时间:</td>
+					<td class="formRight">
+						<input class="easyui-datebox" name="startTime" id="startTime" placeholder="请输入开始时间"/>
 					</td>
 				</tr>
 			</table>
@@ -67,32 +79,44 @@ function clickFunction(){
 		//重置按钮
 		$('#resetbtn').click(function(){
 			$('#addForm').form('clear');
-			$("#acceptpositioncodeAdd").combobox({disabled:true});
 		});
 		//保存按钮
 		$('#insert').click(function(){
-			
 			addInfo();
 		});
 	}
 		//添加信息
 		function addInfo(){
 			if($("#addForm").form('validate')){
+				console.log($("#region").val().split('，'));
 				$.ajax({
-					url:'',
+					url:getHost() + '/contract',
 					type:'POST',
-					data:$("#addForm").serialize(),
-					error:function(){
+					data:JSON.stringify({
+						regionList : $("#region").val().split('，'),
+						firstPartyName : $("#firstPartyName").val(),
+						secondPartyName : $("#secondPartyName").val(),
+						contractNo : $("#contractNo").val(),
+						contractName : $("#contractName").val(),
+						contractAmount : $("#contractAmount").val(),
+						signTime : $("#signTime").val(),
+						startTime : $("#startTime").val(),
+					}),
+					dataType : "json",
+					contentType: 'application/json;charset=UTF-8',
+					error : function(XMLHttpRequest, textStatus, errorThrown){
+						console.log(XMLHttpRequest);
+						console.log(textStatus);
+						console.log(errorThrown);
 						$.messager.alert("提示","数据操作存在异常!");
-						
 					},
-					success:function(data){	
-						if(data.success){
+					success:function(data){
+						if(data.code=="200"&&data.data.contract.id>0){
+							$.messager.alert("提示","保存成功");
 							$('#addForm').form('clear');
 						}else{
+							$.messager.alert("提示","数据操作存在异常!");
 						}
-							$.messager.alert("提示",data.message);
-						
 					}
 				});
 			}

@@ -2,12 +2,18 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<script type="text/javascript" src="/static/js/head.js"></script>
-<script type="text/javascript" src="/static/js/index.js"></script>
+<link rel='stylesheet' type='text/css' href='/static/easyui/themes/default/easyui.css' />
+<link rel='stylesheet' type='text/css' href='/static/easyui/themes/icon.css' />
+<link rel='stylesheet' type='text/css' href='/static/css/common.css' />
 <link rel="stylesheet" type="text/css" href="/static/css/index.css" />
- </head> 
+<script type='text/javascript' src='/static/easyui/jquery.min.js'></script>
+<script type='text/javascript' src='/static/easyui/jquery.easyui.min.js'></script>
+<script type='text/javascript' src='/static/easyui/locale/easyui-lang-zh_CN.js'></script>
+<script type='text/javascript' src='/static/js/jquery-form.js'></script>
+<script type='text/javascript' src='/static/js/common.js'></script>
+<script type='text/javascript' src='/static/js/My97DatePicker/WdatePicker.js'></script>
+</head> 
  <body class="easyui-layout">
- <iframe MARGINWIDTH=0 MARGINHEIGHT=0 HSPACE=0 VSPACE=0 FRAMEBORDER=0 SCROLLING=no src="common.html" height="auto" width="100%"></iframe>
  <input id="strName" value="123">
 	<div class="header" data-options="region:'north',border:false">
 		<img src="/static/images/index_logo.png">
@@ -15,26 +21,26 @@
 			欢迎您登录
 		</div>
 		<div id="smallCircle" class="smallCircle">
-			 <div id="divCount" style="font-size: 16px;">
-				<span id="usr"></span>
+			<div id="divCount" style="font-size: 16px;">
+				<span id="usr">昵称</span>
 			</div> 
 		</div>
 		<div class="userinfo" style="margin-left:1%;width:auto;">
-			昵称
-			<a onclick="logOut()" style="margin-bottom:6px;margin-left:15px" class="easyui-linkbutton" data-options="iconCls:'icon-ccOut',plain:true">
+		&nbsp;&nbsp;
+			<a onclick="logOut()" style="margin-left:0px" class="easyui-linkbutton" data-options="iconCls:'icon-ccOut',plain:true">
 				退出登录
 			</a>
 		</div>
 	</div>
 	<div id="west" data-options="region:'west',split:true" style="width:250px;padding-top:3px">
 		<div id="acco" class="easyui-accordion" >
-		    <div title="人员组织配置管理" data-options="iconCls:'icon-accolist',selected:true" >   
-	    		<a onClick="addTab('账号管理','/view/userManage.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">账号管理 </a>
-	    	</div>
 	    	<div title="合同管理" data-options="iconCls:'icon-accolist',selected:true" >   
 	        	<a onClick="addTab('合同列表','/view/contractList.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">合同列表 </a><br><br>
 	        	<a onClick="addTab('创建合同','/view/contractCreate.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">创建合同 </a> <br><br>
 	        	<a onClick="addTab('合同盈亏汇总','/view/contractCollect.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">合同盈亏汇总 </a> <br><br>
+	    	</div>
+		    <div title="人员组织配置管理" data-options="iconCls:'icon-accolist',selected:true" >   
+	    		<a onClick="addTab('账号管理','/view/userManage.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">账号管理 </a>
 	    	</div>
 	    	<div title="资源管理" data-options="iconCls:'icon-accolist',selected:true">
 	        	<a onClick="addTab('材料列表','/view/.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">材料列表   </a>    
@@ -42,9 +48,50 @@
 	    	</div>
 		</div>
 	</div>
-	
 	<div id="content" class="easyui-tabs" data-options="region:'center',border:false,plain:true" >
 	</div>
-	
 </body>
+<script type="text/javascript">
+$(function(){
+	$('#acco').accordion({
+		border:false,
+		fit:true,
+		selected:false,
+	});
+	
+	var strName = $('#strName').val();
+	var str = strName.substr(strName.length-2);
+	$('#usr').text(str);
+});
+
+/* 增加标签 */
+function addTab(title, url){
+	var content = '<iframe scrolling="auto" frameborder="0"  src="'+url+'" style="width:100%;height:100%;"></iframe>';
+	if ($('#content').tabs('exists', title)){
+		$('#content').tabs('close', title);	
+	}
+	$('#content').tabs('add',{
+		title:title,
+		content:content,
+		closable:true,
+		selected : true
+	});
+}
+//退出登录
+function logOut() {
+	host = getHost();
+	$.ajax({
+		async : false,
+		url : host+'/user/logout',
+		type : 'post',
+		dataType : 'json',
+		contentType: 'application/json;charset=UTF-8',
+		success : function(data) {
+			if (data.code == "200") {
+				window.location.href = "/view/login.html"
+			}
+		}
+	});
+}
+</script>
 </html>
