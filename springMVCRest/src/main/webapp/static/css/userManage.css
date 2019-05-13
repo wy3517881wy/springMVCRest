@@ -13,8 +13,15 @@
 }
 .searchRight input{ 
  	width:95%;
- }
- .formLeft{
+}
+.formLeft{
  	width:60px;
  	float:right;
- }
+}
+.checkbox-div{
+ 	height:25px;
+ 	line-height:25px;
+}
+.checkbox-input{
+	vertical-align: middle;
+}

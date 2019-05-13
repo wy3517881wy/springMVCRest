@@ -79,13 +79,6 @@ function GetQueryString(name){
 	var r = window.location.search.substr(1).match(reg);
     if (r!= null ) return unescape(r[2]); return null ;
 } 
-function initTitleCombobox(title){
-	$("#"+title).combobox({
-		valueField: 'positioncode',
-	    textField: 'positionname',
-	    url:'/positionType/web/getAllpositionType.json'
-	});
-}
 function getHost(){
 	return "http://124.239.148.161:18080";
 }
