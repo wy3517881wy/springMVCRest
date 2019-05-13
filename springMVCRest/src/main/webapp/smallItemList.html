@@ -1,0 +1,363 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/static/js/head.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/contractList.css" />
+</head> 
+<body id="layout" class="easyui-layout">
+	<div data-options="region:'center',border:false">
+		<table id="infoDrid"></table>
+	</div>
+	<input type="hidden" id="contractOrderId">
+<!-- 查询条件 -->
+<div data-options="region:'east',split:true,title:'信息查询',border:false" style="width:250px;padding:5px;">
+<form id="searchForm">
+	<table class="searchTable">
+		<tr>
+			<td class="searchLeft">合同名称：</td>
+			<td class="searchRight">
+				<input class="easyui-validatebox" name="username" id="usernameSearch">
+			</td>
+		</tr>
+		<tr>
+			<td  class="searchLeft">合同编号：</td>
+			<td class="searchRight">
+				<input class="easyui-validatebox" name="loginname" id="loginnameSearch" value=''>
+				<input id="signdate" type="hidden" value="">
+			</td>
+		</tr>
+		<tr>
+			<td class="searchLeft">开始时间：</td>
+			<td class="searchRight">
+				<input class="easyui-datetimebox" name="stattime" id="stattimeSearch">
+			</td>
+		</tr>
+		<tr>
+			<td  class="searchLeft">结束时间：</td>
+			<td class="searchRight">
+				<input class="easyui-datetimebox" name="endtime" id="endtimeSearch">
+			</td>
+		</tr>
+	</table>
+	<div>
+	<a id="searchbtn" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch'" style="margin-left:50px">查询</a>
+	<a id="resetbtn"   class="easyui-linkbutton" data-options="iconCls:'icon-ccReload'">重置</a>
+	</div>
+</form>
+</div>
+	<!-- dataGrid工具栏 -->
+	<div id="toolbar">
+		<a id="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >修改小项</a>
+		<!-- <a id="createContractOrder" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >添加小项</a>
+		<a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a> -->
+		<a id="finish" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:true" >结束小项</a>
+		<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" >删除小项</a>
+	</div>
+	<div id="updateDialog">
+		<form id="updateForm">
+			<table class="tableForm">
+				<tr>
+					<td class="formLeft">名称:</td>
+					<td>
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="name" id="name">
+						<input id="smallId" value="0" type="hidden">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">合作单位:</td>
+					<td>
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="cooperator" id="cooperator">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">开始日期:</td>
+					<td id="updateRoleTD">
+						<input class="easyui-datebox"  data-options="required:true" name="tartDate" id="startDate">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>
+
+<script>
+	$(function(){
+		$("#contractOrderId").val(sessionStorage.getItem('orderId'));
+		sessionStorage.setItem("orderId","");
+		sessionStorage.setItem("orderName","");
+		//页面初始化
+		layoutLoad();
+		//数据表格加载
+		gridLoad(1,20);	
+		//loadAndSetGridData();	
+		//点击事件
+		clickFunction();
+	});
+	//页面初始化
+	function layoutLoad(){
+		$('#layout').layout('collapse','east');
+		$('#updateDialog').dialog({
+			title: '更新财务信息',
+		    width: 300,
+		    height:400,
+		    closed: true,
+		    modal: true,
+		    buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					updatedInfo();//添加信息
+                }
+			},{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					$('#updateDialog').dialog('close');
+				}
+			}], 
+		});
+	}
+	//数据表格加载
+	function gridLoad(pageNumber,pageSize) {
+		$.ajax({
+			url : getHost() + '/small_item/list/pageable/adapter/order_by_create_time_desc',
+			type : "GET",
+			data : {
+				"pageNumber": pageNumber,
+			    "pageSize": pageSize,
+			    "contractOrderId" : $("#contractOrderId").val()
+			},
+			async : false,
+			dataType : "json",
+			contentType: 'application/json;charset=UTF-8',
+			success : function(data) {
+				if (data.code==200&&typeof(data.data) == "object") {
+					var width = $('#infoDrid').parent().width();
+					var height = $('#infoDrid').parent().height();
+					$('#infoDrid').datagrid({
+						toolbar : "#toolbar",
+						data: data.data.page.rows,
+						width : width,
+						height : height,
+						async : false,
+						fit : true,
+						border : false,
+						singleSelect : true,
+						fitColumns : true,
+						striped : true,
+						pagination : true,
+						columns : [ [
+							{field:'cooperator',title:'合作单位' ,align:'center',width:150},
+							{field:'startDate',title:'开始日期',align:'center',width:150},
+						] ],
+					});
+					var p = $('#infoDrid').datagrid('getPager');
+			        $(p).pagination({
+			        	total : data.data.page.total,
+			            pageSize: pageSize,//每页显示的记录条数，默认为10
+			            pageList: [20, 50, 100],//可以设置每页记录条数的列表
+			            pageNumber : pageNumber,
+			            beforePageText: '第',//页数文本框前显示的汉字
+			            afterPageText: '页    共 {pages} 页',
+			            displayMsg: '当前显示 {from}-{to} 条记录,共 {total} 条记录',
+			            showRefresh : false,
+			            onSelectPage:function(pageNumber, pageSize){
+			        		gridLoad(pageNumber,pageSize);
+			        	}
+			        });
+				}
+			}
+		});
+	}
+	//点击事件
+	function clickFunction() {
+		$('#search').click(function() {
+			$('#layout').layout('expand', 'east');
+		});
+		//点击查询
+		$('#searchbtn').click(function() {
+			gridLoad(1,20);
+		});
+		$('#resetbtn').click(function() {
+			$('#searchForm')[0].reset();
+			$("#loginnameSearch").val('');
+			$("#signdate").val('');
+			$('#stattimeSearch').datetimebox('setValue', '');
+			$('#endtimeSearch').datetimebox('setValue', '');
+			gridLoad(1,20);
+		});
+		//订单详情
+		$('#update').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			$('#updateForm')[0].reset();
+			$("#smallId").val(row.id);
+			$('#updateDialog').dialog('open');
+		});
+		//查看合同订单列表 
+		$('#orderList').click(function() {
+			parent.addTab('订单详情', "url")
+		});
+		$('#createContractOrder').click(function(){
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			$('#addForm')[0].reset();
+			$("#contractOrderId").val(row.id);
+			$('#addDialog').dialog('open');
+		});
+		//删除 
+		$('#delete').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			$.messager.confirm('提示','确定要删除吗?',function(r){
+			    if (r){
+			    	$.ajax({
+						url:getHost() + '/small_item/' + row.id,
+						type:'DELETE',
+						error:function(){
+							$.messager.alert("提示","数据操作存在异常!");
+						},
+						contentType: 'application/json;charset=UTF-8',
+						success:function(data){
+							if(data.code=200){
+								$.messager.alert("提示","删除成功");
+								gridLoad(1,20);
+							}else{
+								$.messager.alert("提示","删除失败");
+							}
+						}
+					});
+			    }
+			});
+		});
+		//结束
+		$('#finish').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			$.messager.confirm('提示','确定要结束该小项吗?',function(r){
+			    if (r){
+			    	$.ajax({
+						url:getHost() + '/small_item/end?smallItemId=' + row.id,
+						type:'GET',
+						error:function(){
+							$.messager.alert("提示","数据操作存在异常!");
+						},
+						contentType: 'application/json;charset=UTF-8',
+						success:function(data){
+							if(data.code=200){
+								$.messager.alert("提示","操作成功");
+								gridLoad(1,20);
+							}else{
+								$.messager.alert("提示","操作失败");
+							}
+						}
+					});
+			    }
+			});
+		});
+	}
+	//添加信息
+	function addInfo(){
+		if($("#name").val()==null ||$("#name").val()==""){
+			$.messager.alert("提示","名称不能为空!");
+			return;
+		}
+		if($("#cooperator").val()==null ||$("#cooperator").val()==""){
+			$.messager.alert("提示","合作单位不能为空!");
+			return;
+		}
+		if($("#startDate").val()==null ||$("#startDate").val()==""){
+			$.messager.alert("提示","开始日期不能为空!");
+			return;
+		}
+		$.ajax({
+			url:getHost() + '/small_item',
+			type:'POST',
+			data:JSON.stringify({
+				contractOrderId : $("#contractOrderId").val(),
+				name : $("#name").val(),
+				cooperator : $("#cooperator").val(),
+				startDate : $("#startDate").val(),
+			}),
+			contentType: 'application/json;charset=UTF-8',
+			beforeSend: function(xhr) {
+                xhr.withCredentials = true;
+            },
+            crossDomain:true,
+			error:function(){
+				$.messager.alert("提示","数据操作存在异常!");
+				$('#addDialog').dialog('close');
+			},
+			success:function(data){
+				if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
+					$.messager.alert("提示","创建成功");
+					$('#addForm').form('clear');
+					$('#addDialog').dialog('close');
+					$('#infoDrid').datagrid('load');
+					gridLoad(1,20);
+				}else{
+					$.messager.alert("提示","创建失败");
+				}
+			}
+		});
+	}
+	//更新小项信息
+	function updatedInfo(){
+		if($("#name").val()==null ||$("#name").val()==""){
+			$.messager.alert("提示","名称不能为空!");
+			return;
+		}
+		if($("#cooperator").val()==null ||$("#cooperator").val()==""){
+			$.messager.alert("提示","合作单位不能为空!");
+			return;
+		}
+		if($("#startDate").val()==null ||$("#startDate").val()==""){
+			$.messager.alert("提示","开始日期不能为空!");
+			return;
+		}
+		$.ajax({
+			url:getHost() + '/small_item',
+			type:'PUT',
+			data:JSON.stringify({
+				"name": $("#name").val(),
+			    "cooperator": $("#cooperator").val(),
+			    "startDate": $("#startDate").val(),
+			    "id": $("#smallId").val()
+			}),
+			contentType: 'application/json;charset=UTF-8',
+			error:function(){
+				$.messager.alert("提示","数据操作存在异常!");
+				$('#updateDialog').dialog('close');
+			},
+			beforeSend: function(xhr) {
+                xhr.withCredentials = true;
+            },
+            crossDomain:true,
+			success:function(data){
+				if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
+					$.messager.alert("提示","修改成功");
+					$('#updateForm').form('clear');
+					$('#updateDialog').dialog('close');
+					//$('#infoDrid').datagrid('load');
+					gridLoad(1,20);
+				}else{
+					$.messager.alert("提示","修改失败");
+				}
+			}
+		});
+	}
+</script>

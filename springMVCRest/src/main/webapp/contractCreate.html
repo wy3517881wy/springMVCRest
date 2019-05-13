@@ -25,7 +25,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">乙方名称:</td>
+					<td class="formLeft">中标单位:</td>
 					<td class="formRight">
 						<input class="easyui-validatebox" name="secondPartyName" id="secondPartyName" placeholder="请输入乙方名称" required="required"/>
 					</td>
@@ -72,6 +72,7 @@
 </html>
 <script>
 $(function(){
+	$.ajaxSetup({crossDomain: true, xhrFields: {withCredentials: true}});
 	//点击事件
 	clickFunction();
 });
@@ -88,12 +89,11 @@ function clickFunction(){
 		//添加信息
 		function addInfo(){
 			if($("#addForm").form('validate')){
-				console.log($("#region").val().split('，'));
 				$.ajax({
 					url:getHost() + '/contract',
 					type:'POST',
 					data:JSON.stringify({
-						regionList : $("#region").val().split('，'),
+						region : $("#region").val(),
 						firstPartyName : $("#firstPartyName").val(),
 						secondPartyName : $("#secondPartyName").val(),
 						contractNo : $("#contractNo").val(),
@@ -105,17 +105,14 @@ function clickFunction(){
 					dataType : "json",
 					contentType: 'application/json;charset=UTF-8',
 					error : function(XMLHttpRequest, textStatus, errorThrown){
-						console.log(XMLHttpRequest);
-						console.log(textStatus);
-						console.log(errorThrown);
 						$.messager.alert("提示","数据操作存在异常!");
 					},
 					success:function(data){
-						if(data.code=="200"&&data.data.contract.id>0){
+						if(data.code=="200"&&data.data.item.id>0){
 							$.messager.alert("提示","保存成功");
 							$('#addForm').form('clear');
 						}else{
-							$.messager.alert("提示","数据操作存在异常!");
+							$.messager.alert("提示",data.message);
 						}
 					}
 				});

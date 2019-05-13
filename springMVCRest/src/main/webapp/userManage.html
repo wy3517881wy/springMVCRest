@@ -1,0 +1,579 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/static/js/head.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/userManage.css" />
+</head> 
+ <body id="layout" class="easyui-layout">
+	<div data-options="region:'center',border:false">
+	<table id="infoDrid"></table>
+	</div>
+<!-- 查询条件 -->
+<div data-options="region:'east',split:true,title:'信息查询',border:false" style="width:250px;padding:10px;">
+	<form id="searchForm">
+	<table class="searchTable">
+		<tr>
+			<td class="searchLeft">用户名：</td>
+			<td class="searchRight">
+				<input class="easyui-validatebox" name="searchUsername" id="searchUsername" disabled="disabled">
+			</td>
+		</tr>
+		<tr>
+			<td  class="searchLeft">登录名：</td>
+			<td class="searchRight">
+				<input class="easyui-validatebox" name="searchLoginname" id="searchLoginname">
+			</td>
+		</tr>
+	</table>
+	<div>
+	<a id="searchbtn" onclick="gridLoad()" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch'" style="margin-left:50px">查询</a>
+	<a id="resetbtn"  onclick="reset()" class="easyui-linkbutton" data-options="iconCls:'icon-ccReload'">重置</a>
+	</div>
+	</form>
+</div>
+<!-- dataGrid工具栏 -->
+<div id="toolbar">
+	<a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a>
+	<a id="insert" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true">添加</a>
+	<a id="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >编辑</a>
+	<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccDelete',plain:true" >删除</a>
+	<a id="resetPassword" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccDelete',plain:true" >重置密码</a>
+</div>
+	<!-- 信息添加dialog -->
+	<div id="addDialog">
+		<form id="addForm">
+			<table class="tableForm">
+				<tr>
+					<td class="formLeft">用户名:</td>
+					<td>
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="username" id="username">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">昵称:</td>
+					<td>
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="nickname" id="nickname">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">密码:</td>
+					<td>
+						<input class="easyui-validatebox"  data-options="required:true" name="password" id="password">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">确认密码:</td>
+					<td>
+						<input class="easyui-validatebox"  data-options="required:true" name="insurepassword" id="insurepassword">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">职位:</td>
+					<td id="roleTD">
+					</td>
+				</tr>
+				<tr id="stateRow" style="display: none;">
+					<td class="formLeft">状态:</td>
+					<td>
+						<input type="radio" name="state" value="0">正常
+						<input type="radio" name="state" value="1">禁用
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="updateDialog">
+		<form id="updateForm">
+			<table class="tableForm">
+				<tr>
+					<td class="formLeft">用户名:</td>
+					<td>
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="updateusername" id="updateusername" disabled="disabled">
+						<input id="userId" value="0" style="display: none;">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">昵称:</td>
+					<td>
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="updatenickname" id="updatenickname">
+					</td>
+				</tr>
+				<tr style="display: none;">
+					<td class="formLeft">职位:</td>
+					<td id="updateRoleTD">
+					</td>
+				</tr>
+				<tr id="stateRow" style="display: none;">
+					<td class="formLeft">状态:</td>
+					<td>
+						<input type="radio" name="updatestate" value="0">正常
+						<input type="radio" name="updatestate" value="1">禁用
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="resetPasswordDialog">
+		<form id="resetPasswordForm">
+			<table class="tableForm">
+				<tr>
+					<td class="formLeft">原密码:</td>
+					<td>
+						<input class="easyui-validatebox"  data-options="required:true" name="resetoldpassword" id="resetoldpassword">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">新密码:</td>
+					<td>
+						<input class="easyui-validatebox"  data-options="required:true" name="resetpassword" id="resetpassword">
+						<input id="resetusername" style="display: none;">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">确认新密码:</td>
+					<td>
+						<input class="easyui-validatebox"  data-options="required:true" name="resetinsurepassword" id="resetinsurepassword">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>
+<script>
+	$(function(){
+		//页面初始化
+		layoutLoad();
+		//数据表格加载
+		gridLoad(1,20);	
+		//点击事件
+		clickFunction();
+	});
+	//页面初始化
+	function layoutLoad(){
+		$('#layout').layout('collapse','east');
+		//信息添加dialog
+		$('#addDialog').dialog({
+			title: '添加登录信息',
+		    width: 300,
+		    height:400,
+		    closed: true,    
+		    modal: true,
+		    buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					addInfo();//添加信息
+                }
+			},{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					$('#addDialog').dialog('close');
+				}
+			}], 
+		});
+		$('#updateDialog').dialog({
+			title: '修改登录信息',
+		    width: 300,
+		    height:400,
+		    closed: true,    
+		    modal: true,
+		    buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					updatedInfo();//添加信息
+                }
+			},{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					$('#updateDialog').dialog('close');
+				}
+			}], 
+		});
+		$('#resetPasswordDialog').dialog({
+			title: '重置密码',
+		    width: 300,
+		    height:400,
+		    closed: true,    
+		    modal: true,
+		    buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					resetPassword();//添加信息
+                }
+			},{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					$('#resetPasswordDialog').dialog('close');
+				}
+			}], 
+		});
+	}
+	function addTab(title,url){
+		parent.addTab(title,url);
+	}
+	//数据表格加载
+	function gridLoad(pageNumber,pageSize) {
+		$.ajax({
+			url : getHost() + '/user/list/pageable',
+			type : "POST",
+			data : JSON.stringify({
+				"pageNumber": pageNumber,
+			    "pageSize": pageSize,
+			}),
+			async : false,
+			dataType : "json",
+			contentType: 'application/json;charset=UTF-8',
+			beforeSend: function(xhr) {
+                xhr.withCredentials = true;
+            },
+            crossDomain:true,
+			success : function(data) {
+				if (data.code==200&&typeof(data.data) == "object") {
+					var width = $('#infoDrid').parent().width();
+					var height = $('#infoDrid').parent().height();
+					$('#infoDrid').datagrid({
+						toolbar : "#toolbar",
+						data: data.data.page.rows,
+						width : width,
+						height : height,
+						async : false,
+						fit : true,
+						border : false,
+						singleSelect : true,
+						fitColumns : true,
+						striped : true,
+						pagination : true,
+						columns : [ [
+							{field:'username',title:'用户名',align:'center',width:150},
+							{field:'nickname',title:'昵称',align:'center',width:150},
+							{field:'state',title:'用户状态',align:'center',width:150,
+								formatter: function(value,row,index){
+									if(value=="0"){
+										return "禁用";
+									}else if(value=="1"){
+										return "正常";
+									}else{
+										return "";
+									}
+								}
+							},
+							/*{field:'sex',title:'性别',align:'center',width:100,
+								formatter: function(value,row,index){
+									if(value=="1"){
+										return "男";
+									}else if(value=="2"){
+										return "女";
+									}else{
+										return "";
+									}
+								}
+							},
+							{field:'roleList',title:'角色',align:'center',width:150,
+								formatter: function(value,row,index){
+									console.log(value);
+									//value = JSON.parse('[{"id": 1,"name": "系统管理员","structureType": "role"},{"id": 2,"name": "员工","structureType": "role"}]');
+									if(value!=""&&value.length>0){
+										var result = "";
+										for(i=0;i<value.length;i++){
+											result+=value[i].name+",";
+										}
+										return result.substr(0,result.length-1);
+									}else{
+										return "";
+									}
+								}
+							}, */
+						] ],
+					});
+						var p = $('#infoDrid').datagrid('getPager');
+				        $(p).pagination({
+				        	total : data.data.page.total,
+				            pageSize: pageSize,//每页显示的记录条数，默认为10
+				            pageList: [20, 50, 100],//可以设置每页记录条数的列表
+				            pageNumber : pageNumber,
+				            beforePageText: '第',//页数文本框前显示的汉字
+				            afterPageText: '页    共 {pages} 页',
+				            displayMsg: '当前显示 {from}-{to} 条记录,共 {total} 条记录',
+				            showRefresh : false,
+				            onSelectPage:function(pageNumber, pageSize){
+				        		gridLoad(pageNumber,pageSize);
+				        	}
+				        });
+				} else {
+					
+				}
+			}
+		});
+	}
+	//点击事件
+	function clickFunction(){
+		$('#search').click(function(){
+			$('#layout').layout('expand','east');
+		});
+		$('#resetPassword').click(function(){
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			$("#resetusername").val(row.username);
+			$('#resetPasswordDialog').dialog('open');
+		});
+		$('#insert').click(function(){
+			$('#addForm')[0].reset();
+			$.ajax({
+				url : getHost() + '/role/list_all',
+				type : "GET",
+				data : {},
+				async : false,
+				dataType : "json",
+				contentType: 'application/json;charset=UTF-8',
+				beforeSend: function(xhr) {
+	                xhr.withCredentials = true;
+	            },
+	            crossDomain:true,
+				success : function(data) {
+					var data = '{"code":"200","data":{"roleList":[{"id":1,"name":"系统管理员","structureType":"role"},{"id":2,"name":"资料员","structureType":"role"},{"id":3,"name":"财务","structureType":"role"}]}}';
+					data = JSON.parse(data);
+					if(data.code="200"&&typeof(data.data) == "object"){
+						var html= "";
+						for(y=0;y<data.data.roleList.length;y++){
+							html+='<div class="checkbox-div"><input type="checkbox" class="checkbox-input" name="roleValue" value="'+data.data.roleList[y].id+'"/>'+data.data.roleList[y].name+'</div>';
+						}
+						$("#roleTD").html(html);
+					}
+				}
+			});
+			$('#addDialog').dialog('open');
+		});
+		$("#update").click(function(){
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+/* 			$.ajax({
+				url : getHost() + '/role/list_all',
+				type : "GET",
+				data : {},
+				async : false,
+				dataType : "json",
+				contentType: 'application/json;charset=UTF-8',
+				beforeSend: function(xhr) {
+	                xhr.withCredentials = true;
+	            },
+	            crossDomain:true,
+				success : function(data) {
+					var data = '{"code":"200","data":{"roleList":[{"id":1,"name":"系统管理员","structureType":"role"},{"id":2,"name":"资料员","structureType":"role"},{"id":3,"name":"财务","structureType":"role"}]}}';
+					data = JSON.parse(data);
+					if(data.code="200"&&typeof(data.data) == "object"){
+						var html= "";
+						for(y=0;y<data.data.roleList.length;y++){
+							html+='<div class="checkbox-div"><input type="checkbox" class="checkbox-input" name="updateRoleValue" value="'+data.data.roleList[y].id+'"/>'+data.data.roleList[y].name+'</div>';
+						}
+						$("#updateRoleTD").html(html);
+					}
+				}
+			}); */
+			$("#userId").val(row.id);
+			$("#updateusername").val(row.username);
+			$("#updatenickname").val(row.nickname);
+			$('#updateDialog').dialog('open');
+			
+		});
+		
+		$("#delete").click(function(){
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			$.messager.confirm('提示','确定要删除吗?',function(r){
+			    if (r){
+			    	$.ajax({
+						url:getHost() + '/user/' + row.id,
+						type:'DELETE',
+						error:function(){
+							$.messager.alert("提示","数据操作存在异常!");
+						},
+						contentType: 'application/json;charset=UTF-8',
+						success:function(data){
+							if(data.code=200){
+								$.messager.alert("提示","删除成功");
+								gridLoad(1,20);
+							}else{
+								$.messager.alert("提示","删除失败");
+							}
+							$('#infoDrid').datagrid('load');
+						}
+					});
+			    }
+			});
+		});
+	}
+	//添加信息
+	function addInfo(){
+		if($("#username").val()==null ||$("#username").val()==""){
+			$.messager.alert("提示","用户名不能为空!");
+			return;
+		}
+		if($("#nickname").val()==null ||$("#nickname").val()==""){
+			$.messager.alert("提示","昵称不能为空!");
+			return;
+		}
+		if($('input[name=roleValue]:checked').length==0){
+			$.messager.alert("提示","职位不能为空!");
+			return;
+		}
+		if($("#password").val()==null ||$("#password").val()==""){
+			$.messager.alert("提示","登录密码不能为空!");
+			return;
+		}
+		if($("#insurepassword").val()==null ||$("#insurepassword").val()==""){
+			$.messager.alert("提示","确认密码不能为空!");
+			return;
+		}
+		if($("#password").val()!=$("#insurepassword").val()){
+			$.messager.alert("提示","登录密码和确认密码不同!");
+			return;
+		}
+		var checkboxValue = "";
+		$.each($('input[name=roleValue]:checkbox:checked'),function(){
+        	checkboxValue += $(this).val()+",";
+        });
+		checkboxValue = checkboxValue.substr(0,checkboxValue.length-1).split(",");
+		$.ajax({
+			url:getHost() + '/user',
+			type:'POST',
+			data:JSON.stringify({
+				username : $("#username").val(),
+				password : $("#password").val(),
+				nickname : $("#nickname").val(),
+				roleIdList : checkboxValue
+			}),
+			contentType: 'application/json;charset=UTF-8',
+			error:function(){
+				$.messager.alert("提示","数据操作存在异常!");
+				$('#addDialog').dialog('close');
+			},
+			success:function(data){
+				if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
+					$.messager.alert("提示","创建成功");
+					$('#addForm').form('clear');
+					$('#addDialog').dialog('close');
+					$('#infoDrid').datagrid('load');
+					gridLoad(1,20);
+				}else{
+					$.messager.alert("提示","创建失败");
+				}
+			}
+		});
+	}
+	
+	//修改信息
+	function updatedInfo(){
+		if($("#updateusername").val()==null ||$("#updateusername").val()==""){
+			$.messager.alert("提示","用户名不能为空!");
+			return;
+		}
+		if($("#updatenickname").val()==null ||$("#updatenickname").val()==""){
+			$.messager.alert("提示","昵称不能为空!");
+			return;
+		}
+/* 		if($('input[name=updateroleValue]:checked').length==0){
+			$.messager.alert("提示","职位不能为空!");
+			return;
+		} 
+		var checkboxValue = "";
+		$.each($('input[name=updateRoleValue]:checkbox:checked'),function(){
+        	checkboxValue += $(this).val()+",";
+        });
+		checkboxValue = checkboxValue.substr(0,checkboxValue.length-1).split(",");*/
+		$.ajax({
+			url:getHost() + '/user',
+			type:'PUT',
+			data:JSON.stringify({
+				id : $("#userId").val(),
+				nickname : $("#updatenickname").val(),
+				//roleIdList : checkboxValue
+			}),
+			contentType: 'application/json;charset=UTF-8',
+			error:function(){
+				$.messager.alert("提示","数据操作存在异常!");
+				$('#addDialog').dialog('close');
+			},
+			success:function(data){
+				console.log(data);
+				if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
+					$.messager.alert("提示","修改成功");
+					$('#updateForm').form('clear');
+					$('#updateDialog').dialog('close');
+					//$('#infoDrid').datagrid('load');
+					gridLoad(1,20);
+				}else{
+					$.messager.alert("提示","修改失败");
+				}
+			}
+		});
+	}
+	
+	//重置密码
+	function resetPassword(){
+		if($("#resetoldpassword").val()==null ||$("#resetoldpassword").val()==""){
+			$.messager.alert("提示","原密码不能为空!");
+			return;
+		}
+		if($("#resetpassword").val()==null ||$("#resetpassword").val()==""){
+			$.messager.alert("提示","新密码不能为空!");
+			return;
+		}
+		if($("#resetinsurepassword").val()==null ||$("#resetinsurepassword").val()==""){
+			$.messager.alert("提示","新密码不能为空!");
+			return;
+		}
+		if($("#resetpassword").val()!=$("#resetinsurepassword").val()){
+			$.messager.alert("提示","新密码和确认密码不同!");
+			return;
+		}
+		console.log("reset");
+		$.ajax({
+			url:getHost() + '/user/sage_modify_password',
+			type:'PUT',
+			data:JSON.stringify({
+				originalP : $("#resetoldpassword").val(),
+				newP : $("#resetpassword").val(),
+			}),
+			contentType: 'application/json;charset=UTF-8',
+			error:function(){
+				$.messager.alert("提示","数据操作存在异常!");
+				$('#addDialog').dialog('close');
+			},
+			beforeSend: function(xhr) {
+                xhr.withCredentials = true;
+            },
+            crossDomain:true,
+			success:function(data){
+				if(data.code==200){
+					$.messager.alert("提示","重置成功");
+					$('#resetForm').form('clear');
+					$('#resetDialog').dialog('close');
+					//$('#infoDrid').datagrid('load');
+				}else{
+					$.messager.alert("提示","重置失败");
+				}
+			}
+		});
+	}
+	
+	function reset(){
+		$("#searchForm")[0].reset();
+		gridLoad();
+	}
+</script>
