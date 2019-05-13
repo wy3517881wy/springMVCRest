@@ -84,6 +84,7 @@
 
 <script>
 	$(function(){
+		$.ajaxSetup({crossDomain: true, xhrFields: {withCredentials: true}});
 		$("#contractOrderId").val(sessionStorage.getItem('orderId'));
 		sessionStorage.setItem("orderId","");
 		sessionStorage.setItem("orderName","");
@@ -133,6 +134,7 @@
 			dataType : "json",
 			contentType: 'application/json;charset=UTF-8',
 			success : function(data) {
+				console.log(JSON.stringify(data))
 				if (data.code==200&&typeof(data.data) == "object") {
 					var width = $('#infoDrid').parent().width();
 					var height = $('#infoDrid').parent().height();
@@ -150,7 +152,20 @@
 						pagination : true,
 						columns : [ [
 							{field:'cooperator',title:'合作单位' ,align:'center',width:150},
+							{field:'name',title:'小项名称' ,align:'center',width:150},
 							{field:'startDate',title:'开始日期',align:'center',width:150},
+							{field:'endDate',title:'结束日期',align:'center',width:150},
+							{field:'status',title:'状态',align:'center',width:150,
+								formatter: function(value,row,index){
+									if(value=="2"){
+										return "已结束";
+									}else if(value=="1"){
+										return "未结束";
+									}else{
+										return "";
+									}
+								}
+							},
 						] ],
 					});
 					var p = $('#infoDrid').datagrid('getPager');
@@ -257,8 +272,8 @@
 							$.messager.alert("提示","数据操作存在异常!");
 						},
 						contentType: 'application/json;charset=UTF-8',
-						success:function(data){
-							if(data.code=200){
+						success:function(data, textStatus, request){
+							if(data.code==200){
 								$.messager.alert("提示","操作成功");
 								gridLoad(1,20);
 							}else{
