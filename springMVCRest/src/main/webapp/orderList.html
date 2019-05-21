@@ -256,6 +256,7 @@
 			dataType : "json",
 			contentType: 'application/json;charset=UTF-8',
 			success : function(data) {
+				console.log(data);
 				if (data.code==200&&typeof(data.data) == "object") {
 					var width = $('#infoDrid').parent().width();
 					var height = $('#infoDrid').parent().height();
@@ -276,7 +277,20 @@
 							{field:'orderName',title:'订单名称',align:'center',width:150},
 							{field:'bigItemNo',title:'大项编号',align:'center',width:150},
 							{field:'orderAmount',title:'订单金额',align:'center',width:150},
+							{field:'amountCashed',title:'回款金额',align:'center',width:150},
 							{field:'startTime',title:'开始时间',align:'center',width:150},
+							{field:'status',title:'订单状态',align:'center',width:150,
+								formatter: function(value,row,index){
+									if(value=="2"){
+										return "已结束";
+									}else if(value=="1"){
+										return "未结束";
+									}else{
+										return "";
+									}
+								}
+							},
+							{field:'endTime',title:'结束时间',align:'center',width:150},
 							{field:'id',title:'操作',align:'center',width:100,
 								formatter: function(value,row,index){
 									return "<input style=\"cursor:pointer;\" type=\"button\" value=\"小项列表\" onClick=\"smallItemList(" + index + ")\" style=\"width:100px\"/>";
@@ -364,7 +378,7 @@
 						},
 						contentType: 'application/json;charset=UTF-8',
 						success:function(data){
-							if(data.code=200){
+							if(data.code==200){
 								$.messager.alert("提示","删除成功");
 								gridLoad(1,20);
 							}else{

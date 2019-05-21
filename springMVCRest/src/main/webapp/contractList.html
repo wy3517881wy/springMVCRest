@@ -174,6 +174,18 @@
 							{field:'contractAmount',title:'合同金额(元)',align:'center',width:150},
 							{field:'signTime',title:'签订时间',align:'center',width:150},
 							{field:'startTime',title:'开始时间',align:'center',width:150},
+							{field:'status',title:'合同状态',align:'center',width:150,
+								formatter: function(value,row,index){
+									if(value=="2"){
+										return "已结束";
+									}else if(value=="1"){
+										return "未结束";
+									}else{
+										return "";
+									}
+								}
+							},
+							{field:'endTime',title:'结束时间',align:'center',width:150},
 							{field:'createUser',title:'创建人',align:'center',width:100,
 								formatter: function(value,row,index){
 									return value.nickname;
@@ -187,22 +199,20 @@
 							},
 						] ],
 					});
-						var p = $('#infoDrid').datagrid('getPager');
-				        $(p).pagination({
-				        	total : data.data.page.total,
-				            pageSize: pageSize,//每页显示的记录条数，默认为10
-				            pageList: [20, 50, 100],//可以设置每页记录条数的列表
-				            pageNumber : pageNumber,
-				            beforePageText: '第',//页数文本框前显示的汉字
-				            afterPageText: '页    共 {pages} 页',
-				            displayMsg: '当前显示 {from}-{to} 条记录,共 {total} 条记录',
-				            showRefresh : false,
-				            onSelectPage:function(pageNumber, pageSize){
-				        		gridLoad(pageNumber,pageSize);
-				        	}
-				        });
-				} else {
-					
+					var p = $('#infoDrid').datagrid('getPager');
+			        $(p).pagination({
+			        	total : data.data.page.total,
+			            pageSize: pageSize,//每页显示的记录条数，默认为10
+			            pageList: [20, 50, 100],//可以设置每页记录条数的列表
+			            pageNumber : pageNumber,
+			            beforePageText: '第',//页数文本框前显示的汉字
+			            afterPageText: '页    共 {pages} 页',
+			            displayMsg: '当前显示 {from}-{to} 条记录,共 {total} 条记录',
+			            showRefresh : false,
+			            onSelectPage:function(pageNumber, pageSize){
+			        		gridLoad(pageNumber,pageSize);
+			        	}
+			        });
 				}
 			}
 		});
