@@ -36,7 +36,7 @@
 	</div>
 	<div id="west" data-options="region:'west',split:true" style="width:250px;padding-top:3px">
 		<div id="acco" class="easyui-accordion" >
-	    	<div title="合同管理" data-options="iconCls:'icon-accolist',selected:true" >   
+	    	<div title="合同管理" data-options="iconCls:'icon-accolist',selected:true" >
 	        	<a onClick="addTab('合同列表','/contractList.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">合同列表 </a><br><br>
 	        	<a onClick="addTab('创建合同','/contractCreate.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">创建合同 </a> <br><br>
 	        	<a onClick="addTab('合同盈亏汇总','/contractCollect.html');" class="easyui-linkbutton" data-options="iconCls:'icon-sanjiao',plain:true">合同盈亏汇总 </a> <br><br>
@@ -56,12 +56,13 @@
 <script type="text/javascript">
 $(function(){
 	if(sessionStorage.getItem('userid')==""||sessionStorage.getItem('userid')==null){
-/* 		var mssalet = $.messager.alert("提示","您尚未登陆，请登陆后重试");
+ 		var mssalet = $.messager.alert("提示","您尚未登陆，请登陆后重试");
 		mssalet.window({modal:true,onBeforeClose:function() {
 			window.location.href = "/login.html";
-		}}); */
+		}});
 	}else{
 		$("#usr").text(sessionStorage.getItem('nickname'));
+		addTab('合同列表','/contractList.html');
 	}
 	$('#acco').accordion({
 		border:false,
@@ -92,8 +93,10 @@ function logOut() {
 		dataType : 'json',
 		contentType: 'application/json;charset=UTF-8',
 		success : function(data) {
-			console.log(data)
 			if (data.code == "200") {
+				sessionStorage.setItem('userid',"");
+				sessionStorage.setItem('nickname',"");
+				sessionStorage.setItem('username',"");
 				window.location.href = "/login.html"
 			}
 		}

@@ -48,42 +48,50 @@
 	<!-- dataGrid工具栏 -->
 	<div id="toolbar">
 		<!-- <a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a> -->
-		<a id="createContractOrder" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >创建订单</a>
+		<a id="edit" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >编辑合同</a>
+		<a id="finish" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:true" >结束合同</a>
 		<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" >删除合同</a>
 	</div>
-	<!-- 添加合同订单 -->
-	<div id="addDialog">
-		<form id="addForm">
+	
+	<!-- 编辑合同订单 -->
+	<div id="editDialog">
+		<form id="editForm">
 			<table class="tableForm">
 				<tr>
-					<td class="formLeft">订单编号:</td>
+					<td class="formLeft">合同区域:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="orderNo" id="orderNo">
-						<input type="text" id="contractId" style="display: none;">
+						<input class="easyui-validatebox" data-options="required:true" name="region" id="region">
+						<input type="text" id="contractID" style="display: none;">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">订单名称:</td>
+					<td class="formLeft">甲方名称:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="orderName" id="orderName">
+						<input class="easyui-validatebox" data-options="required:true" name="firstPartyName" id="firstPartyName">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">大项编号:</td>
+					<td class="formLeft">中标单位:</td>
 					<td>
-						<input class="easyui-validatebox"  data-options="required:true" name="bigItemNo" id="bigItemNo">
+						<input class="easyui-validatebox"  data-options="required:true" name="secondPartyName" id="secondPartyName">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">订单金额:</td>
+					<td class="formLeft">合同编号:</td>
 					<td>
-						<input class="easyui-validatebox"  data-options="required:true" name="orderAmount" id="orderAmount">
+						<input class="easyui-validatebox"  data-options="required:true" name="contractNo" id="contractNo">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">开始时间:</td>
+					<td class="formLeft">合同名称:</td>
 					<td>
-						<input class="easyui-datebox"  data-options="required:true" name="startTime" id="startTime">
+						<input class="easyui-validatebox"  data-options="required:true" name="contractName" id="contractName">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">合同金额:</td>
+					<td>
+						<input class="easyui-validatebox"  data-options="required:true" name="contractAmount" id="contractAmount">
 					</td>
 				</tr>
 			</table>
@@ -94,6 +102,7 @@
 
 <script>
 	$(function(){
+		$.ajaxSetup({crossDomain: true, xhrFields: {withCredentials: true}});
 		//页面初始化
 		layoutLoad();
 		//数据表格加载
@@ -106,9 +115,9 @@
 	//页面初始化
 	function layoutLoad(){
 		$('#layout').layout('collapse','east');
-		//信息添加dialog
-		$('#addDialog').dialog({
-			title: '添加合同订单',
+		//信息编辑dialog
+		$('#editDialog').dialog({
+			title: '编辑合同订单',
 		    width: 300,
 		    height:300,
 		    closed: true,    
@@ -117,13 +126,13 @@
 				text:'确定',
 				iconCls:'icon-ok',
 				handler:function(){
-					addInfo();//添加信息
+					editInfo();//添加信息
                 }
 			},{
 				text:'取消',
 				iconCls:'icon-cancel',
 				handler:function(){
-					$('#addDialog').dialog('close');
+					$('#editDialog').dialog('close');
 				}
 			}], 
 		});
@@ -157,7 +166,7 @@
 						striped : true,
 						pagination : true,
 						columns : [ [
-							{field:'region',title:'区域',align:'center',width:150},
+							{field:'region',title:'合同区域',align:'center',width:150},
 							{field:'firstPartyName',title:'甲方名称',align:'center',width:150},
 							{field:'secondPartyName',title:'中标单位',align:'center',width:150},
 							{field:'contractNo',title:'合同编号',align:'center',width:100},
@@ -219,15 +228,18 @@
 		$('#track').click(function() {
 			parent.addTab('订单详情', "url")
 		});
-		$('#createContractOrder').click(function(){
+
+		//编辑点击事件
+		$('#edit').click(function() {
 			var row = $('#infoDrid').datagrid('getSelected');
 			if(row==null){
 				$.messager.alert("提示","请选中一行!");
 				return;
 			}
-			$('#addForm')[0].reset();
-			$("#contractId").val(row.id);
-			$('#addDialog').dialog('open');
+			$('#editForm')[0].reset();
+			$("#contractID").val(row.id);
+			$('#editForm').form('load',row);
+			$('#editDialog').dialog('open');
 		});
 		//删除 
 		$('#delete').click(function() {
@@ -240,17 +252,45 @@
 			    if (r){
 			    	$.ajax({
 						url:getHost() + '/contract/' + row.id,
-						type:'DELETE',
+						type:'GET',
 						error:function(){
 							$.messager.alert("提示","数据操作存在异常!");
 						},
 						contentType: 'application/json;charset=UTF-8',
 						success:function(data){
-							if(data.code=200){
+							if(data.code==200){
 								$.messager.alert("提示","删除成功");
 								gridLoad(1,20);
 							}else{
-								$.messager.alert("提示","删除失败");
+								$.messager.alert("提示",data.message);
+							}
+						}
+					});
+			    }
+			});
+		});
+		//结束合同
+		$('#finish').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			$.messager.confirm('提示','确定要结束吗?',function(r){
+			    if (r){
+			    	$.ajax({
+						url:getHost() + '/contract/end?contractId=' + row.id,
+						type:'GET',
+						error:function(){
+							$.messager.alert("提示","数据操作存在异常!");
+						},
+						contentType: 'application/json;charset=UTF-8',
+						success:function(data){
+							if(data.code==200){
+								$.messager.alert("提示","结束合同成功");
+								gridLoad(1,20);
+							}else{
+								$.messager.alert("提示",data.message);
 							}
 						}
 					});
@@ -268,56 +308,42 @@
 		sessionStorage.setItem('contractName',row.contractName);
 		parent.addTab('订单列表',  "/orderList.html")
 	}
+	
 	//添加信息
-	function addInfo(){
-		if($("#orderNo").val()==null ||$("#orderNo").val()==""){
-			$.messager.alert("提示","订单编号不能为空!");
-			return;
-		}
-		if($("#orderName").val()==null ||$("#nickname").val()==""){
-			$.messager.alert("提示","订单名称不能为空!");
-			return;
-		}
-		if($("#bigItemNo").val()==null ||$("#bigItemNo").val()==""){
-			$.messager.alert("提示","大项编号不能为空!");
-			return;
-		}
-		if($("#orderAmount").val()==null ||$("#orderAmount").val()==""){
-			$.messager.alert("提示","订单金额不能为空!");
-			return;
-		}
-		$.ajax({
-			url:getHost() + '/contract_order',
-			type:'POST',
-			data:JSON.stringify({
-				orderNo : $("#orderNo").val(),
-				orderName : $("#orderName").val(),
-				bigItemNo : $("#bigItemNo").val(),
-				orderAmount : $("#orderAmount").val(),
-				contractId : $("#contractId").val(),
-				startTime : $("#startTime").val(),
-			}),
-			contentType: 'application/json;charset=UTF-8',
-			beforeSend: function(xhr) {
-                xhr.withCredentials = true;
-            },
-            crossDomain:true,
-			error:function(){
-				$.messager.alert("提示","数据操作存在异常!");
-				$('#addDialog').dialog('close');
-			},
-			success:function(data){
-				console.log("data"+JSON.stringify(data))
-				if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
-					$.messager.alert("提示","创建成功");
-					$('#addForm').form('clear');
-					$('#addDialog').dialog('close');
-					$('#infoDrid').datagrid('load');
-					gridLoad(1,20);
-				}else{
-					$.messager.alert("提示","创建失败");
+	function editInfo(){
+		if($("#editForm").form('validate')){
+			$.ajax({
+				url:getHost() + '/contract',
+				type:'PUT',
+				data:JSON.stringify({
+					region : $("#region").val(),
+					firstPartyName : $("#firstPartyName").val(),
+					secondPartyName : $("#secondPartyName").val(),
+					contractNo : $("#contractNo").val(),
+					contractName : $("#contractName").val(),
+					contractAmount : $("#contractAmount").val(),
+					id : $("#contractID").val(),
+				}),
+				dataType : "json",
+				contentType: 'application/json;charset=UTF-8',
+				error : function(XMLHttpRequest, textStatus, errorThrown){
+					$.messager.alert("提示","数据操作存在异常!");
+				},
+				beforeSend: function(xhr) {
+	                xhr.withCredentials = true;
+	            },
+	            crossDomain:true,
+				success:function(data){
+					if(data.code=="200"&&data.data.item.id>0){
+						$.messager.alert("提示","保存成功");
+						$('#editForm').form('clear');
+						$('#editDialog').dialog('close');
+						gridLoad(1,20);
+					}else{
+						$.messager.alert("提示",data.message);
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 </script>

@@ -48,17 +48,42 @@
 </div>
 	<!-- dataGrid工具栏 -->
 	<div id="toolbar">
+		<a id="createContractOrder" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >添加小项</a>
 		<a id="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >修改小项</a>
-		<!-- <a id="createContractOrder" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >添加小项</a>
-		<a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a> -->
+		<!--<a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a> -->
 		<a id="finish" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:true" >结束小项</a>
 		<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" >删除小项</a>
+	</div>
+	<!-- 添加 -->
+	<div id="addDialog">
+		<form id="addForm">
+			<table class="tableForm">
+				<tr>
+					<td class="formLeft">名称:</td>
+					<td>
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="name" id="name">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">合作单位:</td>
+					<td>
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="cooperator" id="cooperator">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">开始日期:</td>
+					<td>
+						<input class="easyui-datebox"  data-options="required:true" name="tartDate" id="startDate">
+					</td>
+				</tr>
+			</table>
+		</form>
 	</div>
 	<div id="updateDialog">
 		<form id="updateForm">
 			<table class="tableForm">
 				<tr>
-					<td class="formLeft">名称:</td>
+					<td class="formLeft">小项名称:</td>
 					<td>
 						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="name" id="name">
 						<input id="smallId" value="0" type="hidden">
@@ -73,7 +98,7 @@
 				<tr>
 					<td class="formLeft">开始日期:</td>
 					<td id="updateRoleTD">
-						<input class="easyui-datebox"  data-options="required:true" name="tartDate" id="startDate">
+						<input class="easyui-datebox"  data-options="required:true" name="startDate" id="startDate">
 					</td>
 				</tr>
 			</table>
@@ -99,6 +124,27 @@
 	//页面初始化
 	function layoutLoad(){
 		$('#layout').layout('collapse','east');
+		//信息添加dialog
+		$('#addDialog').dialog({
+			title: '添加小项',
+		    width: 300,
+		    height:300,
+		    closed: true,    
+		    modal: true,
+		    buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					addInfo();//添加信息
+                }
+			},{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					$('#addDialog').dialog('close');
+				}
+			}], 
+		});
 		$('#updateDialog').dialog({
 			title: '更新财务信息',
 		    width: 300,
@@ -151,8 +197,8 @@
 						striped : true,
 						pagination : true,
 						columns : [ [
-							{field:'cooperator',title:'合作单位' ,align:'center',width:150},
 							{field:'name',title:'小项名称' ,align:'center',width:150},
+							{field:'cooperator',title:'合作单位' ,align:'center',width:150},
 							{field:'startDate',title:'开始日期',align:'center',width:150},
 							{field:'endDate',title:'结束日期',align:'center',width:150},
 							{field:'status',title:'状态',align:'center',width:150,
@@ -203,6 +249,7 @@
 			$('#endtimeSearch').datetimebox('setValue', '');
 			gridLoad(1,20);
 		});
+		
 		//订单详情
 		$('#update').click(function() {
 			var row = $('#infoDrid').datagrid('getSelected');
@@ -212,6 +259,7 @@
 			}
 			$('#updateForm')[0].reset();
 			$("#smallId").val(row.id);
+			$('#updateForm').form('load',row);
 			$('#updateDialog').dialog('open');
 		});
 		//查看合同订单列表 
@@ -219,13 +267,7 @@
 			parent.addTab('订单详情', "url")
 		});
 		$('#createContractOrder').click(function(){
-			var row = $('#infoDrid').datagrid('getSelected');
-			if(row==null){
-				$.messager.alert("提示","请选中一行!");
-				return;
-			}
 			$('#addForm')[0].reset();
-			$("#contractOrderId").val(row.id);
 			$('#addDialog').dialog('open');
 		});
 		//删除 
@@ -325,7 +367,7 @@
 					$('#infoDrid').datagrid('load');
 					gridLoad(1,20);
 				}else{
-					$.messager.alert("提示","创建失败");
+					$.messager.alert("提示",data.message);
 				}
 			}
 		});

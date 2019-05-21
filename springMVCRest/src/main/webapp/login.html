@@ -16,6 +16,9 @@
 		<div class="btn" id="loginbtn"></div>
 	</div>
 <script type="text/javascript">
+$(function(){
+	$.ajaxSetup({crossDomain: true, xhrFields: {withCredentials: true}});
+});
 	$('#loginbtn').click(function() {
 			var username = $('#username').val();
 			var password = $('#password').val();

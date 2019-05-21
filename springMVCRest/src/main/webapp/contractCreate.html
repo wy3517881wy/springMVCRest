@@ -13,7 +13,7 @@
 		<input id="id" name="id" type="hidden"></input>
 			<table class="tableForm">
 				<tr>
-					<td class="formLeft">区域:</td>
+					<td class="formLeft">合同区域:</td>
 					<td class="formRight">
 						<input class="easyui-validatebox" name="region" id="region" placeholder="请输入区域，如有多个请用中文逗号隔开" required="required"/>
 					</td>
@@ -107,6 +107,10 @@ function clickFunction(){
 					error : function(XMLHttpRequest, textStatus, errorThrown){
 						$.messager.alert("提示","数据操作存在异常!");
 					},
+					beforeSend: function(xhr) {
+		                xhr.withCredentials = true;
+		            },
+		            crossDomain:true,
 					success:function(data){
 						if(data.code=="200"&&data.data.item.id>0){
 							$.messager.alert("提示","保存成功");
