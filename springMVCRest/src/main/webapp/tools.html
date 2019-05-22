@@ -78,7 +78,7 @@
 				<tr>
 					<td class="formLeft">借用人:</td>
 					<td>
-						<input class="easyui-combobox" name="borrower" id="borrower">
+						<input class="easyui-validatebox" name="borrower" id="borrower">
 					</td>
 				</tr>
 				<tr>
@@ -176,11 +176,7 @@
 							{field:'name',title:'工具名称' ,align:'center',width:150},
 							{field:'type',title:'规格' ,align:'center',width:150},
 							{field:'purchaseTime',title:'开始日期',align:'center',width:150},
-							{field:'borrower',title:'借用人',align:'center',width:150,
-								formatter: function(value,row,index){
-									return value.nickname;
-								}
-							},
+							{field:'borrower',title:'借用人',align:'center',width:150},
 							{field:'startTime',title:'开始时间',align:'center',width:150},
 							{field:'endTime',title:'结束时间',align:'center',width:150},
 						] ],
@@ -247,27 +243,6 @@
 			});
 			$("#toolId").val(row.id);
 			$('#addForm').form('load',row);
-			$.ajax({
-				url : getHost() + '/user/list',
-				type : "POST",
-				data : JSON.stringify({
-				}),
-				async : false,
-				dataType : "json",
-				contentType: 'application/json;charset=UTF-8',
-				beforeSend: function(xhr) {
-	                xhr.withCredentials = true;
-	            },
-	            crossDomain:true,
-				success : function(data) {
-					$('#borrower').combobox({
-						data : data.data.rows,
-						valueField : 'id',
-						textField : 'nickname',
-					}); 
-					$('#borrower').combobox('setValue', row.borrower.id);
-				}
-			});
 			$('#addDialog').dialog('open');
 		});
 		$('#add').click(function(){
@@ -287,28 +262,6 @@
 						$('#addDialog').dialog('close');
 					}
 				}], 
-			});
-			$.ajax({
-				url : getHost() + '/user/list',
-				type : "POST",
-				data : JSON.stringify({
-				}),
-				async : false,
-				dataType : "json",
-				contentType: 'application/json;charset=UTF-8',
-				beforeSend: function(xhr) {
-	                xhr.withCredentials = true;
-	            },
-	            crossDomain:true,
-				success : function(data) {
-					$('#borrower').combobox({
-						data : data.data.rows,
-						valueField : 'id',
-						textField : 'nickname',
-						onSelect : function(rec) {
-						}
-					}); 
-				}
 			});
 			
 			$('#addDialog').dialog('open');
@@ -352,7 +305,7 @@
 					name : $("#name").val(),
 					type : $("#type").val(),
 					purchaseTime : $("#purchaseTime").val(),
-					borrowerId : $("#borrower").combobox('getValue'),
+					borrower : $("#borrower").val(),
 					startTime : $("#startTime").val(),
 					endTime : $("#endTime").val(),
 					remark : $("#remark").val(),
@@ -390,7 +343,7 @@
 					name : $("#name").val(),
 					type : $("#type").val(),
 					purchaseTime : $("#purchaseTime").val(),
-					borrowerId : $("#borrower").combobox('getValue'),
+					borrower : $("#borrower").val(),
 					startTime : $("#startTime").val(),
 					endTime : $("#endTime").val(),
 					remark : $("#remark").val(),
