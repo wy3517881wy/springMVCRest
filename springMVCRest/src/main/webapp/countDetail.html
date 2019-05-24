@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/static/js/head.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/contractList.css" />
+</head> 
+<body id="layout" class="easyui-layout">
+	<div data-options="region:'center',border:false">
+		<table id="infoDrid"></table>
+	</div>
+</body>
+	<div id="toolbar">
+	</div>
+</html>
+
+<script>
+	$(function(){
+		$.ajaxSetup({crossDomain: true, xhrFields: {withCredentials: true}});
+		//数据表格加载
+		gridLoad(1,15);	
+	});
+	//数据表格加载
+	function gridLoad(pageNumber,pageSize) {
+		$.ajax({
+			url : getHost() + '/small_item/summary_by_time_range_detail',
+			type : "POST",
+			data : JSON.stringify({
+				"pageNumber": pageNumber,
+			    "pageSize": pageSize,
+			    "endTimeBegin": sessionStorage.getItem('endTimeBegin'),
+			    "endTimeEnd": sessionStorage.getItem('endTimeEnd')
+			}),
+			async : false,
+			dataType : "json",
+			contentType: 'application/json;charset=UTF-8',
+			success : function(data) {
+				if (data.code==200&&typeof(data.data) == "object") {
+					var width = $('#infoDrid').parent().width();
+					var height = $('#infoDrid').parent().height();
+					$('#infoDrid').datagrid({
+						toolbar : "#toolbar",
+						data: data.data.rows,
+						width : width,
+						height : height,
+						async : false,
+						fit : true,
+						border : false,
+						singleSelect : true,
+						fitColumns : true,
+						striped : true,
+						pagination : true,
+						columns : [ [
+							{field:'name',title:'小项名称',align:'center',width:150},
+							{field:'cooperator',title:'合作单位',align:'center',width:150},
+							{field:'startDate',title:'开始日期',align:'center',width:150},
+							{field:'endDate',title:'结束日期',align:'center',width:100},
+							{field:'amount',title:'总金额',align:'center',width:150},
+							{field:'status',title:'合同状态',align:'center',width:150,
+								formatter: function(value,row,index){
+									if(value=="2"){
+										return "已结束";
+									}else if(value=="1"){
+										return "进行中";
+									}else{
+										return "";
+									}
+								}
+							}
+						] ],
+					});
+					var p = $('#infoDrid').datagrid('getPager');
+			        $(p).pagination({
+			        	total : data.data.total,
+			            pageSize: pageSize,
+			            pageList: [15, 30, 50],
+			            pageNumber : pageNumber,
+			            beforePageText: '第',
+			            afterPageText: '页    共 {pages} 页',
+			            displayMsg: '当前显示 {from}-{to} 条记录,共 {total} 条记录',
+			            showRefresh : false,
+			            onSelectPage:function(pageNumber, pageSize){
+			        		gridLoad(pageNumber,pageSize);
+			        	}
+			        });
+				}
+			}
+		});
+	}
+</script>
