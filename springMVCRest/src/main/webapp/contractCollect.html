@@ -8,43 +8,49 @@
 <body>
 <div align="center" style="width:100%">
 	<fieldset>
-		<form id="addForm">
-		<input id="id" name="id" type="hidden"></input>
+		<form id="Form">
 			<table class="tableForm">
 				<tr>
-					<td class="formLeft">开始时间:</td>
+					<td class="formLeft">开始日期:</td>
 					<td class="formRight">
-						<input class="easyui-datetimebox" name="pushtype" id="pushtypeAdd">
+						<input class="easyui-datebox" data-options="required:true"  name="endTimeBegin" id="endTimeBegin">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">结束时间:</td>
+					<td class="formLeft">结束日期:</td>
 					<td class="formRight">
-						<input class="easyui-datetimebox" name="pushpositioncode" id="pushpositioncodeAdd"></input>
+						<input class="easyui-datebox" data-options="required:true"  name="endTimeEnd" id="endTimeEnd"></input>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="text-align: center;">
+						<p><a href="#" class="easyui-linkbutton c1" style="width:100px" id="countAll">统计</a></p>
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">小项数量:</td>
-					<td class="formRight">
-					21
+					<td class="formRight" id="cashedAmount">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">支出金额:</td>
-					<td class="formRight">
-					12123123213
+					<td class="formRight"id="payedAmount">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">回款金额:</td>
-					<td class="formRight">
-					1323123123
+					<td class="formRight"id="amount">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">总计:</td>
-					<td class="formRight">
-					123321321
+					<td class="formRight"id="count">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="text-align: center;">
+						<p><a href="#" class="easyui-linkbutton c1" style="width:100px" id="countDetail">查看明细</a></p>
+					</td>
 					</td>
 				</tr>
 			</table>
@@ -55,41 +61,39 @@
 </html>
 <script>
 $(function(){
-	//点击事件
-	clickFunction();
-});
-function clickFunction(){
-		//重置按钮
-		$('#resetbtn').click(function(){
-			$('#addForm').form('clear');
-			$("#acceptpositioncodeAdd").combobox({disabled:true});
-		});
-		//保存按钮
-		$('#insert').click(function(){
-			
-			addInfo();
-		});
-	}
-		//添加信息
-		function addInfo(){
-			if($("#addForm").form('validate')){
-				$.ajax({
-					url:'',
-					type:'POST',
-					data:$("#addForm").serialize(),
-					error:function(){
-						$.messager.alert("提示","数据操作存在异常!");
-						
-					},
-					success:function(data){	
-						if(data.success){
-							$('#addForm').form('clear');
-						}else{
-							
-						}
+	$.ajaxSetup({crossDomain: true, xhrFields: {withCredentials: true}});
+	$('#countAll').click(function(){
+		if($("#Form").form('validate')){
+			$.ajax({
+				url:getHost() + '/small_item/summary_by_time_range',
+				type:'POST',
+				data:JSON.stringify({
+					endTimeBegin : $("#endTimeBegin").val(),
+					endTimeEnd : $("#endTimeEnd").val(),
+				}),
+				async : false,
+				dataType : "json",
+				contentType: 'application/json;charset=UTF-8',
+				error:function(){
+					$.messager.alert("提示","数据操作存在异常!");
+				},
+				success:function(data){
+					if(data.code==200){
+						$("#cashedAmount").html(data.data.item.cashedAmount);
+						$("#payedAmount").html(data.data.item.payedAmount);
+						$("#amount").html(data.data.item.amount);
+						$("#count").html(data.data.item.count);
+					}else{
 						$.messager.alert("提示",data.message);
 					}
-				});
-			}
+				}
+			});
 		}
+	});
+	$('#countDetail').click(function(){
+		sessionStorage.setItem('endTimeBegin',$("#endTimeBegin").val());
+		sessionStorage.setItem('endTimeEnd',$("#endTimeEnd").val());
+		parent.addTab('汇总明细',  "/countDetail.html")
+	});
+});
 </script>

@@ -114,7 +114,7 @@
 		//页面初始化
 		layoutLoad();
 		//数据表格加载
-		gridLoad(1,20);	
+		gridLoad(1,15);	
 		//loadAndSetGridData();	
 		//点击事件
 		clickFunction();
@@ -184,10 +184,10 @@
 					var p = $('#infoDrid').datagrid('getPager');
 			        $(p).pagination({
 			        	total : data.data.page.total,
-			            pageSize: pageSize,//每页显示的记录条数，默认为10
-			            pageList: [20, 50, 100],//可以设置每页记录条数的列表
+			            pageSize: pageSize,
+			            pageList: [15, 30, 50],
 			            pageNumber : pageNumber,
-			            beforePageText: '第',//页数文本框前显示的汉字
+			            beforePageText: '第',
 			            afterPageText: '页    共 {pages} 页',
 			            displayMsg: '当前显示 {from}-{to} 条记录,共 {total} 条记录',
 			            showRefresh : false,
@@ -206,7 +206,7 @@
 		});
 		//点击查询
 		$('#searchbtn').click(function() {
-			gridLoad(1,20);
+			gridLoad(1,15);
 		});
 		$('#resetbtn').click(function() {
 			$('#searchForm')[0].reset();
@@ -214,7 +214,7 @@
 			$("#signdate").val('');
 			$('#stattimeSearch').datetimebox('setValue', '');
 			$('#endtimeSearch').datetimebox('setValue', '');
-			gridLoad(1,20);
+			gridLoad(1,15);
 		});
 		
 		//修改
@@ -285,7 +285,7 @@
 						success:function(data){
 							if(data.code==200){
 								$.messager.alert("提示","删除成功");
-								gridLoad(1,20);
+								gridLoad(1,15);
 							}else{
 								$.messager.alert("提示",data.message);
 							}
@@ -325,7 +325,7 @@
 						$('#addForm').form('clear');
 						$('#addDialog').dialog('close');
 						$('#infoDrid').datagrid('load');
-						gridLoad(1,20);
+						gridLoad(1,15);
 					}else{
 						$.messager.alert("提示",data.message);
 					}
@@ -364,7 +364,7 @@
 						$('#addForm').form('clear');
 						$('#addDialog').dialog('close');
 						//$('#infoDrid').datagrid('load');
-						gridLoad(1,20);
+						gridLoad(1,15);
 					}else{
 						$.messager.alert("提示",data.message);
 					}
