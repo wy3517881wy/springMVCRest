@@ -88,12 +88,6 @@
 						<input class="easyui-validatebox"  data-options="required:true" name="contractName" id="contractName">
 					</td>
 				</tr>
-				<tr>
-					<td class="formLeft">合同金额:</td>
-					<td>
-						<input class="easyui-validatebox"  data-options="required:true" name="contractAmount" id="contractAmount">
-					</td>
-				</tr>
 			</table>
 		</form>
 	</div>
@@ -165,6 +159,7 @@
 						fitColumns : true,
 						striped : true,
 						pagination : true,
+						scrollbarSize:0 ,
 						columns : [ [
 							{field:'region',title:'合同区域',align:'center',width:150},
 							{field:'firstPartyName',title:'甲方名称',align:'center',width:150},
@@ -191,12 +186,12 @@
 									return value.nickname;
 								}
 							},
-							{field:'createTime',title:'创建时间',align:'center',width:200},
-							{field:'id',title:'操作',align:'center',width:100,
+							{field:'createTime',title:'创建时间',align:'center',width:230},
+							{field:'id',title:'操作',align:'center',width:150,
 								formatter: function(value,row,index){
 									return "<input style=\"cursor:pointer;\" type=\"button\" value=\"订单列表\" onClick=\"orderList(" + index + ")\" style=\"width:100px\"/>";
 								}
-							},
+							}
 						] ],
 					});
 					var p = $('#infoDrid').datagrid('getPager');
@@ -315,7 +310,7 @@
 		parent.addTab('订单列表',  "/orderList.html")
 	}
 	
-	//添加信息
+	//修改
 	function editInfo(){
 		if($("#editForm").form('validate')){
 			$.ajax({
@@ -327,7 +322,6 @@
 					secondPartyName : $("#secondPartyName").val(),
 					contractNo : $("#contractNo").val(),
 					contractName : $("#contractName").val(),
-					contractAmount : $("#contractAmount").val(),
 					id : $("#contractID").val(),
 				}),
 				dataType : "json",
