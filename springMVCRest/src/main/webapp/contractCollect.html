@@ -13,13 +13,19 @@
 				<tr>
 					<td class="formLeft">开始日期:</td>
 					<td class="formRight">
-						<input class="easyui-datebox" data-options="required:true"  name="endTimeBegin" id="endTimeBegin">
+						<input class="easyui-datebox" data-options="required:true" name="endTimeBegin" id="endTimeBegin">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">结束日期:</td>
 					<td class="formRight">
-						<input class="easyui-datebox" data-options="required:true"  name="endTimeEnd" id="endTimeEnd"></input>
+						<input class="easyui-datebox" data-options="required:true" name="endTimeEnd" id="endTimeEnd"></input>
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">甲方名称:</td>
+					<td class="formRight">
+						<input class="easyui-validatebox" name="firstPartyName" id="firstPartyName" placeholder="选填"></input>
 					</td>
 				</tr>
 				<tr>
@@ -70,6 +76,7 @@ $(function(){
 				data:JSON.stringify({
 					endTimeBegin : $("#endTimeBegin").val(),
 					endTimeEnd : $("#endTimeEnd").val(),
+					firstPartyName : $("#firstPartyName").val().trim()==""?null:$("#firstPartyName").val(),
 				}),
 				async : false,
 				dataType : "json",

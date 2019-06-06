@@ -47,7 +47,8 @@
 </div>
 	<!-- dataGrid工具栏 -->
 	<div id="toolbar">
-		<!-- <a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a> -->
+		<!-- <a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a>
+		<a id="uploadBTN" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >上传</a> -->
 		<a id="edit" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >编辑合同</a>
 		<a id="finish" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:true" >结束合同</a>
 		<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" >删除合同</a>
@@ -91,6 +92,24 @@
 			</table>
 		</form>
 	</div>
+	<!-- 上传 -->
+	<div id="uploadDialog">
+		<form id="uploadForm" enctype="multipart/form-data" method="post" action="http://124.239.148.161:18080/file" >
+			<table class="tableForm">
+				<tr id="inputCB1" >
+					<td><label> 横版图片 </label></td>
+					<td><input class="easyui-filebox" multiple style="width:300px" id="file" name="file" data-options='onChange:change_photo,buttonText: "选择文件"'></td>
+				</tr>
+				<tr id="inputCB4" >
+					<td><label>图片预览</label></td>
+					<td>
+						<div id="Imgdiv">
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
 </body>
 </html>
 
@@ -104,7 +123,7 @@
 		//loadAndSetGridData();	
 		//点击事件
 		clickFunction();
-		
+
 	});
 	//页面初始化
 	function layoutLoad(){
@@ -127,6 +146,27 @@
 				iconCls:'icon-cancel',
 				handler:function(){
 					$('#editDialog').dialog('close');
+				}
+			}], 
+		});
+		//信息编辑dialog
+		$('#uploadForm').dialog({
+			title: '上传',
+		    width: 500,
+		    height:500,
+		    closed: true,    
+		    modal: true,
+		    buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					uploadFiles()
+                }
+			},{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					$('#uploadForm').dialog('close');
 				}
 			}], 
 		});
@@ -242,6 +282,11 @@
 			$('#editForm').form('load',row);
 			$('#editDialog').dialog('open');
 		});
+		
+		//上传 
+		$('#uploadBTN').click(function() {
+			$('#uploadForm').dialog('open');
+		});
 		//删除 
 		$('#delete').click(function() {
 			var row = $('#infoDrid').datagrid('getSelected');
@@ -345,5 +390,74 @@
 				}
 			});
 		}
+	}
+	function uploadFiles(){
+		$("#uploadForm").submit();
+		$.ajax({
+			url:getHost() + '/file',
+			type:'POST',
+			data:{
+				file : $("#file").val(),
+			},
+			dataType : "json",
+			contentType: false,
+			processData: false,
+			error : function(XMLHttpRequest, textStatus, errorThrown){
+				$.messager.alert("提示","数据操作存在异常!");
+			},
+			beforeSend: function(xhr) {
+                xhr.withCredentials = true;
+            },
+            crossDomain:true,
+			success:function(data){
+				if(data.code=="200"&&data.data.item.id>0){
+					$.messager.alert("提示","保存成功");
+					$('#editForm').form('clear');
+					$('#editDialog').dialog('close');
+					gridLoad(1,15);
+				}else{
+					$.messager.alert("提示",data.message+"sss");
+				}
+			}
+		});
+	}
+	function change_photo(){
+	    PreviewImage($("input[name='file']")[0], 'Imgdiv');
+	}
+	function PreviewImage(fileObj,divPreviewId){
+		
+	    var allowExtention=".jpg,.bmp,.gif,.png";//允许上传文件的后缀名document.getElementById("hfAllowPicSuffix").value;  
+	    var browserVersion= window.navigator.userAgent.toUpperCase();
+	    //循环判断后缀名
+	    for(i=0;i<fileObj.files.length;i++){
+	    	var extention=fileObj.files[i].name.substring(fileObj.files[i].name.lastIndexOf("."),fileObj.files[i].name.length).toLowerCase();
+	    	if(allowExtention.indexOf(extention)<0){
+	    		alert("仅支持"+allowExtention+"为后缀名的文件!");  
+	   	        fileObj.value="";//清空选中文件  
+	   	        if(browserVersion.indexOf("MSIE")>-1){
+	   	            fileObj.select();  
+	   	            document.selection.clear();  
+	   	        }                  
+	   	        fileObj.outerHTML=fileObj.outerHTML;
+	   	        return false;
+	    	}
+	    }
+	    
+	    $.each(fileObj.files,function(key,value){
+	        //每次都只会遍历一个图片数据
+	        var div = document.createElement("div");
+	        var img = document.createElement("img");
+	        div.className = "pic";
+	        img.width="200";
+	        img.height="200";
+
+	        var fr = new FileReader();
+	        fr.onload = function(){
+	            img.src=this.result;
+	            div.appendChild(img);
+	            document.getElementById("Imgdiv").appendChild(div);
+	        }
+	        fr.readAsDataURL(value);
+	    })
 	}
 </script>

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <script type="text/javascript" src="/static/js/head.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/css/contractList.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/smallItemList.css" />
 </head> 
 <body id="layout" class="easyui-layout">
 	<div data-options="region:'center',border:false">
@@ -61,19 +61,91 @@
 				<tr>
 					<td class="formLeft">名称:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="name" id="name">
+						<input class="easyui-validatebox" data-options="required:true" name="addName" id="addName">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">合作单位:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="cooperator" id="cooperator">
+						<input class="easyui-validatebox" data-options="required:true" name="addCooperator" id="addCooperator">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">开始日期:</td>
 					<td>
-						<input class="easyui-datebox"  data-options="required:true" name="tartDate" id="startDate">
+						<input class="easyui-datebox"  data-options="required:true" name="addStartDate" id="addStartDate">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">验收日期:</td>
+					<td>
+						<input class="easyui-datebox" name="addCheckAndAcceptDate" id="addCheckAndAcceptDate">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">总金额:</td>
+					<td>
+						<input class="easyui-validatebox" name="addAmount" id="addAmount">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">乙方施工费:</td>
+					<td>
+						<input class="easyui-validatebox" name="addSecondPartyConstructionCost" id="addSecondPartyConstructionCost">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">甲方提供材料费:</td>
+					<td>
+						<input class="easyui-validatebox" name="addFirstPartyMaterialCost" id="addFirstPartyMaterialCost">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">乙方提供材料费:</td>
+					<td>
+						<input class="easyui-validatebox" name="addSecondPartyMaterialCost" id="addSecondPartyMaterialCost">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">乙方安全生产费用:</td>
+					<td>
+						<input class="easyui-validatebox" name="addSecondPartySafeProductionCost" id="addSecondPartySafeProductionCost">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">规费:</td>
+					<td>
+						<input class="easyui-validatebox" name="addStipulatedFee" id="addStipulatedFee">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">回款额:</td>
+					<td>
+						<input class="easyui-validatebox" name="addAmountCashed" id="addAmountCashed">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">乙方审计费用:</td>
+					<td>
+						<input class="easyui-validatebox" name="addSecondPartyAuditFee" id="addSecondPartyAuditFee">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">乙方扣款:</td>
+					<td>
+						<input class="easyui-validatebox" name="addSecondPartyDeductedAmount" id="addSecondPartyDeductedAmount">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">税金:</td>
+					<td>
+						<input class="easyui-validatebox" name="addTaxAmount" id="addTaxAmount">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">管理费:</td>
+					<td>
+						<input class="easyui-validatebox" name="addManagementFee" id="addManagementFee">
 					</td>
 				</tr>
 			</table>
@@ -85,20 +157,92 @@
 				<tr>
 					<td class="formLeft">小项名称:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="name" id="name">
+						<input class="easyui-validatebox" data-options="required:true" name="name" id="name">
 						<input id="smallId" value="0" type="hidden">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">合作单位:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="cooperator" id="cooperator">
+						<input class="easyui-validatebox" data-options="required:true" name="cooperator" id="cooperator">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">开始日期:</td>
 					<td id="updateRoleTD">
 						<input class="easyui-datebox"  data-options="required:true" name="startDate" id="startDate">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">验收日期:</td>
+					<td>
+						<input class="easyui-datebox" name="checkAndAcceptDate" id="checkAndAcceptDate">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">总金额:</td>
+					<td>
+						<input class="easyui-validatebox" name="amount" id="amount">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">乙方施工费:</td>
+					<td>
+						<input class="easyui-validatebox" name="secondPartyConstructionCost" id="secondPartyConstructionCost">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">甲方提供材料费:</td>
+					<td>
+						<input class="easyui-validatebox" name="firstPartyMaterialCost" id="firstPartyMaterialCost">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">乙方提供材料费:</td>
+					<td>
+						<input class="easyui-validatebox" name="secondPartyMaterialCost" id="secondPartyMaterialCost">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">乙方安全生产费用:</td>
+					<td>
+						<input class="easyui-validatebox" name="secondPartySafeProductionCost" id="secondPartySafeProductionCost">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">规费:</td>
+					<td>
+						<input class="easyui-validatebox" name="stipulatedFee" id="stipulatedFee">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">回款额:</td>
+					<td>
+						<input class="easyui-validatebox" name="amountCashed" id="amountCashed">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">乙方审计费用:</td>
+					<td>
+						<input class="easyui-validatebox" name="secondPartyAuditFee" id="secondPartyAuditFee">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">乙方扣款:</td>
+					<td>
+						<input class="easyui-validatebox" name="secondPartyDeductedAmount" id="secondPartyDeductedAmount">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">税金:</td>
+					<td>
+						<input class="easyui-validatebox" name="taxAmount" id="taxAmount">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">管理费:</td>
+					<td>
+						<input class="easyui-validatebox" name="managementFee" id="managementFee">
 					</td>
 				</tr>
 			</table>
@@ -124,8 +268,8 @@
 		//信息添加dialog
 		$('#addDialog').dialog({
 			title: '添加小项',
-		    width: 300,
-		    height:300,
+		    width: 400,
+		    height:550,
 		    closed: true,    
 		    modal: true,
 		    buttons:[{
@@ -144,8 +288,8 @@
 		});
 		$('#updateDialog').dialog({
 			title: '更新财务信息',
-		    width: 300,
-		    height:400,
+		    width: 400,
+		    height:550,
 		    closed: true,
 		    modal: true,
 		    buttons:[{
@@ -194,11 +338,11 @@
 						pagination : true,
 						scrollbarSize:0 ,
 						columns : [ [
-							{field:'name',title:'小项名称' ,align:'center',width:150},
-							{field:'cooperator',title:'合作单位' ,align:'center',width:150},
-							{field:'startDate',title:'开始日期',align:'center',width:150},
-							{field:'endDate',title:'结束日期',align:'center',width:150},
-							{field:'status',title:'小项状态',align:'center',width:150,
+							{field:'name',title:'小项名称' ,align:'center'},
+							{field:'cooperator',title:'合作单位' ,align:'center'},
+							{field:'startDate',title:'开始日期',align:'center',width:130},
+							{field:'endDate',title:'结束日期',align:'center',width:130},
+							{field:'status',title:'状态',align:'center',width:80,
 								formatter: function(value,row,index){
 									if(value=="2"){
 										return "已结束";
@@ -209,6 +353,18 @@
 									}
 								}
 							},
+							{field:'checkAndAcceptDate',title:'验收日期',align:'center',width:130},
+							{field:'amount',title:'总金额',align:'center',width:150},
+							{field:'secondPartyConstructionCost',title:'乙方施工费',align:'center'},
+							{field:'firstPartyMaterialCost',title:'甲方提供材料费',align:'center'},
+							{field:'secondPartyMaterialCost',title:'乙方提供材料费',align:'center'},
+							{field:'secondPartySafeProductionCost',title:'乙方安全生产费用',align:'center'},
+							{field:'stipulatedFee',title:'规费',align:'center'},
+							{field:'amountCashed',title:'回款额',align:'center'},
+							{field:'secondPartyAuditFee',title:'乙方审计费',align:'center'},
+							{field:'secondPartyDeductedAmount',title:'乙方扣款',align:'center'},
+							{field:'taxAmount',title:'税金',align:'center'},
+							{field:'managementFee',title:'管理费',align:'center'},
 						] ],
 					});
 					var p = $('#infoDrid').datagrid('getPager');
@@ -288,7 +444,7 @@
 								$.messager.alert("提示","删除成功");
 								gridLoad(1,15);
 							}else{
-								$.messager.alert("提示","删除失败");
+								$.messager.alert("提示",data.message);
 							}
 						}
 					});
@@ -316,7 +472,7 @@
 								$.messager.alert("提示","操作成功");
 								gridLoad(1,15);
 							}else{
-								$.messager.alert("提示","操作失败");
+								$.messager.alert("提示",data.message);
 							}
 						}
 					});
@@ -326,92 +482,96 @@
 	}
 	//添加信息
 	function addInfo(){
-		if($("#name").val()==null ||$("#name").val()==""){
-			$.messager.alert("提示","名称不能为空!");
-			return;
-		}
-		if($("#cooperator").val()==null ||$("#cooperator").val()==""){
-			$.messager.alert("提示","合作单位不能为空!");
-			return;
-		}
-		if($("#startDate").val()==null ||$("#startDate").val()==""){
-			$.messager.alert("提示","开始日期不能为空!");
-			return;
-		}
-		$.ajax({
-			url:getHost() + '/small_item',
-			type:'POST',
-			data:JSON.stringify({
-				contractOrderId : $("#contractOrderId").val(),
-				name : $("#name").val(),
-				cooperator : $("#cooperator").val(),
-				startDate : $("#startDate").val(),
-			}),
-			contentType: 'application/json;charset=UTF-8',
-			beforeSend: function(xhr) {
-                xhr.withCredentials = true;
-            },
-            crossDomain:true,
-			error:function(){
-				$.messager.alert("提示","数据操作存在异常!");
-				$('#addDialog').dialog('close');
-			},
-			success:function(data){
-				if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
-					$.messager.alert("提示","创建成功");
-					$('#addForm').form('clear');
+		if($("#addForm").form('validate')){
+			$.ajax({
+				url:getHost() + '/small_item',
+				type:'POST',
+				data:JSON.stringify({
+					contractOrderId : $("#contractOrderId").val(),
+					name : $("#addName").val(),
+					cooperator : $("#addCooperator").val(),
+					startDate : $("#addStartDate").val(),
+					checkAndAcceptDate : $("#addCheckAndAcceptDate").val(),
+					amount : $("#addAmount").val(),
+					secondPartyConstructionCost : $("#addSecondPartyConstructionCost").val(),
+					firstPartyMaterialCost : $("#addFirstPartyMaterialCost").val(),
+					secondPartyMaterialCost : $("#addSecondPartyMaterialCost").val(),
+					secondPartySafeProductionCost : $("#addSecondPartySafeProductionCost").val(),
+					stipulatedFee : $("#addStipulatedFee").val(),
+					amountCashed : $("#addAmountCashed").val(),
+					secondPartyAuditFee : $("#addSecondPartyAuditFee").val(),
+					secondPartyDeductedAmount : $("#addSecondPartyDeductedAmount").val(),
+					taxAmount : $("#addTaxAmount").val(),
+					managementFee : $("#addManagementFee").val(),
+				}),
+				contentType: 'application/json;charset=UTF-8',
+				beforeSend: function(xhr) {
+	                xhr.withCredentials = true;
+	            },
+	            crossDomain:true,
+				error:function(){
+					$.messager.alert("提示","数据操作存在异常!");
 					$('#addDialog').dialog('close');
-					$('#infoDrid').datagrid('load');
-					gridLoad(1,15);
-				}else{
-					$.messager.alert("提示",data.message);
+				},
+				success:function(data){
+					if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
+						$.messager.alert("提示","创建成功");
+						$('#addForm').form('clear');
+						$('#addDialog').dialog('close');
+						$('#infoDrid').datagrid('load');
+						gridLoad(1,15);
+					}else{
+						$.messager.alert("提示",data.message);
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 	//更新小项信息
 	function updatedInfo(){
-		if($("#name").val()==null ||$("#name").val()==""){
-			$.messager.alert("提示","名称不能为空!");
-			return;
-		}
-		if($("#cooperator").val()==null ||$("#cooperator").val()==""){
-			$.messager.alert("提示","合作单位不能为空!");
-			return;
-		}
-		if($("#startDate").val()==null ||$("#startDate").val()==""){
-			$.messager.alert("提示","开始日期不能为空!");
-			return;
-		}
-		$.ajax({
-			url:getHost() + '/small_item',
-			type:'PUT',
-			data:JSON.stringify({
-				"name": $("#name").val(),
-			    "cooperator": $("#cooperator").val(),
-			    "startDate": $("#startDate").val(),
-			    "id": $("#smallId").val()
-			}),
-			contentType: 'application/json;charset=UTF-8',
-			error:function(){
-				$.messager.alert("提示","数据操作存在异常!");
-				$('#updateDialog').dialog('close');
-			},
-			beforeSend: function(xhr) {
-                xhr.withCredentials = true;
-            },
-            crossDomain:true,
-			success:function(data){
-				if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
-					$.messager.alert("提示","修改成功");
-					$('#updateForm').form('clear');
+		if($("#updateForm").form('validate')){
+			$.ajax({
+				url:getHost() + '/small_item',
+				type:'PUT',
+				data:JSON.stringify({
+					"name": $("#name").val(),
+				    "cooperator": $("#cooperator").val(),
+				    "startDate": $("#startDate").val(),
+				    "checkAndAcceptDate" : $("#checkAndAcceptDate").val(),
+					"amount" : $("#amount").val(),
+					"secondPartyConstructionCost" : $("#secondPartyConstructionCost").val(),
+					"firstPartyMaterialCost" : $("#firstPartyMaterialCost").val(),
+					"secondPartyMaterialCost" : $("#secondPartyMaterialCost").val(),
+					"secondPartySafeProductionCost" : $("#secondPartySafeProductionCost").val(),
+					"stipulatedFee" : $("#stipulatedFee").val(),
+					"amountCashed" : $("#amountCashed").val(),
+					"secondPartyAuditFee" : $("#secondPartyAuditFee").val(),
+					"secondPartyDeductedAmount" : $("#secondPartyDeductedAmount").val(),
+					"taxAmount" : $("#taxAmount").val(),
+					"managementFee" : $("#managementFee").val(),
+				    "id": $("#smallId").val()
+				}),
+				contentType: 'application/json;charset=UTF-8',
+				error:function(){
+					$.messager.alert("提示","数据操作存在异常!");
 					$('#updateDialog').dialog('close');
-					//$('#infoDrid').datagrid('load');
-					gridLoad(1,15);
-				}else{
-					$.messager.alert("提示","修改失败");
+				},
+				beforeSend: function(xhr) {
+	                xhr.withCredentials = true;
+	            },
+	            crossDomain:true,
+				success:function(data){
+					if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
+						$.messager.alert("提示","修改成功");
+						$('#updateForm').form('clear');
+						$('#updateDialog').dialog('close');
+						//$('#infoDrid').datagrid('load');
+						gridLoad(1,15);
+					}else{
+						$.messager.alert("提示",data.message);
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 </script>

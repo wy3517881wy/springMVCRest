@@ -69,11 +69,11 @@
 	border-radius: 30px;
 	background-clip: padding-box;
 	margin-left:2%;
-	float: left;
+	float: right;
 }
 .userinfo{
-	margin-left:50%; 
-	float: left;
+	margin-left:00%; 
+	float: right;
 	height: 90%;
 	line-height:55px; 
 	width:80px; 

@@ -176,7 +176,7 @@
 						columns : [ [
 							{field:'name',title:'工具名称' ,align:'center',width:150},
 							{field:'type',title:'规格' ,align:'center',width:150},
-							{field:'purchaseTime',title:'开始日期',align:'center',width:150},
+							{field:'purchaseTime',title:'购买日期',align:'center',width:150},
 							{field:'borrower',title:'借用人',align:'center',width:150},
 							{field:'startTime',title:'开始时间',align:'center',width:150},
 							{field:'endTime',title:'结束时间',align:'center',width:150},
@@ -302,7 +302,7 @@
 			$.ajax({
 				url:getHost() + '/instrument',
 				type:'POST',
-				data:JSON.stringify({
+				data:{
 					name : $("#name").val(),
 					type : $("#type").val(),
 					purchaseTime : $("#purchaseTime").val(),
@@ -310,7 +310,8 @@
 					startTime : $("#startTime").val(),
 					endTime : $("#endTime").val(),
 					remark : $("#remark").val(),
-				}),
+				},
+				dataType : "json",
 				contentType: 'application/json;charset=UTF-8',
 				beforeSend: function(xhr) {
 	                xhr.withCredentials = true;
