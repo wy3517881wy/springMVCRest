@@ -21,7 +21,15 @@
 				<tr>
 					<td class="formLeft">甲方名称:</td>
 					<td class="formRight">
-						<input class="easyui-validatebox" name="firstPartyName" id="firstPartyName" placeholder="请输入甲方名称" required="required"/>
+						<select class="easyui-combobox" name="firstPartyName" id="firstPartyName" placeholder="请输入甲方名称" required="required" style="width:260px;">
+						    <option value="移动">移动</option>
+						    <option value="联通">联通</option>
+						    <option value="电信">电信</option>
+						    <option value="铁塔">铁塔</option>
+						    <option value="省通建">省通建</option>
+						    <option value="广电">广电</option>
+						    <option value="其他">其他</option>
+						</select>
 					</td>
 				</tr>
 				<tr>
@@ -80,6 +88,7 @@ function clickFunction(){
 			addInfo();
 		});
 	}
+	
 		//添加信息
 		function addInfo(){
 			if($("#addForm").form('validate')){
@@ -88,7 +97,7 @@ function clickFunction(){
 					type:'POST',
 					data:JSON.stringify({
 						region : $("#region").val(),
-						firstPartyName : $("#firstPartyName").val(),
+						firstPartyName : $('#firstPartyName').combobox('getValue'),
 						secondPartyName : $("#secondPartyName").val(),
 						contractNo : $("#contractNo").val(),
 						contractName : $("#contractName").val(),
