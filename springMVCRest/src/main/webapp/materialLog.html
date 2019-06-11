@@ -9,88 +9,27 @@
 	<div data-options="region:'center',border:false">
 		<table id="infoDrid"></table>
 	</div>
-	<input type="hidden" id="contractOrderId">
-<!-- 查询条件 -->
-<div data-options="region:'east',split:true,title:'信息查询',border:false" style="width:250px;padding:5px;">
-<form id="searchForm">
-	<table class="searchTable">
-		<tr>
-			<td class="searchLeft">工具名称：</td>
-			<td class="searchRight">
-				<input class="easyui-validatebox" name="username" id="usernameSearch">
-			</td>
-		</tr>
-		<tr>
-			<td  class="searchLeft">工具编号：</td>
-			<td class="searchRight">
-				<input class="easyui-validatebox" name="loginname" id="loginnameSearch" value=''>
-				<input id="signdate" type="hidden" value="">
-			</td>
-		</tr>
-		<tr>
-			<td class="searchLeft">开始时间：</td>
-			<td class="searchRight">
-				<input class="easyui-datetimebox" name="stattime" id="stattimeSearch">
-			</td>
-		</tr>
-		<tr>
-			<td  class="searchLeft">结束时间：</td>
-			<td class="searchRight">
-				<input class="easyui-datetimebox" name="endtime" id="endtimeSearch">
-			</td>
-		</tr>
-	</table>
-	<div>
-	<a id="searchbtn" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch'" style="margin-left:50px">查询</a>
-	<a id="resetbtn"   class="easyui-linkbutton" data-options="iconCls:'icon-ccReload'">重置</a>
-	</div>
-</form>
-</div>
-	<!-- dataGrid工具栏 -->
+	<input type="hidden" id="materialId">
+	<input type="hidden" id="materialType">
+	<!-- dataGrid材料栏 -->
 	<div id="toolbar">
-		<a id="add" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >添加工具</a>
-		<a id="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >修改工具</a>
-		<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" >删除工具</a>
+		<a id="add" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >添加记录</a>
+		<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" >删除记录</a>
 	</div>
 	<!-- 添加 -->
 	<div id="addDialog">
 		<form id="addForm">
 			<table class="tableForm">
 				<tr>
-					<td class="formLeft">工具名称:</td>
+					<td class="formLeft">数量:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="required:true" name="name" id="name">
-						<input id="toolId" value="0" type="hidden">
+						<input class="easyui-numberbox"  data-options="required:true,precision:0,groupSeparator:','" name="count" id="count" >
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">规格:</td>
+					<td class="formLeft">库管:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="required:true" name="type" id="type">
-					</td>
-				</tr>
-				<tr>
-					<td class="formLeft">购买时间:</td>
-					<td>
-						<input class="easyui-datebox"  data-options="required:true" name="purchaseTime" id="purchaseTime">
-					</td>
-				</tr>
-				<tr>
-					<td class="formLeft">借用人:</td>
-					<td>
-						<input class="easyui-validatebox" name="borrower" id="borrower">
-					</td>
-				</tr>
-				<tr>
-					<td class="formLeft">开始时间:</td>
-					<td>
-						<input class="easyui-datebox" name="startTime" id="startTime">
-					</td>
-				</tr>
-				<tr>
-					<td class="formLeft">结束时间:</td>
-					<td>
-						<input class="easyui-datebox" name="endTime" id="endTime">
+						<input class="easyui-validatebox"  data-options="required:true" name="auditor" id="auditor">
 					</td>
 				</tr>
 				<tr>
@@ -108,6 +47,13 @@
 <script>
 	$(function(){
 		$.ajaxSetup({crossDomain: true, xhrFields: {withCredentials: true}});
+		$("#materialId").val(sessionStorage.getItem('materialId'));
+		$("#materialType").val(sessionStorage.getItem('materialType'));
+		if($("#materialType").val()==1){
+			$('#add .l-btn-text').html('出库');
+		}else if($("#materialType").val()==2){
+			$('#add .l-btn-text').html('入库');
+		}
 		//页面初始化
 		layoutLoad();
 		//数据表格加载
@@ -118,10 +64,9 @@
 	});
 	//页面初始化
 	function layoutLoad(){
-		$('#layout').layout('collapse','east');
 		//信息添加dialog
 		$('#addDialog').dialog({
-			title: '添加工具',
+			title: '添加记录',
 		    width: 300,
 		    height:350,
 		    closed: true,    
@@ -144,16 +89,19 @@
 	//数据表格加载
 	function gridLoad(pageNumber,pageSize) {
 		$.ajax({
-			url : getHost() + '/instrument/list/pageable/adapter/order_by_create_time_desc',
+			url : getHost() + '/material_log/list/pageable/adapter/order_by_create_time_desc',
 			type : "GET",
 			data : {
 				"pageNumber": pageNumber,
 			    "pageSize": pageSize,
+			    "materialId": $("#materialId").val(),
+			    "type": $("#materialType").val(),
 			},
 			async : false,
 			dataType : "json",
 			contentType: 'application/json;charset=UTF-8',
 			success : function(data) {
+				console.log(data);
 				if (data.code==200&&typeof(data.data) == "object") {
 					var width = $('#infoDrid').parent().width();
 					var height = $('#infoDrid').parent().height();
@@ -171,12 +119,23 @@
 						pagination : true,
 						scrollbarSize:0 ,
 						columns : [ [
-							{field:'name',title:'工具名称' ,align:'center',width:150},
-							{field:'type',title:'规格' ,align:'center',width:150},
-							{field:'purchaseTime',title:'购买日期',align:'center',width:150},
-							{field:'borrower',title:'借用人',align:'center',width:150},
-							{field:'startTime',title:'开始时间',align:'center',width:150},
-							{field:'endTime',title:'结束时间',align:'center',width:150},
+							{field:'materialName',title:'材料名称' ,align:'center',width:150},
+							{field:'type',title:'操作类型' ,align:'center',width:150,
+								formatter: function(value,row,index){
+									if(value=="1"){
+										return "出库";
+									}else if(value=="2"){
+										return "入库";
+									}else{
+										return "";
+									}
+								}
+							},
+							{field:'count',title:'数量',align:'center',width:150},
+							{field:'applicantName',title:'申请人',align:'center',width:150},
+							{field:'auditor',title:'库管名称',align:'center',width:150},
+							{field:'createTime',title:'操作时间',align:'center',width:150},
+							{field:'remark',title:'备注',align:'center',width:150},
 						] ],
 					});
 					var p = $('#infoDrid').datagrid('getPager');
@@ -215,38 +174,10 @@
 			gridLoad(1,15);
 		});
 		
-		//修改
-		$('#update').click(function() {
-			var row = $('#infoDrid').datagrid('getSelected');
-			if(row==null){
-				$.messager.alert("提示","请选中一行!");
-				return;
-			}
-			$('#addForm')[0].reset();
-			$('#addDialog').dialog({
-				title: '修改工具',
-				buttons:[{
-					text:'确定',
-					iconCls:'icon-ok',
-					handler:function(){
-						editInfo();
-	                }
-				},{
-					text:'取消',
-					iconCls:'icon-cancel',
-					handler:function(){
-						$('#addDialog').dialog('close');
-					}
-				}]
-			});
-			$("#toolId").val(row.id);
-			$('#addForm').form('load',row);
-			$('#addDialog').dialog('open');
-		});
 		$('#add').click(function(){
 			$('#addForm')[0].reset();
 			$('#addDialog').dialog({
-				title: '添加工具',
+				title: '添加材料',
 				buttons:[{
 					text:'确定',
 					iconCls:'icon-ok',
@@ -274,7 +205,7 @@
 			$.messager.confirm('提示','确定要删除吗?',function(r){
 			    if (r){
 			    	$.ajax({
-						url:getHost() + '/instrument/' + row.id,
+						url:getHost() + '/material_log/' + row.id,
 						type:'DELETE',
 						error:function(){
 							$.messager.alert("提示","数据操作存在异常!");
@@ -297,17 +228,15 @@
 	function addInfo(){
 		if($("#addForm").form('validate')){
 			$.ajax({
-				url:getHost() + '/instrument',
+				url:getHost() + '/material_log',
 				type:'POST',
-				data:{
-					name : $("#name").val(),
-					type : $("#type").val(),
-					purchaseTime : $("#purchaseTime").val(),
-					borrower : $("#borrower").val(),
-					startTime : $("#startTime").val(),
-					endTime : $("#endTime").val(),
+				data:JSON.stringify({
+					materialId : $("#materialId").val(),
+					type : $("#materialType").val(),
+					auditor : $("#auditor").val(),
+					count : $("#count").val(),
 					remark : $("#remark").val(),
-				},
+				}),
 				dataType : "json",
 				contentType: 'application/json;charset=UTF-8',
 				beforeSend: function(xhr) {
@@ -332,43 +261,5 @@
 			});
 		}
 	}
-	//更新工具信息
-	function editInfo(){
-		if($("#addForm").form('validate')){
-			$.ajax({
-				url:getHost() + '/instrument',
-				type:'PUT',
-				data:JSON.stringify({
-					name : $("#name").val(),
-					type : $("#type").val(),
-					purchaseTime : $("#purchaseTime").val(),
-					borrower : $("#borrower").val(),
-					startTime : $("#startTime").val(),
-					endTime : $("#endTime").val(),
-					remark : $("#remark").val(),
-					id : $("#toolId").val()
-				}),
-				contentType: 'application/json;charset=UTF-8',
-				error:function(){
-					$.messager.alert("提示","数据操作存在异常!");
-					$('#addDialog').dialog('close');
-				},
-				beforeSend: function(xhr) {
-	                xhr.withCredentials = true;
-	            },
-	            crossDomain:true,
-				success:function(data){
-					if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
-						$.messager.alert("提示","修改成功");
-						$('#addForm').form('clear');
-						$('#addDialog').dialog('close');
-						//$('#infoDrid').datagrid('load');
-						gridLoad(1,15);
-					}else{
-						$.messager.alert("提示",data.message);
-					}
-				}
-			});
-		}
-	}
+	
 </script>

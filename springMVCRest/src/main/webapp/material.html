@@ -15,13 +15,13 @@
 <form id="searchForm">
 	<table class="searchTable">
 		<tr>
-			<td class="searchLeft">工具名称：</td>
+			<td class="searchLeft">材料名称：</td>
 			<td class="searchRight">
 				<input class="easyui-validatebox" name="username" id="usernameSearch">
 			</td>
 		</tr>
 		<tr>
-			<td  class="searchLeft">工具编号：</td>
+			<td  class="searchLeft">材料编号：</td>
 			<td class="searchRight">
 				<input class="easyui-validatebox" name="loginname" id="loginnameSearch" value=''>
 				<input id="signdate" type="hidden" value="">
@@ -46,51 +46,35 @@
 	</div>
 </form>
 </div>
-	<!-- dataGrid工具栏 -->
+	<!-- dataGrid材料栏 -->
 	<div id="toolbar">
-		<a id="add" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >添加工具</a>
-		<a id="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >修改工具</a>
-		<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" >删除工具</a>
+		<a id="add" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >添加材料</a>
+		<!-- <a id="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >修改材料</a> -->
+		<a id="checkOutLog" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccExport',plain:true" >出库记录</a>
+		<a id="checkInLog" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccImport',plain:true" >入库记录</a>
+		<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" >删除材料</a>
 	</div>
 	<!-- 添加 -->
 	<div id="addDialog">
 		<form id="addForm">
 			<table class="tableForm">
 				<tr>
-					<td class="formLeft">工具名称:</td>
+					<td class="formLeft">材料名称:</td>
 					<td>
 						<input class="easyui-validatebox" data-options="required:true" name="name" id="name">
-						<input id="toolId" value="0" type="hidden">
+						<input id="materialId" value="0" type="hidden">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">规格:</td>
+					<td class="formLeft">型号:</td>
 					<td>
 						<input class="easyui-validatebox" data-options="required:true" name="type" id="type">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">购买时间:</td>
+					<td class="formLeft">单位:</td>
 					<td>
-						<input class="easyui-datebox"  data-options="required:true" name="purchaseTime" id="purchaseTime">
-					</td>
-				</tr>
-				<tr>
-					<td class="formLeft">借用人:</td>
-					<td>
-						<input class="easyui-validatebox" name="borrower" id="borrower">
-					</td>
-				</tr>
-				<tr>
-					<td class="formLeft">开始时间:</td>
-					<td>
-						<input class="easyui-datebox" name="startTime" id="startTime">
-					</td>
-				</tr>
-				<tr>
-					<td class="formLeft">结束时间:</td>
-					<td>
-						<input class="easyui-datebox" name="endTime" id="endTime">
+						<input class="easyui-validatebox"  data-options="required:true" name="unit" id="unit">
 					</td>
 				</tr>
 				<tr>
@@ -121,7 +105,7 @@
 		$('#layout').layout('collapse','east');
 		//信息添加dialog
 		$('#addDialog').dialog({
-			title: '添加工具',
+			title: '添加材料',
 		    width: 300,
 		    height:350,
 		    closed: true,    
@@ -144,7 +128,7 @@
 	//数据表格加载
 	function gridLoad(pageNumber,pageSize) {
 		$.ajax({
-			url : getHost() + '/instrument/list/pageable/adapter/order_by_create_time_desc',
+			url : getHost() + '/material/list/pageable/adapter/order_by_create_time_desc',
 			type : "GET",
 			data : {
 				"pageNumber": pageNumber,
@@ -171,12 +155,11 @@
 						pagination : true,
 						scrollbarSize:0 ,
 						columns : [ [
-							{field:'name',title:'工具名称' ,align:'center',width:150},
-							{field:'type',title:'规格' ,align:'center',width:150},
-							{field:'purchaseTime',title:'购买日期',align:'center',width:150},
-							{field:'borrower',title:'借用人',align:'center',width:150},
-							{field:'startTime',title:'开始时间',align:'center',width:150},
-							{field:'endTime',title:'结束时间',align:'center',width:150},
+							{field:'name',title:'材料名称' ,align:'center',width:150},
+							{field:'type',title:'型号' ,align:'center',width:150},
+							{field:'unit',title:'单位',align:'center',width:150},
+							{field:'remainCount',title:'剩余数量',align:'center',width:150},
+							{field:'remark',title:'备注',align:'center',width:150},
 						] ],
 					});
 					var p = $('#infoDrid').datagrid('getPager');
@@ -224,7 +207,7 @@
 			}
 			$('#addForm')[0].reset();
 			$('#addDialog').dialog({
-				title: '修改工具',
+				title: '修改材料',
 				buttons:[{
 					text:'确定',
 					iconCls:'icon-ok',
@@ -239,14 +222,14 @@
 					}
 				}]
 			});
-			$("#toolId").val(row.id);
+			$("#materialId").val(row.id);
 			$('#addForm').form('load',row);
 			$('#addDialog').dialog('open');
 		});
 		$('#add').click(function(){
 			$('#addForm')[0].reset();
 			$('#addDialog').dialog({
-				title: '添加工具',
+				title: '添加材料',
 				buttons:[{
 					text:'确定',
 					iconCls:'icon-ok',
@@ -274,7 +257,7 @@
 			$.messager.confirm('提示','确定要删除吗?',function(r){
 			    if (r){
 			    	$.ajax({
-						url:getHost() + '/instrument/' + row.id,
+						url:getHost() + '/material/' + row.id,
 						type:'DELETE',
 						error:function(){
 							$.messager.alert("提示","数据操作存在异常!");
@@ -292,22 +275,41 @@
 			    }
 			});
 		});
+		//查看出库记录
+		$('#checkOutLog').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			sessionStorage.setItem('materialId',row.id);
+			sessionStorage.setItem('materialType',"1");
+			parent.addTab('出库记录',  "/materialLog.html")
+		});
+		//查看入库记录
+		$('#checkInLog').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			sessionStorage.setItem('materialId',row.id);
+			sessionStorage.setItem('materialType',"2");
+			parent.addTab('入库记录',  "/materialLog.html")
+		});
 	}
 	//添加信息
 	function addInfo(){
 		if($("#addForm").form('validate')){
 			$.ajax({
-				url:getHost() + '/instrument',
+				url:getHost() + '/material',
 				type:'POST',
-				data:{
+				data:JSON.stringify({
 					name : $("#name").val(),
 					type : $("#type").val(),
-					purchaseTime : $("#purchaseTime").val(),
-					borrower : $("#borrower").val(),
-					startTime : $("#startTime").val(),
-					endTime : $("#endTime").val(),
+					unit : $("#unit").val(),
 					remark : $("#remark").val(),
-				},
+				}),
 				dataType : "json",
 				contentType: 'application/json;charset=UTF-8',
 				beforeSend: function(xhr) {
@@ -332,7 +334,7 @@
 			});
 		}
 	}
-	//更新工具信息
+	//更新材料信息
 	function editInfo(){
 		if($("#addForm").form('validate')){
 			$.ajax({
@@ -341,12 +343,9 @@
 				data:JSON.stringify({
 					name : $("#name").val(),
 					type : $("#type").val(),
-					purchaseTime : $("#purchaseTime").val(),
-					borrower : $("#borrower").val(),
-					startTime : $("#startTime").val(),
-					endTime : $("#endTime").val(),
+					unit : $("#unit").val(),
 					remark : $("#remark").val(),
-					id : $("#toolId").val()
+					id : $("#materialId").val()
 				}),
 				contentType: 'application/json;charset=UTF-8',
 				error:function(){
@@ -371,4 +370,5 @@
 			});
 		}
 	}
+	
 </script>
