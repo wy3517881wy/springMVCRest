@@ -47,8 +47,9 @@
 </div>
 	<!-- dataGrid工具栏 -->
 	<div id="toolbar">
-		<!-- <a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a>
-		<a id="uploadBTN" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >上传</a> -->
+		<!-- <a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a> -->
+		<a id="uploadBTN" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >上传</a>
+		<a id="checkFile" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >查看附件</a>
 		<a id="edit" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >编辑合同</a>
 		<a id="finish" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:true" >结束合同</a>
 		<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" >删除合同</a>
@@ -119,10 +120,10 @@
 				<tr>
 					<td><label>上传类型</label></td>
 					<td>
-						<input type="radio" name="certType"
-			            class="easyui-validatebox" checked="checked" value="1"><label>中标通知书</label>
-			            <input type="radio" name="certType"
-			            class="easyui-validatebox" value="2"><label>框架合同压缩文件</label>
+						<label><input type="radio" name="certType"
+			              checked="checked" value="1">中标通知书</label>
+			            <label><input type="radio" name="certType"
+			              value="2">框架合同压缩文件</label>
 			            <input type="text" id="uploadContractID" style="display: none;">
 					</td>
 				</tr>
@@ -132,8 +133,7 @@
 						<input id="miData" type="text">
 						<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-upload',plain:true"
 							onClick="document.getElementById('file').click()"></a>
-						<input type="file" style="width:300px" id="file" name="file" class="filePrew" multiple="multiple"
-							onchange="change_photo();">
+						<input type="file" style="width:300px" id="file" name="file" class="filePrew" onchange="change_photo();">
 					</td>
 				</tr>
 				<tr id="inputCB4" >
@@ -330,6 +330,17 @@
 			$("#uploadContractID").val(row.id);
 			$('#uploadForm').dialog('open');
 		});
+		//查看附件
+		$('#checkFile').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			sessionStorage.setItem('fileType','1');
+			sessionStorage.setItem('row',JSON.stringify(row));
+			parent.addTab('附件展示',  "/accessories.html");
+		});
 		//删除 
 		$('#delete').click(function() {
 			var row = $('#infoDrid').datagrid('getSelected');
@@ -349,7 +360,6 @@
 						async : false,
 						dataType : "json",
 						success:function(data){
-							console.log(data);
 							if(data.code==200){
 								$.messager.alert("提示","删除成功");
 								gridLoad(1,15);
@@ -404,6 +414,10 @@
 	//修改
 	function editInfo(){
 		if($("#editForm").form('validate')){
+			var row = $('#infoDrid').datagrid('getSelected');
+			var letterOfAcceptance = "",contractAttachment = "";
+				contractAttachment = row.contractAttachment.id;
+				letterOfAcceptance = row.letterOfAcceptance.id;
 			$.ajax({
 				url:getHost() + '/contract',
 				type:'PUT',
@@ -416,6 +430,8 @@
 					signTime : $("#signTime").val(),
 					startTime : $("#startTime").val(),
 					id : $("#contractID").val(),
+					letterOfAcceptance : letterOfAcceptance,
+					contractAttachment :contractAttachment,
 				}),
 				dataType : "json",
 				contentType: 'application/json;charset=UTF-8',
@@ -440,7 +456,7 @@
 		}
 	}
 	function uploadFiles(){
-	    var count = 0;
+ 	    var count = 0;
 	    var ids = "";
     	var files = document.getElementById("file").files;
     	var fl = files.length;
@@ -459,9 +475,8 @@
 				processData : false,
 				async : false,
 				success : function(data) {
-					//console.log(JSON.stringify(data));
 					if(data.code=="200"&&data.data.item.id>0){
-						ids+=data.data.item.id+",";
+						ids+=data.data.item.id;
 						count+=1;
 					}else{
 						$.messager.alert("提示","第"+i+"张"+data.message);
@@ -471,11 +486,13 @@
 		}
 		if(count==fl){
 			var row = $('#infoDrid').datagrid('getSelected');
-			var letterOfAcceptance = new Array(),contractAttachment = new Array();
-			if($("input[name='certType'][checked]").val()==1){
-				letterOfAcceptance = ids.substring(0,ids.length-1).split(",");
-			}else if($("input[name='certType'][checked]").val()==2){
-				contractAttachment = ids.substring(0,ids.length-1).split(","); 
+			var letterOfAcceptance = "",contractAttachment = "";
+			if($("input[name='certType']:checked").val()==1){
+				letterOfAcceptance = ids;
+				contractAttachment = row.contractAttachment.id;
+			}else if($("input[name='certType']:checked").val()==2){
+				contractAttachment = ids;
+				letterOfAcceptance = row.letterOfAcceptance.id;
 			}
 			$.ajax({
 				url:getHost() + '/contract',
@@ -505,6 +522,8 @@
 					if(data.code=="200"&&data.data.item.id>0){
 						$.messager.alert("提示","上传成功");
 						$('#uploadForm').form('clear');
+						$("#Imgdiv").html("");
+						gridLoad(1,15);
 						$('#uploadForm').dialog('close');
 					}else{
 						$.messager.alert("提示",data.message);
@@ -558,5 +577,13 @@
 	        }
 	        fr.readAsDataURL(value);
 	    })
+	}
+	function getID(con){
+		con = JSON.parse(con);
+		var str = "";
+		for(i=0;i<con.length;i++){
+			str += con[i].id + ",";
+		}
+		return "["+str.substring(0,str.length-1)+"]";
 	}
 </script>

@@ -511,7 +511,6 @@
 				$('#addDialog').dialog('close');
 			},
 			success:function(data){
-				console.log(data);
 				if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
 					$.messager.alert("提示","修改成功");
 					$('#updateForm').form('clear');
@@ -543,7 +542,6 @@
 			$.messager.alert("提示","新密码和确认密码不同!");
 			return;
 		}
-		console.log("reset");
 		$.ajax({
 			url:getHost() + '/user/sage_modify_password',
 			type:'PUT',

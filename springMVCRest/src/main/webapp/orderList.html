@@ -49,6 +49,8 @@
 	<!-- dataGrid工具栏 -->
 	<div id="toolbar">
 		<a id="updateFinance" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >更新财务信息</a>
+		<a id="uploadBTN" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >上传发票文件</a>
+		<a id="checkFile" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >查看附件</a>
 		<a id="createContractOrder" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >创建订单</a>
 		<a id="edit" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >编辑订单</a>
 		<a id="finish" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:true" >结束订单</a>
@@ -129,32 +131,63 @@
 				<tr>
 					<td class="formLeft">订单编号:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="required:true" name="orderNo" id="orderNo">
+						<input class="easyui-validatebox" data-options="required:true" name="updateOrderNo" id="updateOrderNo">
 						<input id="orderID" value="0" type="hidden">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">订单名称:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="required:true" name="orderName" id="orderName">
+						<input class="easyui-validatebox" data-options="required:true" name="updateOrderName" id="updateOrderName">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">大项编号:</td>
 					<td id="updateRoleTD">
-					<input class="easyui-validatebox" data-options="required:true" name="bigItemNo" id="bigItemNo">
+					<input class="easyui-validatebox" data-options="required:true" name="updateBigItemNo" id="updateBigItemNo">
 					</td>
 				</tr>
 				<tr id="stateRow" >
 					<td class="formLeft">订单金额:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="required:true" name="orderAmount" id="orderAmount">
+						<input class="easyui-validatebox" data-options="required:true" name="updateOrderAmount" id="updateOrderAmount">
 					</td>
 				</tr>
 				<tr id="stateRow" >
 					<td class="formLeft">开始时间:</td>
 					<td>
-						<input class="easyui-datebox" data-options="required:true" name="startTime" id="startTime">
+						<input class="easyui-datebox" data-options="required:true" name="updateStartTime" id="updateStartTime">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 上传 -->
+	<div id="uploadDialog">
+		<form id="uploadForm" enctype="multipart/form-data" method="post" accept-charset="UTF-8" >
+			<table class="tableForm">
+				<tr>
+					<td><label>上传类型</label></td>
+					<td>
+						发票文件
+					</td>
+				</tr>
+				<tr id="inputCB1" >
+					<td><label>选择文件</label></td>
+					<td>
+						<input id="miData" type="text">
+						<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-upload',plain:true"
+							onClick="document.getElementById('file').click()"></a>
+						<input type="file" style="width:300px" id="file" name="file" class="filePrew"
+						 onchange="change_photo();" multiple="multiple">
+			            <input type="text" id="uploadOrderID" style="display: none;">
+					</td>
+				</tr>
+				<tr id="inputCB4" >
+					<td ><label>图片预览</label></td>
+					<td>
+						<div id="Imgdiv">
+						</div>
 					</td>
 				</tr>
 			</table>
@@ -239,6 +272,27 @@
 				}
 			}], 
 		});
+		//上传dialog
+		$('#uploadForm').dialog({
+			title: '上传',
+		    width: 500,
+		    height:500,
+		    closed: true,    
+		    modal: true,
+		    buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					uploadFiles()
+                }
+			},{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					$('#uploadForm').dialog('close');
+				}
+			}], 
+		});
 	}
 	//数据表格加载
 	function gridLoad(pageNumber,pageSize) {
@@ -254,7 +308,6 @@
 			dataType : "json",
 			contentType: 'application/json;charset=UTF-8',
 			success : function(data) {
-				console.log(data);
 				if (data.code==200&&typeof(data.data) == "object") {
 					var width = $('#infoDrid').parent().width();
 					var height = $('#infoDrid').parent().height();
@@ -336,7 +389,7 @@
 			$('#addForm')[0].reset();
 			$('#addDialog').dialog('open');
 		});
-		//订单详情
+		//更新财务信息
 		$('#updateFinance').click(function() {
 			var row = $('#infoDrid').datagrid('getSelected');
 			if(row==null){
@@ -357,7 +410,11 @@
 			}
 			$('#editForm')[0].reset();
 			$("#orderID").val(row.id);
-			$('#editForm').form('load',row);
+			$("#updateOrderNo").val(row.orderNo).validatebox('validate');
+			$("#updateOrderName").val(row.orderName).validatebox('validate');
+			$("#updateBigItemNo").val(row.bigItemNo).validatebox('validate');
+			$("#updateOrderAmount").val(row.orderAmount).validatebox('validate');
+			$('#updateStartTime').datebox('setValue', row.startTime);
 			$('#editDialog').dialog('open');
 		});
 		//删除 
@@ -415,6 +472,28 @@
 					});
 			    }
 			});
+		});
+		//上传 
+		$('#uploadBTN').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			$('#uploadForm')[0].reset();
+			$("#uploadOrderID").val(row.id);
+			$('#uploadForm').dialog('open');
+		});
+		//查看附件
+		$('#checkFile').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			sessionStorage.setItem('fileType','2');
+			sessionStorage.setItem('row',JSON.stringify(row));
+			parent.addTab('附件展示',  "/accessories.html");
 		});
 	}
 	//添加信息
@@ -518,20 +597,23 @@
 			}
 		});
 	}
-	//添加信息
+	//修改信息
 	function editInfo(){
 		if($("#editForm").form('validate')){
+			var row = $('#infoDrid').datagrid('getSelected');
+			var invoiceAttachmentList = JSON.parse(getID(JSON.stringify(row.invoiceAttachmentList)));
 			$.ajax({
 				url:getHost() + '/contract_order',
 				type:'PUT',
 				data:JSON.stringify({
-					orderNo : $("#orderNo").val(),
-					orderName : $("#orderName").val(),
-					bigItemNo : $("#bigItemNo").val(),
-					orderAmount : $("#orderAmount").val(),
+					orderNo : $("#updateOrderNo").val(),
+					orderName : $("#updateOrderName").val(),
+					bigItemNo : $("#updateBigItemNo").val(),
+					orderAmount : $("#updateOrderAmount").val(),
 					contractId : $("#contractId").val(),
-					startTime : $("#startTime").val(),
+					startTime : $("#updateStartTime").val(),
 					id : $("#orderID").val(),
+					invoiceAttachmentList : invoiceAttachmentList,
 				}),
 				dataType : "json",
 				contentType: 'application/json;charset=UTF-8',
@@ -563,4 +645,126 @@
 		sessionStorage.setItem('orderName',row.orderName);
 		parent.addTab('小项列表',  "/smallItemList.html");
 	};
+	//上传
+	function uploadFiles(){
+ 	    var count = 0;
+	    var ids = "";
+    	var files = document.getElementById("file").files;
+    	var fl = files.length;
+		for(var i=0; i< fl; i++){
+			var fileObj = document.getElementById("file").files[i];
+			var formFile = new FormData();
+            formFile.append("file", fileObj); //加入文件对象
+			$.ajax({
+				url:getHost() + '/file',
+				type : 'post',
+                data: formFile,
+				error : function(data) {
+					$.messager.alert('提示', "第"+i+"张"+'上传失败！');
+				},
+				contentType : false,
+				processData : false,
+				async : false,
+				success : function(data) {
+					if(data.code=="200"&&data.data.item.id>0){
+						ids += data.data.item.id + ",";
+						count+=1;
+					}else{
+						$.messager.alert("提示","第"+i+"张"+data.message);
+					}
+				}
+			});
+		}
+		if(count==fl){
+			var row = $('#infoDrid').datagrid('getSelected');
+			var invoiceAttachmentList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
+			$.ajax({
+				url:getHost() + '/contract_order',
+				type:'PUT',
+				data:JSON.stringify({
+					orderNo : row.orderNo,
+					orderName : row.orderName,
+					bigItemNo : row.bigItemNo,
+					orderAmount : row.orderAmount,
+					id : row.id,
+					startTime : row.startTime,
+					invoiceAttachmentList : invoiceAttachmentList,
+				}),
+				dataType : "json",
+				contentType: 'application/json;charset=UTF-8',
+				error : function(XMLHttpRequest, textStatus, errorThrown){
+					$.messager.alert("提示","数据操作存在异常!");
+				},
+				beforeSend: function(xhr) {
+	                xhr.withCredentials = true;
+	            },
+	            crossDomain:true,
+				success:function(data){
+					if(data.code=="200"&&data.data.item.id>0){
+						$.messager.alert("提示","上传成功");
+						$('#uploadForm').form('clear');
+						$("#Imgdiv").html("");
+						gridLoad(1,15);
+						$('#uploadForm').dialog('close');
+					}else{
+						$.messager.alert("提示",data.message);
+					}
+				}
+			});
+		}
+	}
+	function change_photo(){
+		$("#Imgdiv").html("");
+		var files = document.getElementById("file").files;
+		var names = "";
+		for(var i=0; i< files.length; i++){
+			names += files[i].name+",";
+		}
+		//alert(names);
+		$("#miData").val(names.substring(0,names.length));
+	    PreviewImage($("input[id='file']")[0]);
+	}
+	function PreviewImage(fileObj){
+	    var allowExtention=".jpg,.bmp,.gif,.png";//允许上传文件的后缀名document.getElementById("hfAllowPicSuffix").value;  
+	    var browserVersion= window.navigator.userAgent.toUpperCase();
+	    //循环判断后缀名
+	    for(i=0;i<fileObj.files.length;i++){
+	    	var extention=fileObj.files[i].name.substring(fileObj.files[i].name.lastIndexOf("."),fileObj.files[i].name.length).toLowerCase();
+	    	if(allowExtention.indexOf(extention)<0){
+	    		alert("仅支持"+allowExtention+"为后缀名的文件!");  
+	   	        fileObj.value="";//清空选中文件  
+	   	        if(browserVersion.indexOf("MSIE")>-1){
+	   	            fileObj.select();  
+	   	            document.selection.clear();  
+	   	        }                  
+	   	        fileObj.outerHTML=fileObj.outerHTML;
+	   	        return false;
+	    	}
+	    }
+	    
+	    $.each(fileObj.files,function(key,value){
+	        //每次都只会遍历一个图片数据
+	        var div = document.createElement("div");
+	        var img = document.createElement("img");
+	        div.className = "pic";
+	        img.width="200";
+	        img.height="200";
+
+	        var fr = new FileReader();
+	        fr.onload = function(){
+	            img.src=this.result;
+	            div.appendChild(img);
+	            document.getElementById("Imgdiv").appendChild(div);
+	        }
+	        fr.readAsDataURL(value);
+	    })
+	}
+	function getID(con){
+		con = JSON.parse(con);
+		var str = "";
+		for(i=0;i<con.length;i++){
+			str += con[i].id + ",";
+		}
+		return "["+str.substring(0,str.length-1)+"]";
+	}
 </script>

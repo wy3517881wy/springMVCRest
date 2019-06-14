@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/static/js/head.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/contractList.css" />
+</head> 
+<style>
+#content img{
+	margin-bottom: 10px;
+}
+.noneContent{
+    color: gray;
+}
+</style>
+<body id="layout"  >
+	<div align="center" style="width:100%;overflow:auto;height:auto;" id="content">
+	</div>
+</body>
+	<div id="toolbar">
+	</div>
+</html>
+
+<script>
+	$(function(){
+		//加载数据
+		gridLoad();	
+	});
+	//数据表格加载
+	function gridLoad() {
+		fileType = sessionStorage.getItem('fileType')
+		row = JSON.parse(sessionStorage.getItem('row'));
+		if(fileType=="1"){//合同
+			console.log(row.letterOfAcceptance);
+			if(typeof(row.letterOfAcceptance) == "object"){
+				var html = '<div style="margin: 20px;text-align:left;">中标通知书</div><div><img src="http://' + row.letterOfAcceptance.url + '"></div>';
+					html +='<div style="margin: 20px;">点击下载框架合同压缩文件</div><div><button id="btn" type="button" >文件</button></div>';
+				$("#content").html(html);
+				$("#btn").bind("click",function(){
+		            window.open("http://" + row.contractAttachment.url );
+				});
+			}else{
+				var html = '<div style="margin: 20px;text-align:left;">中标通知书</div><div class="noneContent">无上传内容</div>';
+				$("#content").html(html);
+			}
+		}
+		if(fileType=="2"){//订单
+			if(typeof(row.invoiceAttachmentList) == "object"){
+				var html = '<div style="margin: 20px;text-align:left;">发票文件</div>';
+				for(i=0;i<row.invoiceAttachmentList.length;i++){
+					html += '<div><img src="http://' + row.invoiceAttachmentList[i].url + '"></div>';
+				}
+				$("#content").html(html);
+			}else{
+				var html = '<div style="margin: 20px;text-align:left;">发票文件</div><div class="noneContent">无上传内容</div>';
+				$("#content").html(html);
+			}
+		}
+		if(fileType=="3"){//小项
+			var html = '<div style="margin: 20px;text-align:left;">验收证书</div>';
+			if(typeof(row.checkAndAcceptAttachmentList) == "object"&&row.checkAndAcceptAttachmentList.length>0){
+				for(i=0;i<row.checkAndAcceptAttachmentList.length;i++){
+					html += '<div><img src="http://' + row.checkAndAcceptAttachmentList[i].url + '"></div>';
+				}
+			}else{
+				html += '<div class="noneContent">无上传内容</div>';
+			}
+			
+			html += '<div style="margin: 20px;text-align:left;">审核报告</div>';
+			if(typeof(row.auditReportAttachmentList) == "object"&&row.auditReportAttachmentList.length>0){
+				for(i=0;i<row.auditReportAttachmentList.length;i++){
+					html += '<div><img src="http://' + row.auditReportAttachmentList[i].url + '"></div>';
+				}
+			}else{
+				html += '<div class="noneContent">无上传内容</div>';
+			}
+			
+			html += '<div style="margin: 20px;text-align:left;">扣款凭证</div>';
+			if(typeof(row.secondPartyDeductionAttachmentList) == "object"&&row.secondPartyDeductionAttachmentList.length>0){
+				for(i=0;i<row.secondPartyDeductionAttachmentList.length;i++){
+					html += '<div><img src="http://' + row.secondPartyDeductionAttachmentList[i].url + '"></div>';
+				}
+			}else{
+				html += '<div class="noneContent">无上传内容</div>';
+			}
+			
+			html += '<div style="margin: 20px;text-align:left;">实际付款数凭证</div>';
+			if(typeof(row.actualPaymentAttachmentList) == "object"&&row.actualPaymentAttachmentList.length>0){
+				for(i=0;i<row.actualPaymentAttachmentList.length;i++){
+					html += '<div><img src="http://' + row.actualPaymentAttachmentList[i].url + '"></div>';
+				}
+			}else{
+				html += '<div class="noneContent">无上传内容</div>';
+			}
+			$("#content").html(html);
+		}
+	}
+</script>

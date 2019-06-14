@@ -48,6 +48,8 @@
 </div>
 	<!-- dataGrid工具栏 -->
 	<div id="toolbar">
+		<a id="uploadBTN" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >上传文件</a>
+		<a id="checkFile" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >查看附件</a>
 		<a id="createContractOrder" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >添加小项</a>
 		<a id="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >修改小项</a>
 		<!--<a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a> -->
@@ -248,6 +250,39 @@
 			</table>
 		</form>
 	</div>
+	<!-- 上传 -->
+	<div id="uploadDialog">
+		<form id="uploadForm" enctype="multipart/form-data" method="post" accept-charset="UTF-8" >
+			<table class="tableForm">
+				<tr>
+					<td><label>上传类型</label></td>
+					<td>
+						<label><input type="radio" name="certType" checked="checked" value="1">验收证书</label>
+			            <label><input type="radio" name="certType" value="2">审核报告</label>
+			            <label><input type="radio" name="certType" value="3">扣款凭证</label>
+			            <label><input type="radio" name="certType" value="4">实际付款数凭证</label>
+					</td>
+				</tr>
+				<tr id="inputCB1" >
+					<td><label>选择文件</label></td>
+					<td>
+						<input id="miData" type="text">
+						<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-upload',plain:true"
+							onClick="document.getElementById('file').click()"></a>
+						<input type="file" style="width:300px" id="file" name="file" class="filePrew"
+						 onchange="change_photo();" multiple="multiple">
+					</td>
+				</tr>
+				<tr id="inputCB4" >
+					<td ><label>图片预览</label></td>
+					<td>
+						<div id="Imgdiv">
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
 </body>
 </html>
 
@@ -303,6 +338,27 @@
 				iconCls:'icon-cancel',
 				handler:function(){
 					$('#updateDialog').dialog('close');
+				}
+			}], 
+		});
+		//上传dialog
+		$('#uploadForm').dialog({
+			title: '上传',
+		    width: 500,
+		    height:500,
+		    closed: true,    
+		    modal: true,
+		    buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					uploadFiles()
+                }
+			},{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					$('#uploadForm').dialog('close');
 				}
 			}], 
 		});
@@ -479,6 +535,27 @@
 			    }
 			});
 		});
+		//上传 
+		$('#uploadBTN').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			$('#uploadForm')[0].reset();
+			$('#uploadForm').dialog('open');
+		});
+		//查看附件
+		$('#checkFile').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			sessionStorage.setItem('fileType','3');
+			sessionStorage.setItem('row',JSON.stringify(row));
+			parent.addTab('附件展示',  "/accessories.html");
+		});
 	}
 	//添加信息
 	function addInfo(){
@@ -530,6 +607,13 @@
 	//更新小项信息
 	function updatedInfo(){
 		if($("#updateForm").form('validate')){
+			var checkAndAcceptAttachmentIdList = new Array(),auditReportAttachmentIdList = new Array()
+			,secondPartyDeductionAttachmentIdList = new Array(),actualPaymentAttachmentIdList = new Array();
+			var row = $('#infoDrid').datagrid('getSelected');
+			actualPaymentAttachmentIdList = JSON.parse(getID(JSON.stringify(row.actualPaymentAttachmentList)));
+			auditReportAttachmentIdList = JSON.parse(getID(JSON.stringify(row.auditReportAttachmentList)));
+			secondPartyDeductionAttachmentIdList = JSON.parse(getID(JSON.stringify(row.secondPartyDeductionAttachmentList)));
+			checkAndAcceptAttachmentIdList = JSON.parse(getID(JSON.stringify(row.checkAndAcceptAttachmentList)));
 			$.ajax({
 				url:getHost() + '/small_item',
 				type:'PUT',
@@ -549,7 +633,11 @@
 					"secondPartyDeductedAmount" : $("#secondPartyDeductedAmount").val(),
 					"taxAmount" : $("#taxAmount").val(),
 					"managementFee" : $("#managementFee").val(),
-				    "id": $("#smallId").val()
+				    "id": $("#smallId").val(),
+				    checkAndAcceptAttachmentIdList : checkAndAcceptAttachmentIdList,
+					auditReportAttachmentIdList : auditReportAttachmentIdList,
+					secondPartyDeductionAttachmentIdList : secondPartyDeductionAttachmentIdList,
+					actualPaymentAttachmentIdList : actualPaymentAttachmentIdList,
 				}),
 				contentType: 'application/json;charset=UTF-8',
 				error:function(){
@@ -573,5 +661,161 @@
 				}
 			});
 		}
+	}
+	//上传
+	function uploadFiles(){
+ 	    var count = 0;
+	    var ids = "";
+    	var files = document.getElementById("file").files;
+    	var fl = files.length;
+		for(var i=0; i< fl; i++){
+			var fileObj = document.getElementById("file").files[i];
+			var formFile = new FormData();
+            formFile.append("file", fileObj); //加入文件对象
+			$.ajax({
+				url:getHost() + '/file',
+				type : 'post',
+                data: formFile,
+				error : function(data) {
+					$.messager.alert('提示', "第"+i+"张"+'上传失败！');
+				},
+				contentType : false,
+				processData : false,
+				async : false,
+				success : function(data) {
+					if(data.code=="200"&&data.data.item.id>0){
+						ids += data.data.item.id + ",";
+						count+=1;
+					}else{
+						$.messager.alert("提示","第"+i+"张"+data.message);
+					}
+				}
+			});
+		}
+		if(count==fl){
+			var row = $('#infoDrid').datagrid('getSelected');
+			var checkAndAcceptAttachmentIdList = new Array(),auditReportAttachmentIdList = new Array()
+			,secondPartyDeductionAttachmentIdList = new Array(),actualPaymentAttachmentIdList = new Array();
+			if($("input[name='certType']:checked").val()==1){
+				checkAndAcceptAttachmentIdList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
+				auditReportAttachmentIdList = JSON.parse(getID(JSON.stringify(row.auditReportAttachmentList)));
+				secondPartyDeductionAttachmentIdList = JSON.parse(getID(JSON.stringify(row.secondPartyDeductionAttachmentList)));
+				actualPaymentAttachmentIdList = JSON.parse(getID(JSON.stringify(row.actualPaymentAttachmentList)));
+			}else if($("input[name='certType']:checked").val()==2){
+				auditReportAttachmentIdList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
+				checkAndAcceptAttachmentIdList = JSON.parse(getID(JSON.stringify(row.checkAndAcceptAttachmentList)));
+				secondPartyDeductionAttachmentIdList = JSON.parse(getID(JSON.stringify(row.secondPartyDeductionAttachmentList)));
+				actualPaymentAttachmentIdList = JSON.parse(getID(JSON.stringify(row.actualPaymentAttachmentList)));
+			}else if($("input[name='certType']:checked").val()==3){
+				secondPartyDeductionAttachmentIdList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
+				auditReportAttachmentIdList = JSON.parse(getID(JSON.stringify(row.auditReportAttachmentList)));
+				checkAndAcceptAttachmentIdList = JSON.parse(getID(JSON.stringify(row.checkAndAcceptAttachmentList)));
+				actualPaymentAttachmentIdList = JSON.parse(getID(JSON.stringify(row.actualPaymentAttachmentList)));
+			}else if($("input[name='certType']:checked").val()==4){
+				actualPaymentAttachmentIdList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
+				auditReportAttachmentIdList = JSON.parse(getID(JSON.stringify(row.auditReportAttachmentList)));
+				secondPartyDeductionAttachmentIdList = JSON.parse(getID(JSON.stringify(row.secondPartyDeductionAttachmentList)));
+				checkAndAcceptAttachmentIdList = JSON.parse(getID(JSON.stringify(row.checkAndAcceptAttachmentList)));
+			}
+			$.ajax({
+				url:getHost() + '/small_item',
+				type:'PUT',
+				data:JSON.stringify({
+					name : row.name,
+				    cooperator : row.cooperator,
+				    startDate : row.startDate,
+				    checkAndAcceptDate : row.checkAndAcceptDate,
+					amount : row.amount,
+					secondPartyConstructionCost : row.secondPartyConstructionCost,
+					firstPartyMaterialCost : row.firstPartyMaterialCost,
+					secondPartyMaterialCost : row.secondPartyMaterialCost,
+					secondPartySafeProductionCost : row.secondPartySafeProductionCost,
+					stipulatedFee : row.stipulatedFee,
+					amountCashed : row.amountCashed,
+					secondPartyAuditFee : row.secondPartyAuditFee,
+					secondPartyDeductedAmount : row.secondPartyDeductedAmount,
+					taxAmount : row.taxAmount,
+					managementFee : row.managementFee,
+					id : row.id,
+					checkAndAcceptAttachmentIdList : checkAndAcceptAttachmentIdList,
+					auditReportAttachmentIdList : auditReportAttachmentIdList,
+					secondPartyDeductionAttachmentIdList : secondPartyDeductionAttachmentIdList,
+					actualPaymentAttachmentIdList : actualPaymentAttachmentIdList,
+				}),
+				dataType : "json",
+				contentType: 'application/json;charset=UTF-8',
+				error : function(XMLHttpRequest, textStatus, errorThrown){
+					$.messager.alert("提示","数据操作存在异常!");
+				},
+				beforeSend: function(xhr) {
+	                xhr.withCredentials = true;
+	            },
+	            crossDomain:true,
+				success:function(data){
+					if(data.code=="200"&&data.data.item.id>0){
+						$.messager.alert("提示","上传成功");
+						$('#uploadForm').form('clear');
+						$("#Imgdiv").html("");
+						gridLoad(1,15);
+						$('#uploadForm').dialog('close');
+					}else{
+						$.messager.alert("提示",data.message);
+					}
+				}
+			});
+		}
+	}
+	function change_photo(){
+		$("#Imgdiv").html("");
+		var files = document.getElementById("file").files;
+		var names = "";
+		for(var i=0; i< files.length; i++){
+			names += files[i].name+",";
+		}
+		$("#miData").val(names.substring(0,names.length));
+	    PreviewImage($("input[id='file']")[0]);
+	}
+	function PreviewImage(fileObj){
+	    var allowExtention=".jpg,.bmp,.gif,.png";//允许上传文件的后缀名document.getElementById("hfAllowPicSuffix").value;  
+	    var browserVersion= window.navigator.userAgent.toUpperCase();
+	    //循环判断后缀名
+	    for(i=0;i<fileObj.files.length;i++){
+	    	var extention=fileObj.files[i].name.substring(fileObj.files[i].name.lastIndexOf("."),fileObj.files[i].name.length).toLowerCase();
+	    	if(allowExtention.indexOf(extention)<0){
+	    		alert("仅支持"+allowExtention+"为后缀名的文件!");  
+	   	        fileObj.value="";//清空选中文件  
+	   	        if(browserVersion.indexOf("MSIE")>-1){
+	   	            fileObj.select();  
+	   	            document.selection.clear();  
+	   	        }                  
+	   	        fileObj.outerHTML=fileObj.outerHTML;
+	   	        return false;
+	    	}
+	    }
+	    
+	    $.each(fileObj.files,function(key,value){
+	        //每次都只会遍历一个图片数据
+	        var div = document.createElement("div");
+	        var img = document.createElement("img");
+	        div.className = "pic";
+	        img.width="200";
+	        img.height="200";
+
+	        var fr = new FileReader();
+	        fr.onload = function(){
+	            img.src=this.result;
+	            div.appendChild(img);
+	            document.getElementById("Imgdiv").appendChild(div);
+	        }
+	        fr.readAsDataURL(value);
+	    })
+	}
+	function getID(con){
+		con = JSON.parse(con);
+		var str = "";
+		for(i=0;i<con.length;i++){
+			str += con[i].id + ",";
+		}
+		return "["+str.substring(0,str.length-1)+"]";
 	}
 </script>
