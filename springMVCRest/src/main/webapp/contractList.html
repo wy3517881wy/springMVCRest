@@ -237,15 +237,15 @@
 						pagination : true,
 						scrollbarSize:0 ,
 						columns : [ [
-							{field:'region',title:'合同区域',align:'center' },
-							{field:'firstPartyName',title:'甲方名称',align:'center' },
-							{field:'secondPartyName',title:'中标单位',align:'center' },
-							{field:'contractNo',title:'合同编号',align:'center',width:100},
-							{field:'contractName',title:'合同名称',align:'center',width:150},
-							{field:'contractAmount',title:'合同金额(元)',align:'center',width:150},
-							{field:'signTime',title:'签订时间',align:'center',width:140},
-							{field:'startTime',title:'开始时间',align:'center',width:140},
-							{field:'status',title:'合同状态',align:'center' ,
+							{field:'region',title:'合同区域',align:'center'},
+							{field:'firstPartyName',title:'甲方名称',align:'center'},
+							{field:'secondPartyName',title:'中标单位',align:'center'},
+							{field:'contractNo',title:'合同编号',align:'center'},
+							{field:'contractName',title:'合同名称',align:'center'},
+							{field:'contractAmount',title:'合同金额(元)',align:'center'},
+							{field:'signTime',title:'签订时间',align:'center'},
+							{field:'startTime',title:'开始时间',align:'center'},
+							{field:'status',title:'合同状态',align:'center',
 								formatter: function(value,row,index){
 									if(value=="2"){
 										return "已结束";
@@ -256,14 +256,14 @@
 									}
 								}
 							},
-							{field:'endTime',title:'结束时间',align:'center',width:150},
-							{field:'createUser',title:'创建人',align:'center',width:80,
+							{field:'endTime',title:'结束时间',align:'center'},
+							{field:'createUser',title:'创建人',align:'center',
 								formatter: function(value,row,index){
 									return value.nickname;
 								}
 							},
-							{field:'createTime',title:'创建时间',align:'center',width:230},
-							{field:'id',title:'操作',align:'center',width:150,
+							{field:'createTime',title:'创建时间',align:'center'},
+							{field:'id',title:'操作',align:'center' ,
 								formatter: function(value,row,index){
 									return "<input style=\"cursor:pointer;\" type=\"button\" value=\"订单列表\" onClick=\"orderList(" + index + ")\" style=\"width:100px\"/>";
 								}
