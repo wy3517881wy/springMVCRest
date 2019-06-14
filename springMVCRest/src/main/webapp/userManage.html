@@ -10,7 +10,7 @@
 	<table id="infoDrid"></table>
 	</div>
 <!-- 查询条件 -->
-<div data-options="region:'east',split:true,title:'信息查询',border:false" style="width:250px;padding:10px;">
+<div style="width:250px;padding:10px;display: none;">
 	<form id="searchForm">
 	<table class="searchTable">
 		<tr>
@@ -34,7 +34,7 @@
 </div>
 <!-- dataGrid工具栏 -->
 <div id="toolbar">
-	<a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a>
+<!-- 	<a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a> -->
 	<a id="insert" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true">添加</a>
 	<a id="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >编辑</a>
 	<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccDelete',plain:true" >删除</a>
@@ -143,6 +143,7 @@
 </html>
 <script>
 	$(function(){
+		$.ajaxSetup({crossDomain: true, xhrFields: {withCredentials: true}});
 		//页面初始化
 		layoutLoad();
 		//数据表格加载
@@ -152,7 +153,7 @@
 	});
 	//页面初始化
 	function layoutLoad(){
-		$('#layout').layout('collapse','east');
+//		$('#layout').layout('collapse','east');
 		//信息添加dialog
 		$('#addDialog').dialog({
 			title: '添加登录信息',
@@ -235,6 +236,7 @@
             },
             crossDomain:true,
 			success : function(data) {
+				console.log(data);
 				if (data.code==200&&typeof(data.data) == "object") {
 					var width = $('#infoDrid').parent().width();
 					var height = $('#infoDrid').parent().height();

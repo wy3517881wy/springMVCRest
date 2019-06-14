@@ -10,42 +10,6 @@
 		<table id="infoDrid"></table>
 	</div>
 	<input type="hidden" id="contractOrderId">
-<!-- 查询条件 -->
-<div data-options="region:'east',split:true,title:'信息查询',border:false" style="width:250px;padding:5px;">
-<form id="searchForm">
-	<table class="searchTable">
-		<tr>
-			<td class="searchLeft">合同名称：</td>
-			<td class="searchRight">
-				<input class="easyui-validatebox" name="username" id="usernameSearch">
-			</td>
-		</tr>
-		<tr>
-			<td  class="searchLeft">合同编号：</td>
-			<td class="searchRight">
-				<input class="easyui-validatebox" name="loginname" id="loginnameSearch" value=''>
-				<input id="signdate" type="hidden" value="">
-			</td>
-		</tr>
-		<tr>
-			<td class="searchLeft">开始时间：</td>
-			<td class="searchRight">
-				<input class="easyui-datetimebox" name="stattime" id="stattimeSearch">
-			</td>
-		</tr>
-		<tr>
-			<td  class="searchLeft">结束时间：</td>
-			<td class="searchRight">
-				<input class="easyui-datetimebox" name="endtime" id="endtimeSearch">
-			</td>
-		</tr>
-	</table>
-	<div>
-	<a id="searchbtn" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch'" style="margin-left:50px">查询</a>
-	<a id="resetbtn"   class="easyui-linkbutton" data-options="iconCls:'icon-ccReload'">重置</a>
-	</div>
-</form>
-</div>
 	<!-- dataGrid工具栏 -->
 	<div id="toolbar">
 		<a id="uploadBTN" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccOut',plain:true" >上传文件</a>
@@ -299,7 +263,7 @@
 	});
 	//页面初始化
 	function layoutLoad(){
-		$('#layout').layout('collapse','east');
+//		$('#layout').layout('collapse','east');
 		//信息添加dialog
 		$('#addDialog').dialog({
 			title: '添加小项',
