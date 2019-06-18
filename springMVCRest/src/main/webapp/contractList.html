@@ -236,15 +236,13 @@
 						striped : true,
 						pagination : true,
 						scrollbarSize:0 ,
-						columns : [ [
+						frozenColumns : [[
 							{field:'region',title:'合同区域',align:'center'},
 							{field:'firstPartyName',title:'甲方名称',align:'center'},
 							{field:'secondPartyName',title:'中标单位',align:'center'},
 							{field:'contractNo',title:'合同编号',align:'center'},
 							{field:'contractName',title:'合同名称',align:'center'},
 							{field:'contractAmount',title:'合同金额(元)',align:'center'},
-							{field:'signTime',title:'签订时间',align:'center'},
-							{field:'startTime',title:'开始时间',align:'center'},
 							{field:'status',title:'合同状态',align:'center',
 								formatter: function(value,row,index){
 									if(value=="2"){
@@ -256,6 +254,10 @@
 									}
 								}
 							},
+						]],
+						columns : [ [
+							{field:'signTime',title:'签订时间',align:'center'},
+							{field:'startTime',title:'开始时间',align:'center'},
 							{field:'endTime',title:'结束时间',align:'center'},
 							{field:'createUser',title:'创建人',align:'center',
 								formatter: function(value,row,index){
@@ -489,10 +491,14 @@
 			var letterOfAcceptance = "",contractAttachment = "";
 			if($("input[name='certType']:checked").val()==1){
 				letterOfAcceptance = ids;
-				contractAttachment = row.contractAttachment.id;
+				if(typeof(row.contractAttachment) == "object"){
+					contractAttachment = row.contractAttachment.id;
+				}
 			}else if($("input[name='certType']:checked").val()==2){
 				contractAttachment = ids;
-				letterOfAcceptance = row.letterOfAcceptance.id;
+				if(typeof(row.letterOfAcceptance) == "object"){
+					letterOfAcceptance = row.letterOfAcceptance.id;
+				}
 			}
 			$.ajax({
 				url:getHost() + '/contract',

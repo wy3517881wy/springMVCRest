@@ -294,6 +294,9 @@
 							{field:'bigItemNo',title:'大项编号',align:'center',width:150},
 							{field:'orderAmount',title:'订单金额',align:'center',width:150},
 							{field:'amountCashed',title:'回款金额',align:'center',width:150},
+							{field:'missNo',title:'MISS编号',align:'center',width:150},
+							{field:'invoiceAmount',title:'开票金额',align:'center',width:150},
+							{field:'taxRate',title:'税率',align:'center',width:150},
 							{field:'startTime',title:'开始时间',align:'center',width:150},
 							{field:'status',title:'订单状态',align:'center',width:150,
 								formatter: function(value,row,index){
@@ -426,11 +429,16 @@
 						},
 						contentType: 'application/json;charset=UTF-8',
 						success:function(data){
-							if(data.code=200){
-								$.messager.alert("提示","结束订单成功");
-								gridLoad(1,15);
+							if(data.code=200&&typeof(data.message) == "object"){
+								var mssalet = $.messager.alert("提示",data.message);
+								mssalet.window({modal:true,onBeforeClose:function() {
+									gridLoad(1,15);
+								}});
 							}else{
-								$.messager.alert("提示",data.message);
+								var mssalet = $.messager.alert("提示","操作成功");
+								mssalet.window({modal:true,onBeforeClose:function() {
+									gridLoad(1,15);
+								}});
 							}
 						}
 					});
