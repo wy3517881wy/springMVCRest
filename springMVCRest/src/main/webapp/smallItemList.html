@@ -31,7 +31,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">合作单位:</td>
+					<td class="formLeft">合作单位（乙方）:</td>
 					<td>
 						<input class="easyui-validatebox" data-options="required:true" name="addCooperator" id="addCooperator">
 					</td>
@@ -103,7 +103,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">税金:</td>
+					<td class="formLeft">应扣税款:</td>
 					<td>
 						<input class="easyui-validatebox" name="addTaxAmount" id="addTaxAmount">
 					</td>
@@ -128,7 +128,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">合作单位:</td>
+					<td class="formLeft">合作单位（乙方）:</td>
 					<td>
 						<input class="easyui-validatebox" data-options="required:true" name="cooperator" id="cooperator">
 					</td>
@@ -200,7 +200,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">税金:</td>
+					<td class="formLeft">应扣税款:</td>
 					<td>
 						<input class="easyui-validatebox" name="taxAmount" id="taxAmount">
 					</td>
@@ -341,6 +341,7 @@
 			dataType : "json",
 			contentType: 'application/json;charset=UTF-8',
 			success : function(data) {
+				console.log(data)
 				if (data.code==200&&typeof(data.data) == "object") {
 					var width = $('#infoDrid').parent().width();
 					var height = $('#infoDrid').parent().height();
@@ -385,8 +386,9 @@
 							{field:'amountCashed',title:'回款额',align:'center'},
 							{field:'secondPartyAuditFee',title:'乙方审计费',align:'center'},
 							{field:'secondPartyDeductedAmount',title:'乙方扣款',align:'center'},
-							{field:'taxAmount',title:'税金',align:'center'},
+							{field:'taxAmount',title:'应扣税款',align:'center'},
 							{field:'managementFee',title:'管理费',align:'center'},
+							{field:'actualPayment',title:'实际付款',align:'center'},
 						] ],
 					});
 					var p = $('#infoDrid').datagrid('getPager');

@@ -236,7 +236,7 @@
 						striped : true,
 						pagination : true,
 						scrollbarSize:0 ,
-						frozenColumns : [[
+						columns : [ [
 							{field:'region',title:'合同区域',align:'center'},
 							{field:'firstPartyName',title:'甲方名称',align:'center'},
 							{field:'secondPartyName',title:'中标单位',align:'center'},
@@ -254,8 +254,6 @@
 									}
 								}
 							},
-						]],
-						columns : [ [
 							{field:'signTime',title:'签订时间',align:'center'},
 							{field:'startTime',title:'开始时间',align:'center'},
 							{field:'endTime',title:'结束时间',align:'center'},
@@ -350,7 +348,7 @@
 				$.messager.alert("提示","请选中一行!");
 				return;
 			}
-			$.messager.confirm('提示','确定要删除吗?',function(r){
+			$.messager.confirm('提示','确定要删除该合同吗? <br/>'+row.contractName,function(r){
 			    if (r){
 			    	$.ajax({
 						url:getHost() + '/contract/' + row.id,
@@ -550,7 +548,7 @@
 	    PreviewImage($("input[id='file']")[0]);
 	}
 	function PreviewImage(fileObj){
-	    var allowExtention=".jpg,.bmp,.gif,.png";//允许上传文件的后缀名document.getElementById("hfAllowPicSuffix").value;  
+	    var allowExtention=".jpg,.bmp,.gif,.png,.zip,.rar";//允许上传文件的后缀名document.getElementById("hfAllowPicSuffix").value;  
 	    var browserVersion= window.navigator.userAgent.toUpperCase();
 	    //循环判断后缀名
 	    for(i=0;i<fileObj.files.length;i++){
