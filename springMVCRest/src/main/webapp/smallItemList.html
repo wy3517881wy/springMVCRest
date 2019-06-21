@@ -454,7 +454,7 @@
 				$.messager.alert("提示","请选中一行!");
 				return;
 			}
-			$.messager.confirm('提示','确定要删除吗?',function(r){
+			$.messager.confirm('提示','确定要删除该小项吗?<br/>'+row.name,function(r){
 			    if (r){
 			    	$.ajax({
 						url:getHost() + '/small_item/' + row.id,

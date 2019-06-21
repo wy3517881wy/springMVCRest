@@ -289,16 +289,16 @@
 						pagination : true,
 						scrollbarSize:0 ,
 						columns : [ [
-							{field:'orderNo',title:'订单编号' ,align:'center',width:150},
-							{field:'orderName',title:'订单名称',align:'center',width:150},
-							{field:'bigItemNo',title:'大项编号',align:'center',width:150},
-							{field:'orderAmount',title:'订单金额',align:'center',width:150},
-							{field:'amountCashed',title:'回款金额',align:'center',width:150},
-							{field:'missNo',title:'MISS编号',align:'center',width:150},
-							{field:'invoiceAmount',title:'开票金额',align:'center',width:150},
-							{field:'taxRate',title:'税率',align:'center',width:150},
-							{field:'startTime',title:'开始时间',align:'center',width:150},
-							{field:'status',title:'订单状态',align:'center',width:150,
+							{field:'orderNo',title:'订单编号' ,align:'center' },
+							{field:'orderName',title:'订单名称',align:'center' },
+							{field:'bigItemNo',title:'大项编号',align:'center' },
+							{field:'orderAmount',title:'订单金额',align:'center' },
+							{field:'amountCashed',title:'回款金额',align:'center' },
+							{field:'missNo',title:'MISS编号',align:'center' },
+							{field:'invoiceAmount',title:'开票金额',align:'center' },
+							{field:'taxRate',title:'税率',align:'center' },
+							{field:'startTime',title:'开始时间',align:'center' },
+							{field:'status',title:'订单状态',align:'center' ,
 								formatter: function(value,row,index){
 									if(value=="2"){
 										return "已结束";
@@ -309,8 +309,8 @@
 									}
 								}
 							},
-							{field:'endTime',title:'结束时间',align:'center',width:150},
-							{field:'id',title:'操作',align:'center',width:100,
+							{field:'endTime',title:'结束时间',align:'center' },
+							{field:'id',title:'操作',align:'center' ,
 								formatter: function(value,row,index){
 									return "<input style=\"cursor:pointer;\" type=\"button\" value=\"小项列表\" onClick=\"smallItemList(" + index + ")\" style=\"width:100px\"/>";
 								}
@@ -391,7 +391,7 @@
 				$.messager.alert("提示","请选中一行!");
 				return;
 			}
-			$.messager.confirm('提示','确定要删除吗?',function(r){
+			$.messager.confirm('提示','确定要删除该订单吗?<br/>'+row.orderName,function(r){
 			    if (r){
 			    	$.ajax({
 						url:getHost() + '/contract_order/' + row.id,
