@@ -358,12 +358,12 @@
 						striped : true,
 						pagination : true,
 						scrollbarSize:0 ,
-						frozenColumns : [[
+						columns : [ [
 							{field:'name',title:'小项名称' ,align:'center'},
 							{field:'cooperator',title:'合作单位' ,align:'center'},
-							{field:'startDate',title:'开始日期',align:'center',width:100},
-							{field:'endDate',title:'结束日期',align:'center',width:100},
-							{field:'status',title:'状态',align:'center',width:80,
+							{field:'startDate',title:'开始日期',align:'center'},
+							{field:'endDate',title:'结束日期',align:'center'},
+							{field:'status',title:'状态',align:'center',
 								formatter: function(value,row,index){
 									if(value=="2"){
 										return "已结束";
@@ -374,10 +374,8 @@
 									}
 								}
 							},
-							{field:'checkAndAcceptDate',title:'验收日期',align:'center',width:100},
+							{field:'checkAndAcceptDate',title:'验收日期',align:'center'},
 							{field:'amount',title:'总金额',align:'center' },
-						]],
-						columns : [ [
 							{field:'secondPartyConstructionCost',title:'乙方施工费',align:'center'},
 							{field:'firstPartyMaterialCost',title:'甲方提供材料费',align:'center'},
 							{field:'secondPartyMaterialCost',title:'乙方提供材料费',align:'center'},
