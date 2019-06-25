@@ -12,7 +12,7 @@
 	<input type="hidden" id="contractId">
 	<!-- dataGrid工具栏 -->
 	<div id="toolbar">
-		<a id="updateFinance" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >更新财务信息</a>
+		<a id="updateFinance" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >查看/更新财务信息</a>
 		<a id="uploadBTN" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccOut',plain:true" >上传发票文件</a>
 		<a id="checkFile" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-accolist',plain:true" >查看附件</a>
 		<a id="createContractOrder" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >创建订单</a>
@@ -81,9 +81,39 @@
 					</td>
 				</tr>
 				<tr id="stateRow" >
-					<td class="formLeft">回款金额:</td>
+					<td class="formLeft">回款金额1:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="amountCashed" id="amountCashed">
+						<input class="easyui-validatebox" name="amount1" id="amount1">
+					</td>
+				</tr>
+				<tr id="stateRow" >
+					<td class="formLeft">回款时间1:</td>
+					<td>
+						<input class="easyui-datebox" name="paidTime1" id="paidTime1">
+					</td>
+				</tr>
+				<tr id="stateRow" >
+					<td class="formLeft">回款金额2:</td>
+					<td>
+						<input class="easyui-validatebox" name="amount2" id="amount2">
+					</td>
+				</tr>
+				<tr id="stateRow" >
+					<td class="formLeft">回款时间2:</td>
+					<td>
+						<input class="easyui-datebox" name="paidTime2" id="paidTime2">
+					</td>
+				</tr>
+				<tr id="stateRow" >
+					<td class="formLeft">回款金额3:</td>
+					<td>
+						<input class="easyui-validatebox" name="amount3" id="amount3">
+					</td>
+				</tr>
+				<tr id="stateRow" >
+					<td class="formLeft">回款时间3:</td>
+					<td>
+						<input class="easyui-datebox" name="paidTime3" id="paidTime3">
 					</td>
 				</tr>
 			</table>
@@ -197,7 +227,7 @@
 			}], 
 		});
 		$('#updateDialog').dialog({
-			title: '更新财务信息',
+			title: '查看/更新财务信息',
 		    width: 300,
 		    height:400,
 		    closed: true,
@@ -278,7 +308,7 @@
 					$('#infoDrid').datagrid({
 						toolbar : "#toolbar",
 						data: data.data.page.rows,
-						width : width,
+						width : 1380,
 						height : height,
 						async : false,
 						fit : true,
@@ -289,16 +319,16 @@
 						pagination : true,
 						scrollbarSize:0 ,
 						columns : [ [
-							{field:'orderNo',title:'订单编号' ,align:'center' },
-							{field:'orderName',title:'订单名称',align:'center' },
-							{field:'bigItemNo',title:'大项编号',align:'center' },
-							{field:'orderAmount',title:'订单金额',align:'center' },
-							{field:'amountCashed',title:'回款金额',align:'center' },
-							{field:'missNo',title:'MISS编号',align:'center' },
-							{field:'invoiceAmount',title:'开票金额',align:'center' },
-							{field:'taxRate',title:'税率',align:'center' },
-							{field:'startTime',title:'开始时间',align:'center' },
-							{field:'status',title:'订单状态',align:'center' ,
+							{field:'orderNo',title:'订单编号' ,align:'center',width: 10, },
+							{field:'orderName',title:'订单名称',align:'center',width: 10 },
+							{field:'bigItemNo',title:'大项编号',align:'center' ,width: 10},
+							{field:'orderAmount',title:'订单金额',align:'center',width: 10 },
+							{field:'amountCashed',title:'回款金额',align:'center',width: 10 },
+							{field:'missNo',title:'MISS编号',align:'center' ,width: 10},
+							{field:'invoiceAmount',title:'开票金额',align:'center',width: 10 },
+							{field:'taxRate',title:'税率',align:'center',width: 10 },
+							{field:'startTime',title:'开始时间',align:'center' ,width: 10},
+							{field:'status',title:'订单状态',align:'center',width: 10 ,
 								formatter: function(value,row,index){
 									if(value=="2"){
 										return "已结束";
@@ -309,8 +339,8 @@
 									}
 								}
 							},
-							{field:'endTime',title:'结束时间',align:'center' },
-							{field:'id',title:'操作',align:'center' ,
+							{field:'endTime',title:'结束时间',align:'center',width: 10 },
+							{field:'id',title:'操作',align:'center',width: 10 ,
 								formatter: function(value,row,index){
 									return "<input style=\"cursor:pointer;\" type=\"button\" value=\"小项列表\" onClick=\"smallItemList(" + index + ")\" style=\"width:100px\"/>";
 								}
@@ -356,7 +386,7 @@
 			$('#addForm')[0].reset();
 			$('#addDialog').dialog('open');
 		});
-		//更新财务信息
+		//查看/更新财务信息
 		$('#updateFinance').click(function() {
 			var row = $('#infoDrid').datagrid('getSelected');
 			if(row==null){
@@ -364,7 +394,11 @@
 				return;
 			}
 			$('#updateForm')[0].reset();
+			$("#paidTime1").datebox("setValue",""); 
+			$("#paidTime2").datebox("setValue",""); 
+			$("#paidTime3").datebox("setValue",""); 
 			$("#orderId").val(row.id);
+			$('#updateForm').form('load',row);
 			$('#updateDialog').dialog('open');
 		});
 		
@@ -519,24 +553,8 @@
 			}
 		});
 	}
-	//更新财务信息 
+	//查看/更新财务信息 
 	function updatedInfo(){
-		if($("#missNo").val()==null ||$("#missNo").val()==""){
-			$.messager.alert("提示","MISS编号不能为空!");
-			return;
-		}
-		if($("#invoiceAmount").val()==null ||$("#invoiceAmount").val()==""){
-			$.messager.alert("提示","开票金额不能为空!");
-			return;
-		}
-		if($("#taxRate").val()==null ||$("#taxRate").val()==""){
-			$.messager.alert("提示","税率不能为空!");
-			return;
-		}
-		if($("#amountCashed").val()==null ||$("#amountCashed").val()==""){
-			$.messager.alert("提示","回款金额不能为空!");
-			return;
-		}
 		$.ajax({
 			url:getHost() + '/contract_order/update_finance_item',
 			type:'PUT',
@@ -545,7 +563,12 @@
 			    "missNo": $("#missNo").val(),
 			    "invoiceAmount": $("#invoiceAmount").val(),
 			    "taxRate": $("#taxRate").val(),
-			    "amountCashed": $("#amountCashed").val(),
+			    "amount1": $("#amount1").val(),
+			    "paidTime1": $("#paidTime1").val(),
+			    "amount2": $("#amount2").val(),
+			    "paidTime2": $("#paidTime2").val(),
+			    "amount3": $("#amount3").val(),
+			    "paidTime3": $("#paidTime3").val(),
 			}),
 			contentType: 'application/json;charset=UTF-8',
 			beforeSend: function(xhr) {
