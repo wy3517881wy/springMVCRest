@@ -325,9 +325,17 @@
 							{field:'bigItemNo',title:'大项编号',align:'center' },
 							{field:'orderAmount',title:'订单金额',align:'center' },
 							{field:'amountCashed',title:'回款金额',align:'center' },
+							{field:'amountCashedPercent',title:'回款比例',align:'center' },
+							{field:'amountBalance',title:'尾款金额',align:'center' },
 							{field:'missNo',title:'MISS编号',align:'center' },
 							{field:'invoiceAmount',title:'开票金额',align:'center' },
-							{field:'taxRate',title:'税率',align:'center' },
+							{field:'taxRate',title:'税率',align:'center' ,formatter: function(value,row,index){
+								if(value>=0){
+									return value+"%";
+								}else{
+									return value;
+								}
+							}},
 							{field:'startTime',title:'开始时间',align:'center' },
 							{field:'status',title:'订单状态',align:'center' ,
 								formatter: function(value,row,index){
