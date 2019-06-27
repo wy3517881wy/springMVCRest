@@ -25,7 +25,15 @@
 				<tr>
 					<td class="formLeft">甲方名称:</td>
 					<td class="formRight">
-						<input class="easyui-validatebox" name="firstPartyName" id="firstPartyName" placeholder="选填"></input>
+						<select class="easyui-combobox" name="firstPartyName" id="firstPartyName" placeholder="甲方名称"  style="width:235px;">
+						    <option value="移动">移动</option>
+						    <option value="联通">联通</option>
+						    <option value="电信">电信</option>
+						    <option value="铁塔">铁塔</option>
+						    <option value="省通建">省通建</option>
+						    <option value="广电">广电</option>
+						    <option value="其他">其他</option>
+						</select>
 					</td>
 				</tr>
 				<tr>
@@ -76,7 +84,7 @@ $(function(){
 				data:JSON.stringify({
 					endTimeBegin : $("#endTimeBegin").val(),
 					endTimeEnd : $("#endTimeEnd").val(),
-					firstPartyName : $("#firstPartyName").val().trim()==""?null:$("#firstPartyName").val(),
+					firstPartyName : $('#firstPartyName').combobox('getValue').trim()==""?null:$('#firstPartyName').combobox('getValue'),
 				}),
 				async : false,
 				dataType : "json",
