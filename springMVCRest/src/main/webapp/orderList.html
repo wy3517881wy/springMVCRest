@@ -163,7 +163,8 @@
 				<tr>
 					<td><label>上传类型</label></td>
 					<td>
-						发票文件
+						<label><input type="radio" name="certType" checked="checked" value="1">发票文件</label>
+			            <label><input type="radio" name="certType" value="2">订单文件</label>
 					</td>
 				</tr>
 				<tr id="inputCB1" >
@@ -672,7 +673,15 @@
 		}
 		if(count==fl){
 			var row = $('#infoDrid').datagrid('getSelected');
+			var invoiceAttachmentList = "",orderImageAttachmentList = "";
 			var invoiceAttachmentList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
+			if($("input[name='certType']:checked").val()==1){
+				invoiceAttachmentList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
+				orderImageAttachmentList = JSON.parse(getID(JSON.stringify(row.orderImageAttachmentList)));
+			}else if($("input[name='certType']:checked").val()==2){
+				orderImageAttachmentList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
+				invoiceAttachmentList = JSON.parse(getID(JSON.stringify(row.invoiceAttachmentList)));
+			}
 			$.ajax({
 				url:getHost() + '/contract_order',
 				type:'PUT',
@@ -684,6 +693,7 @@
 					id : row.id,
 					startTime : row.startTime,
 					invoiceAttachmentList : invoiceAttachmentList,
+					orderImageAttachmentList : orderImageAttachmentList,
 				}),
 				dataType : "json",
 				contentType: 'application/json;charset=UTF-8',
@@ -720,7 +730,7 @@
 	    PreviewImage($("input[id='file']")[0]);
 	}
 	function PreviewImage(fileObj){
-	    var allowExtention=".jpg,.bmp,.gif,.png";//允许上传文件的后缀名document.getElementById("hfAllowPicSuffix").value;  
+	    var allowExtention=".jpg,.bmp,.gif,.png,.pdf,.jpeg,.zip,.rar";//允许上传文件的后缀名document.getElementById("hfAllowPicSuffix").value;  
 	    var browserVersion= window.navigator.userAgent.toUpperCase();
 	    //循环判断后缀名
 	    for(i=0;i<fileObj.files.length;i++){

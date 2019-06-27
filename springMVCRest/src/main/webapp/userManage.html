@@ -236,7 +236,6 @@
             },
             crossDomain:true,
 			success : function(data) {
-				console.log(data);
 				if (data.code==200&&typeof(data.data) == "object") {
 					var width = $('#infoDrid').parent().width();
 					var height = $('#infoDrid').parent().height();
@@ -280,7 +279,6 @@
 							},
 							{field:'roleList',title:'角色',align:'center',width:150,
 								formatter: function(value,row,index){
-									console.log(value);
 									//value = JSON.parse('[{"id": 1,"name": "系统管理员","structureType": "role"},{"id": 2,"name": "员工","structureType": "role"}]');
 									if(value!=""&&value.length>0){
 										var result = "";
