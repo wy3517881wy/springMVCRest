@@ -13,7 +13,7 @@
 	<!-- dataGrid工具栏 -->
 	<div id="toolbar">
 		<a id="updateFinance" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >查看/更新财务信息</a>
-		<a id="uploadBTN" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccOut',plain:true" >上传发票文件</a>
+		<a id="uploadBTN" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccOut',plain:true" >上传文件</a>
 		<a id="checkFile" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-accolist',plain:true" >查看附件</a>
 		<a id="createContractOrder" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >创建订单</a>
 		<a id="edit" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >编辑订单</a>
@@ -46,7 +46,7 @@
 				<tr>
 					<td class="formLeft">订单金额:</td>
 					<td>
-						<input class="easyui-validatebox"  data-options="required:true" name="orderAmount" id="orderAmount">
+						<input class="easyui-numberbox" data-options="required:true,min:0" name="orderAmount" id="orderAmount">
 					</td>
 				</tr>
 				<tr>
@@ -71,19 +71,19 @@
 				<tr>
 					<td class="formLeft">开票金额:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="invoiceAmount" id="invoiceAmount">
+						<input class="easyui-numberbox" data-options="validType:'positionCodes',required:true,min:0" name="invoiceAmount" id="invoiceAmount">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">税率(%):</td>
 					<td id="updateRoleTD">
-					<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="taxRate" id="taxRate">
+					<input class="easyui-numberbox" data-options="validType:'positionCodes',required:true,min:0" name="taxRate" id="taxRate">
 					</td>
 				</tr>
 				<tr id="stateRow" >
 					<td class="formLeft">回款金额1:</td>
 					<td>
-						<input class="easyui-validatebox" name="amount1" id="amount1">
+						<input class="easyui-numberbox" data-options="min:0" name="amount1" id="amount1">
 					</td>
 				</tr>
 				<tr id="stateRow" >
@@ -95,7 +95,7 @@
 				<tr id="stateRow" >
 					<td class="formLeft">回款金额2:</td>
 					<td>
-						<input class="easyui-validatebox" name="amount2" id="amount2">
+						<input class="easyui-numberbox" data-options="min:0" name="amount2" id="amount2">
 					</td>
 				</tr>
 				<tr id="stateRow" >
@@ -107,7 +107,7 @@
 				<tr id="stateRow" >
 					<td class="formLeft">回款金额3:</td>
 					<td>
-						<input class="easyui-validatebox" name="amount3" id="amount3">
+						<input class="easyui-numberbox" data-options="min:0" name="amount3" id="amount3">
 					</td>
 				</tr>
 				<tr id="stateRow" >
@@ -144,7 +144,7 @@
 				<tr id="stateRow" >
 					<td class="formLeft">订单金额:</td>
 					<td>
-						<input class="easyui-validatebox" data-options="required:true" name="updateOrderAmount" id="updateOrderAmount">
+						<input class="easyui-numberbox" data-options="required:true,min:0" name="updateOrderAmount" id="updateOrderAmount">
 					</td>
 				</tr>
 				<tr id="stateRow" >
@@ -415,7 +415,7 @@
 			$("#updateOrderNo").val(row.orderNo).validatebox('validate');
 			$("#updateOrderName").val(row.orderName).validatebox('validate');
 			$("#updateBigItemNo").val(row.bigItemNo).validatebox('validate');
-			$("#updateOrderAmount").val(row.orderAmount).validatebox('validate');
+			$('#updateOrderAmount').numberbox('setValue', row.orderAmount);
 			$('#updateStartTime').datebox('setValue', row.startTime);
 			$('#editDialog').dialog('open');
 		});
@@ -757,7 +757,11 @@
 
 	        var fr = new FileReader();
 	        fr.onload = function(){
-	            img.src=this.result;
+	        	if(this.result.substring(5,this.result.indexOf("/"))=="image"){
+		            img.src=this.result;
+	        	}else{
+	        		img.src="/static/images/compress.jpg";
+	        	}
 	            div.appendChild(img);
 	            document.getElementById("Imgdiv").appendChild(div);
 	        }

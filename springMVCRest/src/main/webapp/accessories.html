@@ -33,7 +33,7 @@
 		if(fileType=="1"){//合同
 			if(typeof(row.letterOfAcceptance) == "object"){
 				var html = '<div style="margin: 20px;text-align:left;">中标通知书</div><div><img src="http://' + row.letterOfAcceptance.url + '"></div>';
-					html +='<div style="margin: 20px;">点击下载框架合同压缩文件</div><div><button id="btn" type="button" >文件</button></div>';
+					html +='<div style="margin: 20px;">点击下载框架合同压缩文件</div><div><img id="btn" src="/static/images/compress.jpg" width="80px" height="80px"></div>';
 				$("#content").html(html);
 				$("#btn").bind("click",function(){
 		            window.open("http://" + row.contractAttachment.url );
@@ -47,7 +47,11 @@
 			var html = '<div style="margin: 20px;text-align:left;">发票文件</div>';
 			if(typeof(row.invoiceAttachmentList) == "object"){
 				for(i=0;i<row.invoiceAttachmentList.length;i++){
-					html += '<div><img src="http://' + row.invoiceAttachmentList[i].url + '"></div>';
+					if(row.invoiceAttachmentList[i].fileType.indexOf("image")>=0){
+						html += '<div><img src="http://' + row.invoiceAttachmentList[i].url + '"></div>';
+					}else{
+						html += '<a href="http://'+row.invoiceAttachmentList[i].url+'"><div><img src="/static/images/compress.jpg" width="80px" height="80px"></div></a>';
+					}
 				}
 			}else{
 				var html = '<div style="margin: 20px;text-align:left;">发票文件</div><div class="noneContent">无上传内容</div>';
@@ -56,7 +60,11 @@
 			html += '<div style="margin: 20px;text-align:left;">定单文件</div>';
 			if(typeof(row.orderImageAttachmentList) == "object"&&row.orderImageAttachmentList.length>0){
 				for(i=0;i<row.orderImageAttachmentList.length;i++){
-					html += '<div><img src="http://' + row.orderImageAttachmentList[i].url + '"></div>';
+					if(row.orderImageAttachmentList[i].fileType.indexOf("image")>=0){
+						html += '<div><img src="http://' + row.orderImageAttachmentList[i].url + '"></div>';
+					}else{
+						html += '<a href="http://'+row.orderImageAttachmentList[i].url+'"><div><img src="/static/images/compress.jpg" width="80px" height="80px"></div></a>';
+					}
 				}
 			}else{
 				html += '<div class="noneContent">无上传内容</div>';

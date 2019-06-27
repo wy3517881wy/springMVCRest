@@ -21,7 +21,7 @@
 				<tr>
 					<td class="formLeft">甲方名称:</td>
 					<td class="formRight">
-						<select class="easyui-combobox" name="firstPartyName" id="firstPartyName" placeholder="请输入甲方名称" required="required" style="width:260px;">
+						<select class="easyui-combobox" name="firstPartyName" id="firstPartyName" placeholder="请输入甲方名称" required="required" style="width:263px;">
 						    <option value="移动">移动</option>
 						    <option value="联通">联通</option>
 						    <option value="电信">电信</option>
@@ -48,6 +48,12 @@
 					<td class="formLeft">合同名称:</td>
 					<td class="formRight">
 						<input class="easyui-validatebox" name="contractName" id="contractName" placeholder="请输入合同名称" required="required"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">合同金额:</td>
+					<td class="formRight">
+						<input class="easyui-numberbox" data-options="min:0" name="contractAmount" id="contractAmount" placeholder="请输入合同金额 (选填)"  />
 					</td>
 				</tr>
 				<tr>
@@ -103,6 +109,7 @@ function clickFunction(){
 						contractName : $("#contractName").val(),
 						signTime : $("#signTime").val(),
 						startTime : $("#startTime").val(),
+						contractAmount : $("#contractAmount").val(),
 					}),
 					dataType : "json",
 					contentType: 'application/json;charset=UTF-8',

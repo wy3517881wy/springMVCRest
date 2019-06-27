@@ -99,6 +99,12 @@
 					</td>
 				</tr>
 				<tr>
+					<td class="formLeft">合同金额:</td>
+					<td>
+						<input class="easyui-numberbox" data-options="min:0" name="contractAmount" id="contractAmount">
+					</td>
+				</tr>
+				<tr>
 					<td class="formLeft">签订时间:</td>
 					<td>
 						<input class="easyui-datebox" name="signTime" id="signTime">
@@ -416,8 +422,8 @@
 		if($("#editForm").form('validate')){
 			var row = $('#infoDrid').datagrid('getSelected');
 			var letterOfAcceptance = "",contractAttachment = "";
-				contractAttachment = row.contractAttachment.id;
-				letterOfAcceptance = row.letterOfAcceptance.id;
+				//contractAttachment = row.contractAttachment.id;
+				//letterOfAcceptance = row.letterOfAcceptance.id;
 			$.ajax({
 				url:getHost() + '/contract',
 				type:'PUT',
@@ -427,11 +433,12 @@
 					secondPartyName : $("#secondPartyName").val(),
 					contractNo : $("#contractNo").val(),
 					contractName : $("#contractName").val(),
+					contractAmount : $("#contractAmount").val(),
 					signTime : $("#signTime").val(),
 					startTime : $("#startTime").val(),
 					id : $("#contractID").val(),
-					letterOfAcceptance : letterOfAcceptance,
-					contractAttachment :contractAttachment,
+					//letterOfAcceptance : letterOfAcceptance,
+					//contractAttachment :contractAttachment,
 				}),
 				dataType : "json",
 				contentType: 'application/json;charset=UTF-8',
@@ -575,7 +582,11 @@
 
 	        var fr = new FileReader();
 	        fr.onload = function(){
-	            img.src=this.result;
+	        	if(this.result.substring(5,this.result.indexOf("/"))=="image"){
+		            img.src=this.result;
+	        	}else{
+	        		img.src="/static/images/compress.jpg";
+	        	}
 	            div.appendChild(img);
 	            document.getElementById("Imgdiv").appendChild(div);
 	        }
