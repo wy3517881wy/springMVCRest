@@ -43,28 +43,31 @@
 				</tr>
 				<tr>
 					<td class="formLeft">小项数量:</td>
-					<td class="formRight" id="cashedAmount">
-					</td>
+					<td class="formRight" id="count"></td>
+				</tr>
+				<tr>
+					<td class="formLeft">总收入:</td>
+					<td class="formRight"id="cashedAmount"></td>
 				</tr>
 				<tr>
 					<td class="formLeft">支出金额:</td>
-					<td class="formRight"id="payedAmount">
-					</td>
+					<td class="formRight"id="payedAmount"></td>
 				</tr>
 				<tr>
-					<td class="formLeft">回款金额:</td>
-					<td class="formRight"id="amount">
-					</td>
+					<td class="formLeft">未支付尾款:</td>
+					<td class="formRight"id="balanceAmount"></td>
 				</tr>
 				<tr>
-					<td class="formLeft">总计:</td>
-					<td class="formRight"id="count">
-					</td>
+					<td class="formLeft">实时盈亏:</td>
+					<td class="formRight"id="realTimeAmount"></td>
+				</tr>
+				<tr>
+					<td class="formLeft">实际盈亏:</td>
+					<td class="formRight"id="actualAmount"></td>
 				</tr>
 				<tr>
 					<td colspan="2" style="text-align: center;">
 						<p><a href="#" class="easyui-linkbutton c1" style="width:100px" id="countDetail">查看明细</a></p>
-					</td>
 					</td>
 				</tr>
 			</table>
@@ -96,7 +99,9 @@ $(function(){
 					if(data.code==200){
 						$("#cashedAmount").html(data.data.item.cashedAmount);
 						$("#payedAmount").html(data.data.item.payedAmount);
-						$("#amount").html(data.data.item.amount);
+						$("#balanceAmount").html(data.data.item.balanceAmount);
+						$("#realTimeAmount").html(data.data.item.realTimeAmount);
+						$("#actualAmount").html(data.data.item.actualAmount);
 						$("#count").html(data.data.item.count);
 					}else{
 						$.messager.alert("提示",data.message);
@@ -108,6 +113,7 @@ $(function(){
 	$('#countDetail').click(function(){
 		sessionStorage.setItem('endTimeBegin',$("#endTimeBegin").val());
 		sessionStorage.setItem('endTimeEnd',$("#endTimeEnd").val());
+		sessionStorage.setItem('firstPartyName',$('#firstPartyName').combobox('getValue'));
 		parent.addTab('汇总明细',  "/countDetail.html")
 	});
 });

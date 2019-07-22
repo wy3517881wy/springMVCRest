@@ -50,6 +50,7 @@
 		<!-- <a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a> -->
 		<a id="uploadBTN" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccOut',plain:true" >上传</a>
 		<a id="checkFile" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-accolist',plain:true" >查看附件</a>
+		<a id="downLoadFile" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccDownload',plain:true" >下载全部附件</a>
 		<a id="edit" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >编辑合同</a>
 		<a id="finish" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:true" >结束合同</a>
 		<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" >删除合同</a>
@@ -402,6 +403,19 @@
 							}
 						}
 					});
+			    }
+			});
+		});
+		//打包下载
+		$('#downLoadFile').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			$.messager.confirm('提示','确定要下载选中合同下所有附件吗?',function(r){
+			    if (r){
+			    	window.location.href=getHost() + '/contract/zip_download/' + row.id;
 			    }
 			});
 		});

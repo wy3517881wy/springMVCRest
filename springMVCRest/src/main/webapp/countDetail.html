@@ -29,12 +29,14 @@
 				"pageNumber": pageNumber,
 			    "pageSize": pageSize,
 			    "endTimeBegin": sessionStorage.getItem('endTimeBegin'),
-			    "endTimeEnd": sessionStorage.getItem('endTimeEnd')
+			    "endTimeEnd": sessionStorage.getItem('endTimeEnd'),
+			    "firstPartyName" : sessionStorage.getItem('firstPartyName'),
 			}),
 			async : false,
 			dataType : "json",
 			contentType: 'application/json;charset=UTF-8',
 			success : function(data) {
+				console.log(data)
 				if (data.code==200&&typeof(data.data) == "object") {
 					var width = $('#infoDrid').parent().width();
 					var height = $('#infoDrid').parent().height();
@@ -51,12 +53,11 @@
 						striped : true,
 						pagination : true,
 						columns : [ [
-							{field:'name',title:'小项名称',align:'center',width:150},
-							{field:'cooperator',title:'合作单位',align:'center',width:150},
-							{field:'startDate',title:'开始日期',align:'center',width:150},
-							{field:'endDate',title:'结束日期',align:'center',width:100},
-							{field:'amount',title:'总金额',align:'center',width:150},
-							{field:'status',title:'合同状态',align:'center',width:150,
+							{field:'name',title:'小项名称' ,align:'center'},
+							{field:'cooperator',title:'合作单位' ,align:'center'},
+							{field:'startDate',title:'开始日期',align:'center'},
+							{field:'endDate',title:'结束日期',align:'center'},
+							{field:'status',title:'状态',align:'center',
 								formatter: function(value,row,index){
 									if(value=="2"){
 										return "已结束";
@@ -66,7 +67,34 @@
 										return "";
 									}
 								}
-							}
+							},
+							{field:'checkAndAcceptDate',title:'验收日期',align:'center'},
+							{field:'amount',title:'总金额',align:'center' },
+							{field:'secondPartyConstructionCost',title:'乙方施工费',align:'center'},
+							{field:'firstPartyMaterialCost',title:'甲方提供材料费',align:'center'},
+							{field:'secondPartyMaterialCost',title:'乙方提供材料费',align:'center'},
+							{field:'secondPartySafeProductionCost',title:'乙方安全生产费用',align:'center'},
+							{field:'stipulatedFee',title:'规费',align:'center'},
+							{field:'amountCashed',title:'小项回款额',align:'center'},
+							{field:'secondPartyAuditFee',title:'乙方审计费',align:'center'},
+							{field:'secondPartyDeductedAmount',title:'乙方扣款',align:'center'},
+							{field:'taxAmount',title:'税金',align:'center'},
+							{field:'managementFee',title:'管理费',align:'center'},
+							{field:'invoiceAmount',title:'小项开票金额',align:'center'},
+							{field:'balance',title:'应付尾款',align:'center'},
+							{field:'accountPayable',title:'应付款',align:'center'},
+							{field:'actualPayment',title:'实际付款',align:'center'},
+							{field:'totalPaid',title:'尾款支付状态',align:'center',
+								formatter: function(value,row,index){
+									if(value){
+										return "已支付";
+									}else if(!value){
+										return "未支付";
+									}else{
+										return "";
+									}
+								}
+							},
 						] ],
 					});
 					var p = $('#infoDrid').datagrid('getPager');

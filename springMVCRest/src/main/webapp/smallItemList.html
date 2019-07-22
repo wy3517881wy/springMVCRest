@@ -4,6 +4,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <script type="text/javascript" src="/static/js/head.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/css/smallItemList.css" />
+<style>
+.formLeft{width:auto;}
+</style>
 </head> 
 <body id="layout" class="easyui-layout">
 	<div data-options="region:'center',border:false">
@@ -19,6 +22,7 @@
 		<!--<a id="search" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccSearch',plain:true" >查询</a> -->
 		<a id="finish" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:true" >结束小项</a>
 		<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" >删除小项</a>
+		<a id="paid" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ok',plain:true" >支付尾款</a>
 	</div>
 	<!-- 添加 -->
 	<div id="addDialog">
@@ -31,7 +35,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">合作单位（乙方）:</td>
+					<td class="formLeft">合作单位:</td>
 					<td>
 						<input class="easyui-validatebox" data-options="required:true" name="addCooperator" id="addCooperator">
 					</td>
@@ -49,69 +53,63 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">总金额:</td>
+					<td class="formLeft">审定总金额:</td>
 					<td>
 						<input class="easyui-numberbox" data-options="min:0" name="addAmount" id="addAmount">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">乙方施工费:</td>
+					<td class="formLeft">审定乙方施工费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="addSecondPartyConstructionCost" id="addSecondPartyConstructionCost">
+						<input class="easyui-numberbox" data-options="min:0" name="addSecondPartyConstructionCost" id="addSecondPartyConstructionCost" precision="2">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">甲方提供材料费:</td>
+					<td class="formLeft">审定甲方提供材料费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="addFirstPartyMaterialCost" id="addFirstPartyMaterialCost">
+						<input class="easyui-numberbox" data-options="min:0" name="addFirstPartyMaterialCost" id="addFirstPartyMaterialCost" precision="2">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">乙方提供材料费:</td>
+					<td class="formLeft">审定乙方提供材料费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="addSecondPartyMaterialCost" id="addSecondPartyMaterialCost">
+						<input class="easyui-numberbox" data-options="min:0" name="addSecondPartyMaterialCost" id="addSecondPartyMaterialCost" precision="2">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">乙方安全生产费用:</td>
+					<td class="formLeft">乙方安全生产费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="addSecondPartySafeProductionCost" id="addSecondPartySafeProductionCost">
+						<input class="easyui-numberbox" data-options="min:0" name="addSecondPartySafeProductionCost" id="addSecondPartySafeProductionCost" precision="2">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">规费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="addStipulatedFee" id="addStipulatedFee">
+						<input class="easyui-numberbox" data-options="min:0" name="addStipulatedFee" id="addStipulatedFee" precision="2">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">回款额:</td>
+					<td class="formLeft">施工队审计费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="addAmountCashed" id="addAmountCashed">
+						<input class="easyui-numberbox" data-options="min:0" name="addSecondPartyAuditFee" id="addSecondPartyAuditFee" precision="2">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">乙方审计费用:</td>
+					<td class="formLeft">施工队扣款:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="addSecondPartyAuditFee" id="addSecondPartyAuditFee">
+						<input class="easyui-numberbox" data-options="min:0" name="addSecondPartyDeductedAmount" id="addSecondPartyDeductedAmount" precision="2">
 					</td>
 				</tr>
-				<tr>
-					<td class="formLeft">乙方扣款:</td>
-					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="addSecondPartyDeductedAmount" id="addSecondPartyDeductedAmount">
-					</td>
-				</tr>
-				<tr>
+				<!-- <tr>
 					<td class="formLeft">应扣税款:</td>
 					<td>
 						<input class="easyui-numberbox" data-options="min:0" name="addTaxAmount" id="addTaxAmount">
 					</td>
-				</tr>
+				</tr> -->
 				<tr>
 					<td class="formLeft">管理费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="addManagementFee" id="addManagementFee">
+						<input class="easyui-numberbox" data-options="min:0" name="addManagementFee" id="addManagementFee" precision="2">
 					</td>
 				</tr>
 			</table>
@@ -128,7 +126,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">合作单位（乙方）:</td>
+					<td class="formLeft">合作单位:</td>
 					<td>
 						<input class="easyui-validatebox" data-options="required:true" name="cooperator" id="cooperator">
 					</td>
@@ -146,69 +144,63 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">总金额:</td>
+					<td class="formLeft">审定总金额:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="amount" id="amount">
+						<input class="easyui-numberbox" data-options="min:0" name="amount" id="amount" precision="2">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">乙方施工费:</td>
+					<td class="formLeft">审定乙方施工费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="secondPartyConstructionCost" id="secondPartyConstructionCost">
+						<input class="easyui-numberbox" data-options="min:0" name="secondPartyConstructionCost" id="secondPartyConstructionCost" precision="2">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">甲方提供材料费:</td>
+					<td class="formLeft">审定甲方提供材料费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="firstPartyMaterialCost" id="firstPartyMaterialCost">
+						<input class="easyui-numberbox" data-options="min:0" name="firstPartyMaterialCost" id="firstPartyMaterialCost" precision="2">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">乙方提供材料费:</td>
+					<td class="formLeft">审定乙方提供材料费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="secondPartyMaterialCost" id="secondPartyMaterialCost">
+						<input class="easyui-numberbox" data-options="min:0" name="secondPartyMaterialCost" id="secondPartyMaterialCost" precision="2">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">乙方安全生产费用:</td>
+					<td class="formLeft">乙方安全生产费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="secondPartySafeProductionCost" id="secondPartySafeProductionCost">
+						<input class="easyui-numberbox" data-options="min:0" name="secondPartySafeProductionCost" id="secondPartySafeProductionCost" precision="2">
 					</td>
 				</tr>
 				<tr>
 					<td class="formLeft">规费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="stipulatedFee" id="stipulatedFee">
+						<input class="easyui-numberbox" data-options="min:0" name="stipulatedFee" id="stipulatedFee" precision="2">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">回款额:</td>
+					<td class="formLeft">施工队审计费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="amountCashed" id="amountCashed">
+						<input class="easyui-numberbox" data-options="min:0" name="secondPartyAuditFee" id="secondPartyAuditFee" precision="2">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">乙方审计费用:</td>
+					<td class="formLeft">施工队扣款:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="secondPartyAuditFee" id="secondPartyAuditFee">
+						<input class="easyui-numberbox" data-options="min:0" name="secondPartyDeductedAmount" id="secondPartyDeductedAmount" precision="2">
 					</td>
 				</tr>
-				<tr>
-					<td class="formLeft">乙方扣款:</td>
-					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="secondPartyDeductedAmount" id="secondPartyDeductedAmount">
-					</td>
-				</tr>
-				<tr>
+				<!-- <tr>
 					<td class="formLeft">应扣税款:</td>
 					<td>
 						<input class="easyui-numberbox" data-options="min:0" name="taxAmount" id="taxAmount">
 					</td>
-				</tr>
+				</tr> -->
 				<tr>
 					<td class="formLeft">管理费:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="managementFee" id="managementFee">
+						<input class="easyui-numberbox" data-options="min:0" name="managementFee" id="managementFee" precision="2">
 					</td>
 				</tr>
 			</table>
@@ -374,18 +366,32 @@
 								}
 							},
 							{field:'checkAndAcceptDate',title:'验收日期',align:'center'},
-							{field:'amount',title:'总金额',align:'center' },
-							{field:'secondPartyConstructionCost',title:'乙方施工费',align:'center'},
-							{field:'firstPartyMaterialCost',title:'甲方提供材料费',align:'center'},
-							{field:'secondPartyMaterialCost',title:'乙方提供材料费',align:'center'},
+							{field:'amount',title:'审定总金额',align:'center' },
+							{field:'secondPartyConstructionCost',title:'审定乙方施工费',align:'center'},
+							{field:'firstPartyMaterialCost',title:'审定甲供材料费',align:'center'},
+							{field:'secondPartyMaterialCost',title:'审定乙供材料费',align:'center'},
 							{field:'secondPartySafeProductionCost',title:'乙方安全生产费用',align:'center'},
 							{field:'stipulatedFee',title:'规费',align:'center'},
-							{field:'amountCashed',title:'回款额',align:'center'},
-							{field:'secondPartyAuditFee',title:'乙方审计费',align:'center'},
-							{field:'secondPartyDeductedAmount',title:'乙方扣款',align:'center'},
-							{field:'taxAmount',title:'应扣税款',align:'center'},
+							{field:'invoiceAmount',title:'小项开票金额',align:'center'},
+							{field:'amountCashed',title:'小项回款额',align:'center'},
+							{field:'secondPartyAuditFee',title:'施工队审计费',align:'center'},
+							{field:'secondPartyDeductedAmount',title:'施工队扣款',align:'center'},
+							/* {field:'taxAmount',title:'税金',align:'center'}, */
 							{field:'managementFee',title:'管理费',align:'center'},
+							{field:'accountPayable',title:'应付款',align:'center'},
 							{field:'actualPayment',title:'实际付款',align:'center'},
+							{field:'balance',title:'应付尾款',align:'center'},
+							{field:'totalPaid',title:'尾款支付状态',align:'center',
+								formatter: function(value,row,index){
+									if(value){
+										return "已支付";
+									}else if(!value){
+										return "未支付";
+									}else{
+										return "";
+									}
+								}
+							},
 						] ],
 					});
 					var p = $('#infoDrid').datagrid('getPager');
@@ -500,6 +506,44 @@
 			    }
 			});
 		});
+		//确认支付尾款
+		$('#paid').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			if(!row.totalPaid){
+			}else{
+				$.messager.alert("提示","尾款已经支付。");
+				return;
+			}
+			$.messager.confirm('提示','确定要支付尾款吗?',function(r){
+			    if (r){
+			    	$.ajax({
+						url:getHost() + '/small_item/total_paid',
+						type:'PUT',
+						data : JSON.stringify({
+							"id": row.id,
+						    "status": true,
+						}),
+						error:function(){
+							$.messager.alert("提示","数据操作存在异常!");
+						},
+						dataType : "json",
+						contentType: 'application/json;charset=UTF-8',
+						success:function(data, textStatus, request){
+							if(data.code==200){
+								$.messager.alert("提示","操作成功");
+								gridLoad(1,15);
+							}else{
+								$.messager.alert("提示",data.message);
+							}
+						}
+					});
+			    }
+			});
+		});
 		//上传 
 		$('#uploadBTN').click(function() {
 			var row = $('#infoDrid').datagrid('getSelected');
@@ -540,10 +584,9 @@
 					secondPartyMaterialCost : $("#addSecondPartyMaterialCost").val(),
 					secondPartySafeProductionCost : $("#addSecondPartySafeProductionCost").val(),
 					stipulatedFee : $("#addStipulatedFee").val(),
-					amountCashed : $("#addAmountCashed").val(),
 					secondPartyAuditFee : $("#addSecondPartyAuditFee").val(),
 					secondPartyDeductedAmount : $("#addSecondPartyDeductedAmount").val(),
-					taxAmount : $("#addTaxAmount").val(),
+					/* taxAmount : $("#addTaxAmount").val(), */
 					managementFee : $("#addManagementFee").val(),
 				}),
 				contentType: 'application/json;charset=UTF-8',
@@ -596,7 +639,7 @@
 					"amountCashed" : $("#amountCashed").val(),
 					"secondPartyAuditFee" : $("#secondPartyAuditFee").val(),
 					"secondPartyDeductedAmount" : $("#secondPartyDeductedAmount").val(),
-					"taxAmount" : $("#taxAmount").val(),
+					/* "taxAmount" : $("#taxAmount").val(), */
 					"managementFee" : $("#managementFee").val(),
 				    "id": $("#smallId").val(),
 				    checkAndAcceptAttachmentIdList : checkAndAcceptAttachmentIdList,
@@ -699,7 +742,7 @@
 					amountCashed : row.amountCashed,
 					secondPartyAuditFee : row.secondPartyAuditFee,
 					secondPartyDeductedAmount : row.secondPartyDeductedAmount,
-					taxAmount : row.taxAmount,
+					/* taxAmount : row.taxAmount, */
 					managementFee : row.managementFee,
 					id : row.id,
 					checkAndAcceptAttachmentIdList : checkAndAcceptAttachmentIdList,

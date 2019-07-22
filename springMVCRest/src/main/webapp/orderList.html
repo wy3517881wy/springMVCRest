@@ -46,7 +46,7 @@
 				<tr>
 					<td class="formLeft">订单金额:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="required:true,min:0" name="orderAmount" id="orderAmount">
+						<input class="easyui-numberbox" data-options="required:true,min:0" name="orderAmount" id="orderAmount" precision="2">
 					</td>
 				</tr>
 				<tr>
@@ -69,9 +69,9 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">开票金额:</td>
+					<td class="formLeft" style="width:auto;">大项开票金额:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="validType:'positionCodes',required:true,min:0" name="invoiceAmount" id="invoiceAmount">
+						<input class="easyui-numberbox" data-options="validType:'positionCodes',required:true,min:0" name="invoiceAmount" id="invoiceAmount" precision="2">
 					</td>
 				</tr>
 				<tr>
@@ -83,7 +83,7 @@
 				<tr id="stateRow" >
 					<td class="formLeft">回款金额1:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="amount1" id="amount1">
+						<input class="easyui-numberbox" data-options="min:0" name="amount1" id="amount1" precision="2">
 					</td>
 				</tr>
 				<tr id="stateRow" >
@@ -95,7 +95,7 @@
 				<tr id="stateRow" >
 					<td class="formLeft">回款金额2:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="amount2" id="amount2">
+						<input class="easyui-numberbox" data-options="min:0" name="amount2" id="amount2" precision="2">
 					</td>
 				</tr>
 				<tr id="stateRow" >
@@ -107,7 +107,7 @@
 				<tr id="stateRow" >
 					<td class="formLeft">回款金额3:</td>
 					<td>
-						<input class="easyui-numberbox" data-options="min:0" name="amount3" id="amount3">
+						<input class="easyui-numberbox" data-options="min:0" name="amount3" id="amount3" precision="2">
 					</td>
 				</tr>
 				<tr id="stateRow" >
@@ -229,7 +229,7 @@
 		});
 		$('#updateDialog').dialog({
 			title: '查看/更新财务信息',
-		    width: 300,
+		    width: 400,
 		    height:400,
 		    closed: true,
 		    modal: true,
@@ -324,11 +324,8 @@
 							{field:'orderName',title:'订单名称',align:'center' },
 							{field:'bigItemNo',title:'大项编号',align:'center' },
 							{field:'orderAmount',title:'订单金额',align:'center' },
-							{field:'amountCashed',title:'回款金额',align:'center' },
-							{field:'amountCashedPercent',title:'回款比例',align:'center' },
-							{field:'amountBalance',title:'尾款金额',align:'center' },
 							{field:'missNo',title:'MISS编号',align:'center' },
-							{field:'invoiceAmount',title:'开票金额',align:'center' },
+							{field:'invoiceAmount',title:'大项开票金额',align:'center' },
 							{field:'taxRate',title:'税率',align:'center' ,formatter: function(value,row,index){
 								if(value>=0){
 									return value+"%";
@@ -336,6 +333,9 @@
 									return value;
 								}
 							}},
+							{field:'amountCashed',title:'回款金额',align:'center' },
+							{field:'amountCashedPercent',title:'回款比例',align:'center' },
+							{field:'amountBalance',title:'尾款金额',align:'center' },
 							{field:'startTime',title:'开始时间',align:'center' },
 							{field:'status',title:'订单状态',align:'center' ,
 								formatter: function(value,row,index){

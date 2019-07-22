@@ -80,5 +80,6 @@ function GetQueryString(name){
     if (r!= null ) return unescape(r[2]); return null ;
 } 
 function getHost(){
-	return "http://124.239.148.161:18080";
+//	return "http://124.239.148.161:18080";
+	return "http://static.yt.liby.ltd:18080";
 }
