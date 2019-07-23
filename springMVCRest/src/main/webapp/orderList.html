@@ -12,7 +12,7 @@
 	<input type="hidden" id="contractId">
 	<!-- dataGrid工具栏 -->
 	<div id="toolbar">
-		<a id="updateFinance" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >查看/更新财务信息</a>
+		<a id="updateFinance" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >更新财务信息</a>
 		<a id="uploadBTN" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccOut',plain:true" >上传文件</a>
 		<a id="checkFile" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-accolist',plain:true" >查看附件</a>
 		<a id="createContractOrder" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >创建订单</a>
@@ -77,7 +77,7 @@
 				<tr>
 					<td class="formLeft">税率(%):</td>
 					<td id="updateRoleTD">
-					<input class="easyui-numberbox" data-options="validType:'positionCodes',required:true,min:0" name="taxRate" id="taxRate">
+					<input class="easyui-numberbox" data-options="validType:'positionCodes',required:true,min:0" name="taxRate" id="taxRate" precision="2">
 					</td>
 				</tr>
 				<tr id="stateRow" >
@@ -228,7 +228,7 @@
 			}], 
 		});
 		$('#updateDialog').dialog({
-			title: '查看/更新财务信息',
+			title: '更新财务信息',
 		    width: 400,
 		    height:400,
 		    closed: true,
@@ -395,7 +395,7 @@
 			$('#addForm')[0].reset();
 			$('#addDialog').dialog('open');
 		});
-		//查看/更新财务信息
+		//更新财务信息
 		$('#updateFinance').click(function() {
 			var row = $('#infoDrid').datagrid('getSelected');
 			if(row==null){
@@ -562,8 +562,12 @@
 			}
 		});
 	}
-	//查看/更新财务信息 
+	//更新财务信息 
 	function updatedInfo(){
+		if($("#taxRate").val()==null ||$("#taxRate").val()==""||$("#taxRate").val()==0){
+			$.messager.alert("提示","请填写税率");
+			return;
+		}
 		$.ajax({
 			url:getHost() + '/contract_order/update_finance_item',
 			type:'PUT',
