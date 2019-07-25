@@ -51,6 +51,7 @@
 		<a id="add" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccAdd',plain:true" >添加工具</a>
 		<a id="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true" >修改工具</a>
 		<a id="delete" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" >删除工具</a>
+		<a id="getback" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" >收回工具</a>
 	</div>
 	<!-- 添加 -->
 	<div id="addDialog">
@@ -292,6 +293,60 @@
 			    }
 			});
 		});
+		//收回工具 
+		$('#getback').click(function() {
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			if(row.borrower==null||row.borrower==""){
+				$.messager.alert("提示","未填写借用人，无法收回");
+				return;
+			}
+			if(row.startTime==null||row.startTime==""){
+				$.messager.alert("提示","未填写借用开始时间，无法收回");
+				return;
+			}
+			$.messager.confirm('提示','确定要收回工具吗?',function(r){
+			    if (r){
+			    	$.ajax({
+						url:getHost() + '/instrument',
+						type:'PUT',
+						data:JSON.stringify({
+							name : row.name,
+							type : row.type,
+							purchaseTime : row.purchaseTime,
+							borrower : row.borrower,
+							startTime : row.startTime,
+							endTime : getTime(),
+							remark : row.remark,
+							id : row.id
+						}),
+						contentType: 'application/json;charset=UTF-8',
+						error:function(){
+							$.messager.alert("提示","数据操作存在异常!");
+							$('#addDialog').dialog('close');
+						},
+						beforeSend: function(xhr) {
+			                xhr.withCredentials = true;
+			            },
+			            crossDomain:true,
+						success:function(data){
+							if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
+								$.messager.alert("提示","修改成功");
+								$('#addForm').form('clear');
+								$('#addDialog').dialog('close');
+								//$('#infoDrid').datagrid('load');
+								gridLoad(1,15);
+							}else{
+								$.messager.alert("提示",data.message);
+							}
+						}
+					});
+			    }
+			});
+		});
 	}
 	//添加信息
 	function addInfo(){
@@ -370,5 +425,12 @@
 				}
 			});
 		}
+	}
+	function getTime(){
+		var d = new Date();
+		var vYear = d.getFullYear()
+		var vMon = d.getMonth() + 1
+		var vDay = d.getDate();
+		return vYear + "-" +(vMon<10 ? "0" + vMon : vMon) + "-" +(vDay<10 ? "0"+ vDay : vDay);
 	}
 </script>
