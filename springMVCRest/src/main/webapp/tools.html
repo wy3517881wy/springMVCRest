@@ -354,7 +354,7 @@
 			$.ajax({
 				url:getHost() + '/instrument',
 				type:'POST',
-				data:{
+				data:JSON.stringify({
 					name : $("#name").val(),
 					type : $("#type").val(),
 					purchaseTime : $("#purchaseTime").val(),
@@ -362,7 +362,7 @@
 					startTime : $("#startTime").val(),
 					endTime : $("#endTime").val(),
 					remark : $("#remark").val(),
-				},
+				}),
 				dataType : "json",
 				contentType: 'application/json;charset=UTF-8',
 				beforeSend: function(xhr) {
