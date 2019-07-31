@@ -42,6 +42,16 @@ $(function(){
 							sessionStorage.setItem('userid',data.data.item.id);
 							sessionStorage.setItem('nickname',data.data.item.nickname);
 							sessionStorage.setItem('username',data.data.item.username);
+							rolelist = data.data.item.roleList;
+							console.log(rolelist)
+							var rolestr = "";
+							if(rolelist&&rolelist!=null){
+								for(keys in rolelist){
+									rolestr += rolelist[keys].name + ",";
+								}
+								rolestr = rolestr.substr(0,rolestr.length-1);
+							}
+							sessionStorage.setItem('role',rolestr);
 							window.location.href = "/index.html";
 						} else{
 							$('#username').focus();

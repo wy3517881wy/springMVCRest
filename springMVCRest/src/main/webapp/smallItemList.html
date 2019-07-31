@@ -217,6 +217,7 @@
 			            <label><input type="radio" name="certType" value="2">审核报告</label>
 			            <label><input type="radio" name="certType" value="3">扣款凭证</label>
 			            <label><input type="radio" name="certType" value="4">实际付款数凭证</label>
+			            <label><input type="radio" name="certType" value="5">尾款支付</label>
 					</td>
 				</tr>
 				<tr id="inputCB1" >
@@ -408,6 +409,8 @@
 			        		gridLoad(pageNumber,pageSize);
 			        	}
 			        });
+				}else{
+					$.messager.alert("提示",data.message);
 				}
 			}
 		});
@@ -703,28 +706,40 @@
 		if(count==fl){
 			var row = $('#infoDrid').datagrid('getSelected');
 			var checkAndAcceptAttachmentIdList = new Array(),auditReportAttachmentIdList = new Array()
-			,secondPartyDeductionAttachmentIdList = new Array(),actualPaymentAttachmentIdList = new Array();
+			,secondPartyDeductionAttachmentIdList = new Array(),actualPaymentAttachmentIdList = new Array()
+			,balancePaymentAttachmentIdList = new Array();
 			if($("input[name='certType']:checked").val()==1){
 				checkAndAcceptAttachmentIdList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
 				auditReportAttachmentIdList = JSON.parse(getID(JSON.stringify(row.auditReportAttachmentList)));
 				secondPartyDeductionAttachmentIdList = JSON.parse(getID(JSON.stringify(row.secondPartyDeductionAttachmentList)));
 				actualPaymentAttachmentIdList = JSON.parse(getID(JSON.stringify(row.actualPaymentAttachmentList)));
+				balancePaymentAttachmentIdList = JSON.parse(getID(JSON.stringify(row.balancePaymentAttachmentIdList)));
 			}else if($("input[name='certType']:checked").val()==2){
 				auditReportAttachmentIdList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
 				checkAndAcceptAttachmentIdList = JSON.parse(getID(JSON.stringify(row.checkAndAcceptAttachmentList)));
 				secondPartyDeductionAttachmentIdList = JSON.parse(getID(JSON.stringify(row.secondPartyDeductionAttachmentList)));
 				actualPaymentAttachmentIdList = JSON.parse(getID(JSON.stringify(row.actualPaymentAttachmentList)));
+				balancePaymentAttachmentIdList = JSON.parse(getID(JSON.stringify(row.balancePaymentAttachmentIdList)));
 			}else if($("input[name='certType']:checked").val()==3){
 				secondPartyDeductionAttachmentIdList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
 				auditReportAttachmentIdList = JSON.parse(getID(JSON.stringify(row.auditReportAttachmentList)));
 				checkAndAcceptAttachmentIdList = JSON.parse(getID(JSON.stringify(row.checkAndAcceptAttachmentList)));
 				actualPaymentAttachmentIdList = JSON.parse(getID(JSON.stringify(row.actualPaymentAttachmentList)));
+				balancePaymentAttachmentIdList = JSON.parse(getID(JSON.stringify(row.balancePaymentAttachmentIdList)));
 			}else if($("input[name='certType']:checked").val()==4){
 				actualPaymentAttachmentIdList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
 				auditReportAttachmentIdList = JSON.parse(getID(JSON.stringify(row.auditReportAttachmentList)));
 				secondPartyDeductionAttachmentIdList = JSON.parse(getID(JSON.stringify(row.secondPartyDeductionAttachmentList)));
 				checkAndAcceptAttachmentIdList = JSON.parse(getID(JSON.stringify(row.checkAndAcceptAttachmentList)));
+				balancePaymentAttachmentIdList = JSON.parse(getID(JSON.stringify(row.balancePaymentAttachmentIdList)));
+			}else if($("input[name='certType']:checked").val()==5){
+				balancePaymentAttachmentIdList = JSON.parse("["+ids.substring(0,ids.length-1)+"]");
+				actualPaymentAttachmentIdList = JSON.parse(getID(JSON.stringify(row.actualPaymentAttachmentList)));
+				auditReportAttachmentIdList = JSON.parse(getID(JSON.stringify(row.auditReportAttachmentList)));
+				secondPartyDeductionAttachmentIdList = JSON.parse(getID(JSON.stringify(row.secondPartyDeductionAttachmentList)));
+				checkAndAcceptAttachmentIdList = JSON.parse(getID(JSON.stringify(row.checkAndAcceptAttachmentList)));
 			}
+			console.log(balancePaymentAttachmentIdList)
 			$.ajax({
 				url:getHost() + '/small_item',
 				type:'PUT',
@@ -749,6 +764,7 @@
 					auditReportAttachmentIdList : auditReportAttachmentIdList,
 					secondPartyDeductionAttachmentIdList : secondPartyDeductionAttachmentIdList,
 					actualPaymentAttachmentIdList : actualPaymentAttachmentIdList,
+					balancePaymentAttachmentIdList : balancePaymentAttachmentIdList,
 				}),
 				dataType : "json",
 				contentType: 'application/json;charset=UTF-8',

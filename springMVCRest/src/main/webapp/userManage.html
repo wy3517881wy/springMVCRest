@@ -99,7 +99,7 @@
 						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="updatenickname" id="updatenickname">
 					</td>
 				</tr>
-				<tr style="display: none;">
+				<tr >
 					<td class="formLeft">职位:</td>
 					<td id="updateRoleTD">
 					</td>
@@ -131,7 +131,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">确认新密码:</td>
+					<td class="formLeft">确认密码:</td>
 					<td>
 						<input class="easyui-validatebox"  data-options="required:true" name="resetinsurepassword" id="resetinsurepassword">
 					</td>
@@ -157,7 +157,7 @@
 		//信息添加dialog
 		$('#addDialog').dialog({
 			title: '添加登录信息',
-		    width: 300,
+		    width: 400,
 		    height:400,
 		    closed: true,    
 		    modal: true,
@@ -178,7 +178,7 @@
 		$('#updateDialog').dialog({
 			title: '修改登录信息',
 		    width: 300,
-		    height:400,
+		    height:300,
 		    closed: true,    
 		    modal: true,
 		    buttons:[{
@@ -280,7 +280,7 @@
 							{field:'roleList',title:'角色',align:'center',width:150,
 								formatter: function(value,row,index){
 									//value = JSON.parse('[{"id": 1,"name": "系统管理员","structureType": "role"},{"id": 2,"name": "员工","structureType": "role"}]');
-									if(value!=""&&value.length>0){
+									if(value&&value!=null){
 										var result = "";
 										for(i=0;i<value.length;i++){
 											result+=value[i].name+",";
@@ -332,7 +332,6 @@
 			$.ajax({
 				url : getHost() + '/role/list_all',
 				type : "GET",
-				data : {},
 				async : false,
 				dataType : "json",
 				contentType: 'application/json;charset=UTF-8',
@@ -341,18 +340,18 @@
 	            },
 	            crossDomain:true,
 				success : function(data) {
-					var data = '{"code":"200","data":{"roleList":[{"id":1,"name":"系统管理员","structureType":"role"},{"id":2,"name":"资料员","structureType":"role"},{"id":3,"name":"财务","structureType":"role"}]}}';
-					data = JSON.parse(data);
 					if(data.code="200"&&typeof(data.data) == "object"){
 						var html= "";
-						for(y=0;y<data.data.roleList.length;y++){
-							html+='<div class="checkbox-div"><input type="checkbox" class="checkbox-input" name="roleValue" value="'+data.data.roleList[y].id+'"/>'+data.data.roleList[y].name+'</div>';
+						for(y=0;y<data.data.rows.length;y++){
+							html+='<div class="checkbox-div"><input type="checkbox" class="checkbox-input" name="roleValue" value="'+data.data.rows[y].id+'"/>'+data.data.rows[y].name+'</div>';
 						}
 						$("#roleTD").html(html);
+						$('#addDialog').dialog('open');
+					}else{
+						$.messager.alert("提示",data.message);
 					}
 				}
 			});
-			$('#addDialog').dialog('open');
 		});
 		$("#update").click(function(){
 			var row = $('#infoDrid').datagrid('getSelected');
@@ -360,10 +359,9 @@
 				$.messager.alert("提示","请选中一行!");
 				return;
 			}
-/* 			$.ajax({
-				url : getHost() + '/role/list_all',
+			$.ajax({
+				url : getHost() + '/user/'+row.id,
 				type : "GET",
-				data : {},
 				async : false,
 				dataType : "json",
 				contentType: 'application/json;charset=UTF-8',
@@ -371,22 +369,45 @@
 	                xhr.withCredentials = true;
 	            },
 	            crossDomain:true,
-				success : function(data) {
-					var data = '{"code":"200","data":{"roleList":[{"id":1,"name":"系统管理员","structureType":"role"},{"id":2,"name":"资料员","structureType":"role"},{"id":3,"name":"财务","structureType":"role"}]}}';
-					data = JSON.parse(data);
-					if(data.code="200"&&typeof(data.data) == "object"){
-						var html= "";
-						for(y=0;y<data.data.roleList.length;y++){
-							html+='<div class="checkbox-div"><input type="checkbox" class="checkbox-input" name="updateRoleValue" value="'+data.data.roleList[y].id+'"/>'+data.data.roleList[y].name+'</div>';
-						}
-						$("#updateRoleTD").html(html);
+				success : function(userdata) {
+					if(userdata.code="200"&&typeof(userdata.data) == "object"){
+						$("#updateusername").val(userdata.data.item.username);
+						$("#updatenickname").val(userdata.data.item.nickname);
+						$.ajax({
+							url : getHost() + '/role/list_all',
+							type : "GET",
+							async : false,
+							dataType : "json",
+							contentType: 'application/json;charset=UTF-8',
+							beforeSend: function(xhr) {
+				                xhr.withCredentials = true;
+				            },
+				            crossDomain:true,
+							success : function(data) {
+								if(data.code="200"&&typeof(data.data) == "object"){
+									var html= "";
+									for(y=0;y<data.data.rows.length;y++){
+										for(x=0;x<userdata.data.item.roleList.length;x++){
+											if(data.data.rows[y].id==userdata.data.item.roleList[x].id){
+												html+='<div class="checkbox-div"><input type="checkbox" class="checkbox-input" name="updateRoleValue" checked="checked" value="'+data.data.rows[y].id+'"/>'+data.data.rows[y].name+'</div>';
+											}else{
+												html+='<div class="checkbox-div"><input type="checkbox" class="checkbox-input" name="updateRoleValue" value="'+data.data.rows[y].id+'"/>'+data.data.rows[y].name+'</div>';
+											}
+										}
+									}
+									$("#updateRoleTD").html(html);
+									$("#userId").val(row.id);
+									$('#updateDialog').dialog('open');
+								}else{
+									$.messager.alert("提示",data.message);
+								}
+							}
+						});
+					}else{
+						$.messager.alert("提示",data.message);
 					}
 				}
-			}); */
-			$("#userId").val(row.id);
-			$("#updateusername").val(row.username);
-			$("#updatenickname").val(row.nickname);
-			$('#updateDialog').dialog('open');
+			});
 			
 		});
 		
@@ -488,29 +509,35 @@
 			$.messager.alert("提示","昵称不能为空!");
 			return;
 		}
-/* 		if($('input[name=updateroleValue]:checked').length==0){
+	    var count=0;  //计数
+	    var checkboxValue = "";
+        var checkBoxs = document.getElementsByTagName('INPUT');  
+        for(var i=0;i <checkBoxs.length;i++){  
+	        if(checkBoxs[i].type=='checkbox'&&checkBoxs[i].checked){
+		        count++;
+		        checkboxValue += checkBoxs[i].value + ",";
+	        }
+        }
+ 		if(count==0){
 			$.messager.alert("提示","职位不能为空!");
 			return;
 		} 
-		var checkboxValue = "";
-		$.each($('input[name=updateRoleValue]:checkbox:checked'),function(){
-        	checkboxValue += $(this).val()+",";
-        });
-		checkboxValue = checkboxValue.substr(0,checkboxValue.length-1).split(",");*/
-		$.ajax({
+		checkboxValue = checkboxValue.substr(0,checkboxValue.length-1).split(",");
+ 		$.ajax({
 			url:getHost() + '/user',
 			type:'PUT',
 			data:JSON.stringify({
 				id : $("#userId").val(),
 				nickname : $("#updatenickname").val(),
-				//roleIdList : checkboxValue
+				roleIdList : checkboxValue
 			}),
 			contentType: 'application/json;charset=UTF-8',
 			error:function(){
 				$.messager.alert("提示","数据操作存在异常!");
-				$('#addDialog').dialog('close');
+				$('#updateDialog').dialog('close');
 			},
 			success:function(data){
+				console.log(data);
 				if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
 					$.messager.alert("提示","修改成功");
 					$('#updateForm').form('clear');
@@ -518,7 +545,7 @@
 					//$('#infoDrid').datagrid('load');
 					gridLoad(1,15);
 				}else{
-					$.messager.alert("提示","修改失败");
+					$.messager.alert("提示",data.message);
 				}
 			}
 		});
@@ -552,7 +579,7 @@
 			contentType: 'application/json;charset=UTF-8',
 			error:function(){
 				$.messager.alert("提示","数据操作存在异常!");
-				$('#addDialog').dialog('close');
+				$('#resetDialog').dialog('close');
 			},
 			beforeSend: function(xhr) {
                 xhr.withCredentials = true;

@@ -107,6 +107,16 @@
 			}else{
 				html += '<div class="noneContent">无上传内容</div>';
 			}
+			
+			html += '<div style="margin: 20px;text-align:left;">尾款支付</div>';
+			console.log(row);
+			if(typeof(row.balancePaymentAttachmentList) == "object"&&row.balancePaymentAttachmentList.length>0){
+				for(i=0;i<row.balancePaymentAttachmentList.length;i++){
+					html += '<div><img src="http://' + row.balancePaymentAttachmentList[i].url + '"></div>';
+				}
+			}else{
+				html += '<div class="noneContent">无上传内容</div>';
+			}
 			$("#content").html(html);
 		}
 	}
