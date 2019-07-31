@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/static/js/head.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/userManage.css" />
+</head> 
+ <body id="layout" class="easyui-layout">
+	<div data-options="region:'center',border:false">
+	<table id="infoDrid"></table>
+	</div>
+<!-- dataGrid工具栏 -->
+<div id="toolbar">
+	<a id="edit" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ccEdit',plain:true">配置权限</a>
+</div>
+	<div id="updateDialog">
+		<form id="updateForm">
+			<table class="tableForm">
+				<tr>
+					<td class="formLeft">角色名:</td>
+					<td>
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="rolename" id="rolename" disabled="disabled">
+						<input id="roleId" value="0" style="display: none;">
+					</td>
+				</tr>
+				<tr >
+					<td class="formLeft">权限:</td>
+					<td id="updateRoleTD" >
+						<ul class="easyui-tree" id="ttree">
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>
+<script>
+	$(function(){
+		$.ajaxSetup({crossDomain: true, xhrFields: {withCredentials: true}});
+		//页面初始化
+		layoutLoad();
+		//数据表格加载
+		gridLoad();	
+		//点击事件
+		clickFunction();
+	});
+	//页面初始化
+	function layoutLoad(){
+		$('#updateDialog').dialog({
+			title: '权限配置',
+		    width: 400,
+		    height:500,
+		    closed: true,    
+		    modal: true,
+		    buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					updatedInfo();//添加信息
+                }
+			},{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					$('#updateDialog').dialog('close');
+				}
+			}], 
+		});
+	}
+	//数据表格加载
+	function gridLoad() {
+		$.ajax({
+			url : getHost() + '/role/list_all',
+			type : "GET",
+			async : false,
+			dataType : "json",
+			contentType: 'application/json;charset=UTF-8',
+			beforeSend: function(xhr) {
+                xhr.withCredentials = true;
+            },
+            crossDomain:true,
+			success : function(data) {
+				if (data.code==200&&typeof(data.data) == "object") {
+					var width = $('#infoDrid').parent().width();
+					var height = $('#infoDrid').parent().height();
+					$('#infoDrid').datagrid({
+						toolbar : "#toolbar",
+						data: data.data.rows,
+						width : width,
+						height : height,
+						async : false,
+						fit : true,
+						border : false,
+						singleSelect : true,
+						fitColumns : true,
+						striped : true,
+						pagination : true,
+						scrollbarSize:0 ,
+						nowrap:false,
+						columns : [ [
+							{field:'name',title:'角色名称',align:'center',width:"100px"},
+							{field:'uriSourceList',title:'权限',align:'center',
+								formatter: function(value,row,index){
+									if(value&&value!=null&&value!=""){
+										var names = "";
+										for(key in value){
+											names += value[key].name + ",";
+										}
+										return names.substr(0,names.length-1).split(",");
+									}else{
+										return "";
+									}
+								}
+							},
+						] ],
+					});
+				} else {
+					$.messager.alert("提示",data.message);
+				}
+			}
+		});
+	}
+	//点击事件
+	function clickFunction(){
+		$("#edit").click(function(){
+			var row = $('#infoDrid').datagrid('getSelected');
+			if(row==null){
+				$.messager.alert("提示","请选中一行!");
+				return;
+			}
+			$.ajax({
+				url : getHost() + '/uri_source/list_all',
+				type : "GET",
+				async : false,
+				dataType : "json",
+				contentType: 'application/json;charset=UTF-8',
+				beforeSend: function(xhr) {
+	                xhr.withCredentials = true;
+	            },
+	            crossDomain:true,
+				success : function(uriSourcedata) {
+					if(uriSourcedata.code="200"&&typeof(uriSourcedata.data) == "object"){
+						var nodes = [];
+						for(y=0;y<uriSourcedata.data.rows.length;y++){
+							var checkStatus = false;
+							for(x=0;x<row.uriSourceList.length;x++){
+								if(uriSourcedata.data.rows[y].id==row.uriSourceList[x].id){
+									checkStatus = true;
+									break;
+								}
+							}
+							nodes.push({
+			                    id:uriSourcedata.data.rows[y].id,
+			                    text:uriSourcedata.data.rows[y].name,
+			                    checked:checkStatus
+			                });
+						}
+						$('#ttree').tree({
+							checkbox:true,
+							lines:true,
+					        data:nodes,
+//					    	onClick: function(node){}
+					    });
+					}
+				}
+			});
+			$("#roleId").val(row.id);
+			$("#rolename").val(row.name);
+			$('#updateDialog').dialog('open');
+		});
+	}
+	
+	//修改信息
+	function updatedInfo(){
+		checkboxValue = $('#ttree').tree('getChecked');
+		var sourceIdList = [];
+		for(var i=0;i<checkboxValue.length;i++){
+			sourceIdList.push(checkboxValue[i].id);
+		}
+ 		$.ajax({
+			url:getHost() + '/role/modify_role_uri_source',
+			type:'PUT',
+			data:JSON.stringify({
+				roleId : $("#roleId").val(),
+				sourceIdList : sourceIdList
+			}),
+			contentType: 'application/json;charset=UTF-8',
+			error:function(){
+				$.messager.alert("提示","数据操作存在异常!");
+				$('#updateDialog').dialog('close');
+			},
+			success:function(data){
+				if(data.code==200){
+					$.messager.alert("提示","设置成功");
+					$('#updateForm').form('clear');
+					$('#updateDialog').dialog('close');
+					gridLoad();
+				}else{
+					$.messager.alert("提示",data.message);
+				}
+			}
+		});
+	}
+	
+	
+</script>
