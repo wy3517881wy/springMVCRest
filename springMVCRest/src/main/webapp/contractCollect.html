@@ -37,6 +37,22 @@
 					</td>
 				</tr>
 				<tr>
+					<td class="formLeft">小项状态:</td>
+					<td class="formRight">
+						<select id="endStatus" class="easyui-combobox" name="endStatus" style="width:235px;">
+						    <option value="">全部</option>
+						    <option value="true">已结束</option>
+						    <option value="false">未结束</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">合作单位:</td>
+					<td class="formRight">
+						<input class="easyui-validatebox" name="cooperator" id="cooperator"></input>
+					</td>
+				</tr>
+				<tr>
 					<td colspan="2" style="text-align: center;">
 						<p><a href="#" class="easyui-linkbutton c1" style="width:100px" id="countAll">统计</a></p>
 					</td>
@@ -88,6 +104,8 @@ $(function(){
 					endTimeBegin : $("#endTimeBegin").val(),
 					endTimeEnd : $("#endTimeEnd").val(),
 					firstPartyName : $('#firstPartyName').combobox('getValue').trim()==""?null:$('#firstPartyName').combobox('getValue'),
+					cooperator : $("#cooperator").val(),
+					end : $('#endStatus').combobox('getValue').trim()==""?null:$('#endStatus').combobox('getValue'),
 				}),
 				async : false,
 				dataType : "json",
