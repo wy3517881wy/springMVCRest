@@ -474,13 +474,13 @@
 						},
 						contentType: 'application/json;charset=UTF-8',
 						success:function(data){
-							if(data.code=200&&typeof(data.message) == "object"){
-								var mssalet = $.messager.alert("提示",data.message);
+							if(data.code=200&&typeof(data.data) == "object"&&data.data.item.id>0){
+								var mssalet = $.messager.alert("提示","操作成功");
 								mssalet.window({modal:true,onBeforeClose:function() {
 									gridLoad(1,15);
 								}});
 							}else{
-								var mssalet = $.messager.alert("提示","操作成功");
+								var mssalet = $.messager.alert("提示",data.message);
 								mssalet.window({modal:true,onBeforeClose:function() {
 									gridLoad(1,15);
 								}});
@@ -750,7 +750,7 @@
 	    for(i=0;i<fileObj.files.length;i++){
 	    	var extention=fileObj.files[i].name.substring(fileObj.files[i].name.lastIndexOf("."),fileObj.files[i].name.length).toLowerCase();
 	    	if(allowExtention.indexOf(extention)<0){
-	    		alert("仅支持"+allowExtention+"为后缀名的文件!");  
+	    		$.messager.alert("仅支持"+allowExtention+"为后缀名的文件!");  
 	   	        fileObj.value="";//清空选中文件  
 	   	        if(browserVersion.indexOf("MSIE")>-1){
 	   	            fileObj.select();  

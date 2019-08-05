@@ -739,7 +739,6 @@
 				secondPartyDeductionAttachmentIdList = JSON.parse(getID(JSON.stringify(row.secondPartyDeductionAttachmentList)));
 				checkAndAcceptAttachmentIdList = JSON.parse(getID(JSON.stringify(row.checkAndAcceptAttachmentList)));
 			}
-			console.log(balancePaymentAttachmentIdList)
 			$.ajax({
 				url:getHost() + '/small_item',
 				type:'PUT',
@@ -806,7 +805,7 @@
 	    for(i=0;i<fileObj.files.length;i++){
 	    	var extention=fileObj.files[i].name.substring(fileObj.files[i].name.lastIndexOf("."),fileObj.files[i].name.length).toLowerCase();
 	    	if(allowExtention.indexOf(extention)<0){
-	    		alert("仅支持"+allowExtention+"为后缀名的文件!");  
+	    		$.messager.alert("仅支持"+allowExtention+"为后缀名的文件!");  
 	   	        fileObj.value="";//清空选中文件  
 	   	        if(browserVersion.indexOf("MSIE")>-1){
 	   	            fileObj.select();  

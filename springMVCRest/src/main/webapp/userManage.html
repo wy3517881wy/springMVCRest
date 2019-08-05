@@ -537,7 +537,6 @@
 				$('#updateDialog').dialog('close');
 			},
 			success:function(data){
-				console.log(data);
 				if(data.code==200&&typeof(data.data) == "object"&&typeof(data.data.item) == "object"&&data.data.item.id>0){
 					$.messager.alert("提示","修改成功");
 					$('#updateForm').form('clear');
