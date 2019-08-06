@@ -11,15 +11,15 @@
 		<form id="Form">
 			<table class="tableForm">
 				<tr>
-					<td class="formLeft">开始日期:</td>
+					<td class="formLeft">开始时间:</td>
 					<td class="formRight">
 						<input class="easyui-datebox" data-options="required:true" name="endTimeBegin" id="endTimeBegin">
 					</td>
 				</tr>
 				<tr>
-					<td class="formLeft">结束日期:</td>
+					<td class="formLeft">结束时间:</td>
 					<td class="formRight">
-						<input class="easyui-datebox" data-options="required:true" name="endTimeEnd" id="endTimeEnd"></input>
+						<input class="easyui-datebox" data-options=" " name="endTimeEnd" id="endTimeEnd"  ></input>
 					</td>
 				</tr>
 				<tr>
@@ -40,9 +40,8 @@
 					<td class="formLeft">小项状态:</td>
 					<td class="formRight">
 						<select id="endStatus" class="easyui-combobox" name="endStatus" style="width:235px;">
-						    <option value="">全部</option>
-						    <option value="true">已结束</option>
-						    <option value="false">未结束</option>
+						    <option value="true" selected="selected">已完成</option>
+						    <option value="false">未完成</option>
 						</select>
 					</td>
 				</tr>
@@ -96,16 +95,31 @@
 $(function(){
 	$.ajaxSetup({crossDomain: true, xhrFields: {withCredentials: true}});
 	$('#countAll').click(function(){
-		if($("#Form").form('validate')){
+			if($("#endTimeBegin").val()==null ||$("#endTimeBegin").val()==""){
+				$.messager.alert("提示","开始时间不能为空!");
+				return;
+			}
+			if($('#endStatus').combobox('getValue')=="true"){
+				if($("#endTimeEnd").val()==null ||$("#endTimeEnd").val()==""){
+					$.messager.alert("提示","结束时间不能为空!");
+					return;
+				}
+			}else{
+				if($("#endTimeEnd").val()!=null&&$("#endTimeEnd").val().length>0){
+					$.messager.alert("提示","查询未结束小项时，不能输入结束时间!");
+					return;
+				}
+			}
 			$.ajax({
 				url:getHost() + '/small_item/summary_by_time_range',
 				type:'POST',
 				data:JSON.stringify({
-					endTimeBegin : $("#endTimeBegin").val(),
+					createTimeBegin : $('#endStatus').combobox('getValue')=="true"?"":$('#endTimeBegin').datebox('getValue'),
+					endTimeBegin : $('#endStatus').combobox('getValue')=="true"?$('#endTimeBegin').datebox('getValue'):"",
 					endTimeEnd : $("#endTimeEnd").val(),
 					firstPartyName : $('#firstPartyName').combobox('getValue').trim()==""?null:$('#firstPartyName').combobox('getValue'),
 					cooperator : $("#cooperator").val(),
-					end : $('#endStatus').combobox('getValue').trim()==""?null:$('#endStatus').combobox('getValue'),
+					end : $('#endStatus').combobox('getValue'),
 				}),
 				async : false,
 				dataType : "json",
@@ -126,13 +140,33 @@ $(function(){
 					}
 				}
 			});
-		}
 	});
 	$('#countDetail').click(function(){
-		sessionStorage.setItem('endTimeBegin',$("#endTimeBegin").val());
+		sessionStorage.setItem('createTimeBegin',$('#endStatus').combobox('getValue')=="true"?"":$('#endTimeBegin').datebox('getValue'));
+		sessionStorage.setItem('endTimeBegin',$('#endStatus').combobox('getValue')=="true"?$('#endTimeBegin').datebox('getValue'):"");
 		sessionStorage.setItem('endTimeEnd',$("#endTimeEnd").val());
 		sessionStorage.setItem('firstPartyName',$('#firstPartyName').combobox('getValue'));
+		sessionStorage.setItem('end',$('#endStatus').combobox('getValue'));
+		sessionStorage.setItem('cooperator',$("#cooperator").val());
 		parent.addTab('汇总明细',  "/countDetail.html")
 	});
+	
+	$("#endTimeEnd").next("span").bind("click", function () {
+		if($('#endStatus').combobox('getValue')=="false"){
+			$.messager.alert("提示","查询未结束小项时，不能输入结束时间!");
+			$('#endTimeEnd').datebox('setValue',"")
+			return;
+		}
+	})
+	$("#endStatus").combobox({
+        onChange:function(n,o){ //这里的参数n是select改变后的value,o是改变前的value 
+    		if(n=="false"){
+    			$('#endTimeEnd').datebox('setValue',"");
+    			$('#endTimeEnd').datebox('readonly');
+    		}else if(n=="true"){
+    			$('#endTimeEnd').datebox('readonly',false);
+    		}
+        }
+    });
 });
 </script>
