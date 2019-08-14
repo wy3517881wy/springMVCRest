@@ -26,6 +26,19 @@
 		<form id="addForm">
 			<table class="tableForm">
 				<tr>
+					<td class="formLeft">MISS编号:</td>
+					<td>
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="missNo" id="missNo">
+						<input id="orderId" value="0" type="hidden">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">税率(%):</td>
+					<td id="updateRoleTD">
+					<input class="easyui-numberbox" data-options="validType:'positionCodes',required:true,min:0" name="taxRate" id="taxRate" precision="2">
+					</td>
+				</tr>
+				<tr>
 					<td class="formLeft">订单编号:</td>
 					<td>
 						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="orderNo" id="orderNo">
@@ -61,25 +74,14 @@
 	<div id="updateDialog">
 		<form id="updateForm">
 			<table class="tableForm">
-				<tr>
-					<td class="formLeft">MISS编号:</td>
-					<td>
-						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="missNo" id="missNo">
-						<input id="orderId" value="0" type="hidden">
-					</td>
-				</tr>
+				
 				<tr>
 					<td class="formLeft" style="width:auto;">大项开票金额:</td>
 					<td>
 						<input class="easyui-numberbox" data-options="validType:'positionCodes',required:true,min:0" name="invoiceAmount" id="invoiceAmount" precision="2">
 					</td>
 				</tr>
-				<tr>
-					<td class="formLeft">税率(%):</td>
-					<td id="updateRoleTD">
-					<input class="easyui-numberbox" data-options="validType:'positionCodes',required:true,min:0" name="taxRate" id="taxRate" precision="2">
-					</td>
-				</tr>
+				
 				<tr id="stateRow" >
 					<td class="formLeft">回款金额1:</td>
 					<td>
@@ -122,6 +124,19 @@
 	<div id="editDialog">
 		<form id="editForm">
 			<table class="tableForm">
+				<tr>
+					<td class="formLeft">MISS编号:</td>
+					<td>
+						<input class="easyui-validatebox" data-options="validType:'positionCodes',required:true" name="updateMissNo" id="updateMissNo">
+						<input id="orderId" value="0" type="hidden">
+					</td>
+				</tr>
+				<tr>
+					<td class="formLeft">税率(%):</td>
+					<td id="updateRoleTD">
+					<input class="easyui-numberbox" data-options="validType:'positionCodes',required:true,min:0" name="updateTaxRate" id="updateTaxRate" precision="2">
+					</td>
+				</tr>
 				<tr>
 					<td class="formLeft">订单编号:</td>
 					<td>
@@ -210,7 +225,7 @@
 		$('#addDialog').dialog({
 			title: '添加合同订单',
 		    width: 300,
-		    height:300,
+		    height:400,
 		    closed: true,    
 		    modal: true,
 		    buttons:[{
@@ -422,6 +437,8 @@
 			}
 			$('#editForm')[0].reset();
 			$("#orderID").val(row.id);
+			$("#updateMissNo").val(row.missNo).validatebox('validate');
+			$('#updateTaxRate').numberbox('setValue', row.taxRate);
 			$("#updateOrderNo").val(row.orderNo).validatebox('validate');
 			$("#updateOrderName").val(row.orderName).validatebox('validate');
 			$("#updateBigItemNo").val(row.bigItemNo).validatebox('validate');
@@ -515,6 +532,14 @@
 	}
 	//添加信息
 	function addInfo(){
+		if($("#missNo").val()==null ||$("#missNo").val()==""){
+			$.messager.alert("提示","MISS编号不能为空!");
+			return;
+		}
+		if($("#taxRate").val()==null ||$("#taxRate").val()==""||$("#taxRate").val()==0){
+			$.messager.alert("提示","税率不能为空!");
+			return;
+		}
 		if($("#orderNo").val()==null ||$("#orderNo").val()==""){
 			$.messager.alert("提示","订单编号不能为空!");
 			return;
@@ -535,6 +560,8 @@
 			url:getHost() + '/contract_order',
 			type:'POST',
 			data:JSON.stringify({
+				missNo: $("#missNo").val(),
+			    taxRate: $("#taxRate").val(),
 				orderNo : $("#orderNo").val(),
 				orderName : $("#orderName").val(),
 				bigItemNo : $("#bigItemNo").val(),
@@ -566,18 +593,12 @@
 	}
 	//更新财务信息 
 	function updatedInfo(){
-		if($("#taxRate").val()==null ||$("#taxRate").val()==""||$("#taxRate").val()==0){
-			$.messager.alert("提示","请填写税率");
-			return;
-		}
 		$.ajax({
 			url:getHost() + '/contract_order/update_finance_item',
 			type:'PUT',
 			data:JSON.stringify({
 				"id": $("#orderId").val(),
-			    "missNo": $("#missNo").val(),
 			    "invoiceAmount": $("#invoiceAmount").val(),
-			    "taxRate": $("#taxRate").val(),
 			    "amount1": $("#amount1").val(),
 			    "paidTime1": $("#paidTime1").val(),
 			    "amount2": $("#amount2").val(),
@@ -616,6 +637,8 @@
 				url:getHost() + '/contract_order',
 				type:'PUT',
 				data:JSON.stringify({
+					missNo: $("#updateMissNo").val(),
+				    taxRate: $("#updateTaxRate").val(),
 					orderNo : $("#updateOrderNo").val(),
 					orderName : $("#updateOrderName").val(),
 					bigItemNo : $("#updateBigItemNo").val(),
@@ -700,6 +723,8 @@
 				url:getHost() + '/contract_order',
 				type:'PUT',
 				data:JSON.stringify({
+					missNo: row.missNo,
+				    taxRate: row.taxRate,
 					orderNo : row.orderNo,
 					orderName : row.orderName,
 					bigItemNo : row.bigItemNo,
