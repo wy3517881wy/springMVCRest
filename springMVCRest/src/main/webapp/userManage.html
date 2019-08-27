@@ -561,7 +561,7 @@
 			return;
 		}
 		if($("#resetinsurepassword").val()==null ||$("#resetinsurepassword").val()==""){
-			$.messager.alert("提示","新密码不能为空!");
+			$.messager.alert("提示","确认密码不能为空!");
 			return;
 		}
 		if($("#resetpassword").val()!=$("#resetinsurepassword").val()){
@@ -569,8 +569,8 @@
 			return;
 		}
 		$.ajax({
-			url:getHost() + '/user/sage_modify_password',
-			type:'PUT',
+			url:getHost() + '/user/safe_modify_password',
+			type:'post',
 			data:JSON.stringify({
 				originalP : $("#resetoldpassword").val(),
 				newP : $("#resetpassword").val(),
@@ -591,7 +591,7 @@
 					$('#resetDialog').dialog('close');
 					//$('#infoDrid').datagrid('load');
 				}else{
-					$.messager.alert("提示","重置失败");
+					$.messager.alert("提示",data.message);
 				}
 			}
 		});
