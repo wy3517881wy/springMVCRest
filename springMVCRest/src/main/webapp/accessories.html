@@ -23,6 +23,7 @@
 
 <script>
 	$(function(){
+		$.ajaxSetup({crossDomain: true, xhrFields: {withCredentials: true}});
 		//加载数据
 		gridLoad();	
 	});
@@ -31,17 +32,23 @@
 		fileType = sessionStorage.getItem('fileType')
 		row = JSON.parse(sessionStorage.getItem('row'));
 		if(fileType=="1"){//合同
+			var html="";
 			if(typeof(row.letterOfAcceptance) == "object"){
-				var html = '<div style="margin: 20px;text-align:left;">中标通知书</div><div><img src="http://' + row.letterOfAcceptance.url + '"></div>';
-					html +='<div style="margin: 20px;">点击下载框架合同压缩文件</div><div><img id="btn" src="/static/images/compress.jpg" width="80px" height="80px"></div>';
-				$("#content").html(html);
+				html += '<div style="margin: 20px;text-align:left;">中标通知书</div><div><img src="http://' + row.letterOfAcceptance.url + '"></div>';
+			}else{
+				html += '<div style="margin: 20px;text-align:left;">中标通知书</div><div class="noneContent">无上传内容</div>';
+			}
+		 	if(typeof(row.contractAttachment) == "object"){
+				html +='<div style="margin: 20px;">点击下载框架合同压缩文件</div><div><img id="btn" src="/static/images/compress.jpg" width="80px" height="80px"></div>';
+		 	}else{
+		 		html +='<div class="noneContent"style="margin: 20px;">未上传框架合同压缩文件</div>';
+			}
+		 	$("#content").html(html);
+		 	if(typeof(row.contractAttachment) == "object"){
 				$("#btn").bind("click",function(){
 		            window.open("http://" + row.contractAttachment.url );
 				});
-			}else{
-				var html = '<div style="margin: 20px;text-align:left;">中标通知书</div><div class="noneContent">无上传内容</div>';
-				$("#content").html(html);
-			}
+		 	}
 		}
 		if(fileType=="2"){//订单
 			var html = '<div style="margin: 20px;text-align:left;">发票文件</div>';
